@@ -6,12 +6,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AuthService.Persistence.Migrations
 {
-    /// <inheritdoc />
     public partial class InitialAdded : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
+            // CLIENTES
+
             migrationBuilder.CreateTable(
                 name: "clientes",
                 columns: table => new
@@ -32,6 +33,9 @@ namespace AuthService.Persistence.Migrations
                     table.PrimaryKey("pk_clientes", x => x.id_cliente);
                 });
 
+
+            // ROLES
+
             migrationBuilder.CreateTable(
                 name: "roles",
                 columns: table => new
@@ -45,6 +49,30 @@ namespace AuthService.Persistence.Migrations
                 {
                     table.PrimaryKey("pk_roles", x => x.id);
                 });
+
+
+            // EMPLEADOS
+
+            migrationBuilder.CreateTable(
+                name: "empleados",
+                columns: table => new
+                {
+                    id_empleado = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nombre = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    apellido = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    puesto = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    salario = table.Column<decimal>(type: "numeric(12,2)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_empleados", x => x.id_empleado);
+                });
+
+
+            // CUENTAS
 
             migrationBuilder.CreateTable(
                 name: "cuentas",
@@ -70,6 +98,63 @@ namespace AuthService.Persistence.Migrations
                         principalColumn: "id_cliente",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            // PRESTAMOS
+
+            migrationBuilder.CreateTable(
+                name: "prestamos",
+                columns: table => new
+                {
+                    id_prestamo = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    monto = table.Column<decimal>(type: "numeric(12,2)", nullable: false),
+                    tasa_interes = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
+                    fecha_inicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    fecha_fin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    id_cliente = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_prestamos", x => x.id_prestamo);
+                    table.ForeignKey(
+                        name: "fk_prestamos_clientes_id_cliente",
+                        column: x => x.id_cliente,
+                        principalTable: "clientes",
+                        principalColumn: "id_cliente",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+
+            // TRANSACCIONES
+
+            migrationBuilder.CreateTable(
+                name: "transacciones",
+                columns: table => new
+                {
+                    id_transaccion = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    tipo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    monto = table.Column<decimal>(type: "numeric(12,2)", nullable: false),
+                    fecha = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    id_cuenta = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_transacciones", x => x.id_transaccion);
+                    table.ForeignKey(
+                        name: "fk_transacciones_cuentas_id_cuenta",
+                        column: x => x.id_cuenta,
+                        principalTable: "cuentas",
+                        principalColumn: "id_cuenta",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+
+            // USER ROLE
 
             migrationBuilder.CreateTable(
                 name: "user_role",
@@ -99,6 +184,9 @@ namespace AuthService.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+
+            // INDEXES
+
             migrationBuilder.CreateIndex(
                 name: "ix_clientes_dpi",
                 table: "clientes",
@@ -117,6 +205,16 @@ namespace AuthService.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_prestamos_id_cliente",
+                table: "prestamos",
+                column: "id_cliente");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_transacciones_id_cuenta",
+                table: "transacciones",
+                column: "id_cuenta");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_user_role_role_id",
                 table: "user_role",
                 column: "role_id");
@@ -127,18 +225,20 @@ namespace AuthService.Persistence.Migrations
                 column: "user_id_cliente");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "transacciones");
+            migrationBuilder.DropTable(
+                name: "prestamos");
+            migrationBuilder.DropTable(
                 name: "cuentas");
-
+            migrationBuilder.DropTable(
+                name: "empleados");
             migrationBuilder.DropTable(
                 name: "user_role");
-
             migrationBuilder.DropTable(
                 name: "clientes");
-
             migrationBuilder.DropTable(
                 name: "roles");
         }

@@ -13,7 +13,7 @@ namespace AuthService.Persistence.Migrations
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +22,7 @@ namespace AuthService.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AuthService.Domain.Entities.Cliente", b =>
+                modelBuilder.Entity("AuthService.Domain.Entities.Cliente", b =>
                 {
                     b.Property<int>("IdCliente")
                         .ValueGeneratedOnAdd()
@@ -85,7 +85,7 @@ namespace AuthService.Persistence.Migrations
                     b.ToTable("clientes", (string)null);
                 });
 
-            modelBuilder.Entity("AuthService.Domain.Entities.Cuenta", b =>
+                modelBuilder.Entity("AuthService.Domain.Entities.Cuenta", b =>
                 {
                     b.Property<int>("IdCuenta")
                         .ValueGeneratedOnAdd()
@@ -140,8 +140,142 @@ namespace AuthService.Persistence.Migrations
 
                     b.ToTable("cuentas", (string)null);
                 });
+                modelBuilder.Entity("AuthService.Domain.Entities.Empleado", b =>
+                {
+                    b.Property<int>("IdEmpleado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_empleado");
 
-            modelBuilder.Entity("AuthService.Domain.Entities.Role", b =>
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEmpleado"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("nombre");
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("apellido");
+
+                    b.Property<string>("Puesto")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("puesto");
+
+                    b.Property<decimal>("Salario")
+                        .HasColumnType("decimal(12,2)")
+                        .HasColumnName("salario");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("IdEmpleado")
+                        .HasName("pk_empleados");
+
+                    b.ToTable("empleados", (string)null);
+                });
+                modelBuilder.Entity("AuthService.Domain.Entities.Prestamo", b =>
+                {
+                    b.Property<int>("IdPrestamo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_prestamo");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdPrestamo"));
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(12,2)")
+                        .HasColumnName("monto");
+
+                    b.Property<decimal>("TasaInteres")
+                        .HasColumnType("decimal(5,2)")
+                        .HasColumnName("tasa_interes");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha_inicio");
+
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha_fin");
+
+                    b.Property<int>("IdCliente")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_cliente");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("IdPrestamo")
+                        .HasName("pk_prestamos");
+
+                    b.HasIndex("IdCliente")
+                        .HasDatabaseName("ix_prestamos_id_cliente");
+
+                    b.ToTable("prestamos", (string)null);
+                });
+
+                modelBuilder.Entity("AuthService.Domain.Entities.Transaccion", b =>
+                {
+                    b.Property<int>("IdTransaccion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_transaccion");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTransaccion"));
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("tipo");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(12,2)")
+                        .HasColumnName("monto");
+
+                    b.Property<DateTime>("Fecha")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("IdCuenta")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_cuenta");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("IdTransaccion")
+                        .HasName("pk_transacciones");
+
+                    b.HasIndex("IdCuenta")
+                        .HasDatabaseName("ix_transacciones_id_cuenta");
+
+                    b.ToTable("transacciones", (string)null);
+                });
+                modelBuilder.Entity("AuthService.Domain.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -244,6 +378,31 @@ namespace AuthService.Persistence.Migrations
 
                     b.Navigation("User");
                 });
+                // C
+                modelBuilder.Entity("AuthService.Domain.Entities.Prestamo", b =>
+                {
+                    b.HasOne("AuthService.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("IdCliente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_prestamos_clientes_id_cliente");
+
+                    b.Navigation("Cliente");
+                });
+                modelBuilder.Entity("AuthService.Domain.Entities.Transaccion", b =>
+                {
+                    b.HasOne("AuthService.Domain.Entities.Cuenta", "Cuenta")
+                        .WithMany()
+                        .HasForeignKey("IdCuenta")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_transacciones_cuentas_id_cuenta");
+
+                    b.Navigation("Cuenta");
+                });
+
+
 
             modelBuilder.Entity("AuthService.Domain.Entities.Role", b =>
                 {
