@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Persistence.Data;
 
-    public static class DataSeeder
+public static class DataSeeder
+{
+    public static async Task SeedAsync(ApplicationDbContext context)
     {
-        public static async Task SeedAsync(ApplicationDbContext context)
-    {
-        if(!context.Roles.Any())
+        if (!context.Roles.Any())
         {
             var roles = new List<Role>
             {
@@ -29,36 +29,96 @@ namespace AuthService.Persistence.Data;
             await context.SaveChangesAsync();
         }
 
-            // ========================
-            // Seed Cliente + Cuenta demo
-            // ========================
-            if (!await context.Clientes.AnyAsync())
+        // ========================
+        // Seed Cliente + Cuenta demo
+        // ========================
+        if (!await context.Clientes.AnyAsync())
+        {
+            var cliente = new Cliente
             {
-                var clienteId = 1; // si usas Identity, EF lo genera
+                Nombre = "Juan",
+                Apellido = "Pérez",
+                Dpi = "1234567890101",
+                Direccion = "Ciudad de Guatemala",
+                Telefono = "55555555",
+                Correo = "juan@demo.com"
+            };
 
-                var cliente = new Cliente
+            await context.Clientes.AddAsync(cliente);
+            await context.SaveChangesAsync();
+
+            var cuenta = new Cuenta
+            {
+                NumeroCuenta = "000123456789",
+                TipoCuenta = "AHORRO",
+                Saldo = 1000m,
+                IdCliente = cliente.IdCliente
+            };
+
+            await context.Cuentas.AddAsync(cuenta);
+            await context.SaveChangesAsync();
+        }
+
+  
+        // Empleado 
+
+        if (!await context.Empleados.AnyAsync())
+        {
+            var empleado = new Empleado
+            {
+                Nombre = "Carlos",
+                Apellido = "Lopez",
+                Correo = "carlos@demo.com",
+                Telefono = "44444444"
+            };
+
+            await context.Empleados.AddAsync(empleado);
+            await context.SaveChangesAsync();
+        }
+
+
+        // Prestamo 
+
+        if (!await context.Prestamos.AnyAsync())
+        {
+            var cliente = await context.Clientes.FirstOrDefaultAsync();
+
+            if (cliente != null)
+            {
+                var prestamo = new Prestamo
                 {
-                    Nombre = "Juan",
-                    Apellido = "Pérez",
-                    Dpi = "1234567890101",
-                    Direccion = "Ciudad de Guatemala",
-                    Telefono = "55555555",
-                    Correo = "juan@demo.com"
+                    IdCliente = cliente.IdCliente,
+                    Monto = 5000m,
+                    FechaSolicitud = DateTime.UtcNow,
+                    Estado = "APROBADO"
                 };
 
-                await context.Clientes.AddAsync(cliente);
+                await context.Prestamos.AddAsync(prestamo);
                 await context.SaveChangesAsync();
+            }
+        }
 
-                var cuenta = new Cuenta
+
+        // Seed Transaccion demo
+
+        if (!await context.Transacciones.AnyAsync())
+        {
+            var cuenta = await context.Cuentas.FirstOrDefaultAsync();
+
+            if (cuenta != null)
+            {
+                var transaccion = new Transaccion
                 {
-                    NumeroCuenta = "000123456789",
-                    TipoCuenta = "AHORRO",
-                    Saldo = 1000m,
-                    IdCliente = cliente.IdCliente
+                    IdCuentaOrigen = cuenta.IdCuenta,
+                    IdCuentaDestino = cuenta.IdCuenta,
+                    Monto = 100m,
+                    Fecha = DateTime.UtcNow,
+                    TipoTransaccion = "TRANSFERENCIA"
                 };
 
-                await context.Cuentas.AddAsync(cuenta);
+                await context.Transacciones.AddAsync(transaccion);
                 await context.SaveChangesAsync();
             }
         }
     }
+}
