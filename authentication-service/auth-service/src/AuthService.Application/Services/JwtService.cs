@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+
 using AuthService.Application.Interfaces;
 using AuthService.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
@@ -14,13 +16,15 @@ public class JwtService : IJwtService
     private readonly string _audience;
     private readonly int _expiresMinutes;
 
-    public JwtService(string key, string issuer, string audience, int expiresMinutes)
-    {
-        _key = key;
-        _issuer = issuer;
-        _audience = audience;
-        _expiresMinutes = expiresMinutes <= 0 ? 60 : expiresMinutes;
-    }
+
+    public JwtService(IConfiguration configuration)
+{
+    _key = configuration["Jwt:Key"]!;
+    _issuer = configuration["Jwt:Issuer"]!;
+    _audience = configuration["Jwt:Audience"]!;
+    _expiresMinutes = int.Parse(configuration["Jwt:ExpiresMinutes"] ?? "60");
+}
+
 
     public string GenerateToken(User user)
     {
@@ -33,11 +37,13 @@ public class JwtService : IJwtService
             SecurityAlgorithms.HmacSha256
         );
 
+        var userRole = user.UserRoles.FirstOrDefault()?.Role?.Name ?? "USER_ROLE";
+
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.Id),
             new(JwtRegisteredClaimNames.UniqueName, user.Username),
-            new("role", user.Role),
+            new("role", userRole),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
