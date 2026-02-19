@@ -18,7 +18,7 @@ public class UserRole
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
     public DateTime UpdatedAt {get; set;} = DateTime.UtcNow;
 
-    public Cliente User { get; set; } = null!; 
+    public User User { get; set; } = null!; 
 
     public Role Role {get; set;} = null!;
 }
