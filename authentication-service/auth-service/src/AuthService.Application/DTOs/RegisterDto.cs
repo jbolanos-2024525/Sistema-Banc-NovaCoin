@@ -2,9 +2,11 @@ namespace AuthService.Application.DTOs;
 
 public class RegisterDto
 {
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-
-    // para tu gestión, puedes permitir ADMIN_ROLE
-    public string Role { get; set; } = "ADMIN_ROLE";
+    public required string Name { get; set; }
+    public required string Surname { get; set; }
+    public required string Username { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+    
+    public string? Role { get; set; }
 }
