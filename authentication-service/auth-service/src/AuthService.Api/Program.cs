@@ -1,7 +1,9 @@
-using AuthService.Api.Extencions;
+using AuthService.Api.Extensions;
 using AuthService.Persistence.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -40,6 +42,8 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+app.MapControllers();
 
 app.Run();
 
