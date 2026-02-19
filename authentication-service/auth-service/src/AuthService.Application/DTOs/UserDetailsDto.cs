@@ -2,7 +2,7 @@ namespace AuthService.Application.DTOs;
 
 public class UserDetailsDto
 {
-    public string Id { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty;
+    public required string Id { get; set; }
+    public required string Username { get; set; }
+    public required string Role { get; set; }
 }
