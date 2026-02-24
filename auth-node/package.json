@@ -1,0 +1,28 @@
+{
+    "name": "server-admin",
+    "version": "1.0.0",
+    "description": "Servicio de autenticacion y autorizacion para Kinal Sports",
+    "main": "index.js",
+
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "nodemon index.js"
+    },
+    "keywords": [],
+    "author": "Jose Cortez & IN6AM",
+    "license": "ISC",
+    "packageManager": "pnpm@10.07.1",
+    "type": "module",
+    "dependencies": {
+        "express": "^5.2.1",
+        "cors": "^2.8.6",
+        "dotenv": "^17.2.4",
+        "helmet": "^8.1.0",
+        "morgan": "^1.10.1",
+        "express-rate": "^8.2.1",
+        "mongoose": "^9.2.6"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.11"
+    }
+}
