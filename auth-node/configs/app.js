@@ -13,6 +13,7 @@ import fieldRoutes from '../src/fields/field.routes.js';
 import reservationRoutes from '../src/reservations/reservation.routes.js';
 import teamRoutes from '../src/teams/team.routes.js';
 import tournamentRoutes from '../src/tournaments/tournaments.routes.js';
+import empleadoRoutes from '../src/empleado/empleado.routes.js';
 
 const BASE_PATH = '/kinalSportsAdmin/v1';
 
@@ -21,6 +22,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/reservations`, reservationRoutes);
     app.use(`${BASE_PATH}/teams`, teamRoutes);
     app.use(`${BASE_PATH}/tournaments`, tournamentRoutes);
+    app.use(`${BASE_PATH}/empleados`, empleadoRoutes);
     app.get(`${BASE_PATH}/health`, (req, res) =>{
         res.status(200).json({
             status: 'Healthy',
