@@ -8,36 +8,31 @@ import { corsOptions } from './cors.configuration.js';
 import { helmetOptions } from './helmet.configuration.js';
 import { dbConnection } from './db.configuration.js';
 import { requestLimit } from './rateLimit.configuration.js';
-import { errorHandler } from '../middlewares/handle-errors.js';
-import fieldRoutes from '../src/fields/field.routes.js';
-import reservationRoutes from '../src/reservations/reservation.routes.js';
-import teamRoutes from '../src/teams/team.routes.js';
-import tournamentRoutes from '../src/tournaments/tournaments.routes.js';
-import empleadoRoutes from '../src/empleado/empleado.routes.js';
+import clienteroutes from '../src/Cliente/cliente.routes.js';
+import empleadoroutes from '../src/Empleado/empleado.routes.js';
 
-const BASE_PATH = '/kinalSportsAdmin/v1';
+const BASE_PATH = '/NovaCoin/Admin/v1';
 
 const routes = (app) => {
-    app.use(`${BASE_PATH}/fields`, fieldRoutes);
-    app.use(`${BASE_PATH}/reservations`, reservationRoutes);
-    app.use(`${BASE_PATH}/teams`, teamRoutes);
-    app.use(`${BASE_PATH}/tournaments`, tournamentRoutes);
-    app.use(`${BASE_PATH}/empleados`, empleadoRoutes);
+    app.use(`${BASE_PATH}/cliente`, clienteroutes);
+    app.use(`${BASE_PATH}/empleados`, empleadoroutes);
     app.get(`${BASE_PATH}/health`, (req, res) =>{
         res.status(200).json({
             status: 'Healthy',
             timeStamp: new Date().toISOString(),
-            service: 'Kinal Sports Admin Server'
+            service: 'NovaCoin Admin Server'
         })
     })
+
 
     app.use((req, res) =>{
         res.status(404).json({
             success: false,
-            message: 'Endpoint no encontrado'
+            message: 'EndPoint no encontrado'
         })
     })
 }
+
 
 const middlewares = (app) => {
     app.use(express.json({limit: '10mb'}));
@@ -48,22 +43,22 @@ const middlewares = (app) => {
     app.use(requestLimit);
 }
 
-export const initServer = async () => {
+export const initServer = async () =>{
     const app = express();
-    const PORT = process.env.PORT;
+    const PORT = process.env.PORT || 3020;
     app.set('trust proxy', 1)
 
     try{
         middlewares(app);
         await dbConnection();
-        routes(app);
-        app.use(errorHandler);
-        app.listen(PORT, () => {
-            console.log(`Server Kinal Sports Admin running on port: ${PORT}`);
+        routes(app);  
+        
+        app.listen(PORT, () =>{
+            console.log(`Áurea Restaurant Admin running on por ${PORT}`);
             console.log(`Health check endpoint: http://localhost:${PORT}${BASE_PATH}/health`);
         });
     }catch(err){
-        console.error(`Kinal Sports - Error al iniciar el servidor: ${err.message}`);
+        console.error(`Áurea Restaurant - Error al iniciar el servidor: ${err.message}`)
         process.exit(1);
     }
 }

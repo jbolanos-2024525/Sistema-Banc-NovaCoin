@@ -1,12 +1,12 @@
 import { Schema, model } from "mongoose";
 
 const ClienteSchema = new Schema({
-    nombre: {
+    Nombre: {
         type: String,
         required: [true, "El nombre es obligatorio"],
         trim: true
     },
-    apellido: {
+    Apellido: {
         type: String,
         required: [true, "El apellido es obligatorio"],
         trim: true
@@ -18,23 +18,23 @@ const ClienteSchema = new Schema({
         minlength: 13,
         maxlength: 13
     },
-    telefono: {
+    Telefono: {
         type: String,
         required: [true, "El teléfono es obligatorio"]
     },
-    correo: {
+    Correo: {
         type: String,
         required: [true, "El correo es obligatorio"],
         unique: true,
         lowercase: true,
         trim: true
     },
-    direccion: {
+    Direccion: {
         type: String,
         required: [true, "La dirección es obligatoria"],
         trim: true
     },
-    estado: {
+    Estado: {
         type: Boolean,
         default: true
     }

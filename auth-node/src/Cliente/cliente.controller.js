@@ -1,11 +1,6 @@
 import { request, response } from "express";
-import {
-    createCliente,
-    getCliente,
-    getClienteById,
-    updateCliente,
-    deleteCliente
-} from "./cliente.service.js";
+import {createCliente} from "./cliente.service.js";
+import {getCliente} from "./cliente.service.js";
 
 export const create = async (req = request, res = response) => {
     try {
@@ -25,29 +20,5 @@ export const getAll = async (req = request, res = response) => {
     }
 };
 
-export const getById = async (req = request, res = response) => {
-    try {
-        const cliente = await getClienteById(req.params.id);
-        return res.json(cliente);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
 
-export const update = async (req = request, res = response) => {
-    try {
-        const cliente = await updateCliente(req.params.id, req.body);
-        return res.json(cliente);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
 
-export const remove = async (req = request, res = response) => {
-    try {
-        const cliente = await deleteCliente(req.params.id);
-        return res.json(cliente);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
