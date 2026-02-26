@@ -10,12 +10,14 @@ import { dbConnection } from './db.configuration.js';
 import { requestLimit } from './rateLimit.configuration.js';
 import clienteroutes from '../src/Cliente/cliente.routes.js';
 import empleadoroutes from '../src/Empleado/empleado.routes.js';
+import cuentaroutes from '../src/Cuenta/cuenta.routes.js'
 
 const BASE_PATH = '/NovaCoin/Admin/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/cliente`, clienteroutes);
     app.use(`${BASE_PATH}/empleados`, empleadoroutes);
+    app.use(`${BASE_PATH}/cuenta`, cuentaroutes);
     app.get(`${BASE_PATH}/health`, (req, res) =>{
         res.status(200).json({
             status: 'Healthy',
