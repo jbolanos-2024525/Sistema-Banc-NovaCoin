@@ -1,0 +1,16 @@
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\bin\Debug\net8.0\TransService.Application.deps.json
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\bin\Debug\net8.0\TransService.Application.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\bin\Debug\net8.0\TransService.Application.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\bin\Debug\net8.0\TransService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\bin\Debug\net8.0\TransService.Domain.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.csproj.AssemblyReference.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.AssemblyInfoInputs.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.AssemblyInfo.cs
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.csproj.CoreCompileInputs.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.sourcelink.json
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransSer.C66FFCA0.Up2Date
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\refint\TransService.Application.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\TransService.Application.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\obj\Debug\net8.0\ref\TransService.Application.dll
