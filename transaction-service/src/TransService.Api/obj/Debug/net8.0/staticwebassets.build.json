@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "XQ52K/YsxVFlrl5VHcK3SZItBJkICLcHJNYqFUgOAtc=",
+  "Source": "TransService.Api",
+  "BasePath": "_content/TransService.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

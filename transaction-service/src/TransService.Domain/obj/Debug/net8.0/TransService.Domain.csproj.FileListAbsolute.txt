@@ -1,0 +1,12 @@
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.deps.json
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.AssemblyInfoInputs.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.AssemblyInfo.cs
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.csproj.CoreCompileInputs.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.sourcelink.json
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\refint\TransService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\ref\TransService.Domain.dll
