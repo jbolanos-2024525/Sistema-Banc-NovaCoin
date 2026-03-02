@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TransService.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be58b81ff813ffc099bc6162f0840bb671686091")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b60b9a53c8741eb9513cdbb20f10bb37aa30e27d")]
 [assembly: System.Reflection.AssemblyProductAttribute("TransService.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TransService.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

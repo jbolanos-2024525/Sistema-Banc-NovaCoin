@@ -7,8 +7,8 @@ router.post("/", create);
 
 router.get("/", getAll);
 
-router.put("/:id", update);    // Para editar: http://localhost:3020/.../v1/account/ID_AQUI
+router.put("/:id", update);    
 
-router.delete("/:id", remove); // Para eliminar: http://localhost:3020/.../v1/account/ID_AQUI
+router.delete("/:id", remove); 
 
 export default router;
