@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {}
+    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {}
   },
   "projects": {
-    "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
         "projectName": "TransService.Domain",
-        "projectPath": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
-        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
-        "outputPath": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "packagesPath": "C:\\Users\\Emilio\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Emilio\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
