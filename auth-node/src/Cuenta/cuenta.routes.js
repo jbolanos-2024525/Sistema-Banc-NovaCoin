@@ -1,14 +1,22 @@
 import { Router } from "express";
-import { create, getAll, update, remove } from "./cuenta.controller.js";
+import { create } from "./cuenta.controller.js";
+import { getAll } from "./cuenta.controller.js";
+import { getById } from "./cuenta.controller.js";
+import { getByCliente } from "./cuenta.controller.js";
+import { update } from "./cuenta.controller.js";
+import { remove } from "./cuenta.controller.js";
+import { validateCreateCuenta } from "../../middlewares/cuenta-validator.js";
+import { validateUpdateCuenta } from "../../middlewares/cuenta-validator.js";
+import { validateCuentaId } from "../../middlewares/cuenta-validator.js";
+import { validateClienteId } from "../../middlewares/cuenta-validator.js";
 
 const router = Router();
 
-router.post("/", create);
-
+router.post("/", validateCreateCuenta, create);
 router.get("/", getAll);
-
-router.put("/:id", update);    
-
-router.delete("/:id", remove); 
+router.get("/cliente/:clienteId", validateClienteId, getByCliente);
+router.get("/:id", validateCuentaId, getById);
+router.put("/:id", validateUpdateCuenta, update);
+router.delete("/:id", validateCuentaId, remove);
 
 export default router;

@@ -1,5 +1,10 @@
 import { request, response } from "express";
-import { createCuenta, getCuentas, updateCuenta, deleteCuenta } from "./cuenta.service.js";
+import { createCuenta } from "./cuenta.service.js";
+import { getCuentas } from "./cuenta.service.js";
+import { getCuentaById } from "./cuenta.service.js";
+import { getCuentasByCliente } from "./cuenta.service.js";
+import { updateCuenta } from "./cuenta.service.js";
+import { deleteCuenta } from "./cuenta.service.js";
 
 export const create = async (req = request, res = response) => {
     try {
@@ -19,9 +24,29 @@ export const getAll = async (req = request, res = response) => {
     }
 };
 
+export const getById = async (req = request, res = response) => {
+    try {
+        const { id } = req.params;
+        const cuenta = await getCuentaById(id);
+        return res.json(cuenta);
+    } catch (error) {
+        return res.status(404).json({ message: error.message });
+    }
+};
+
+export const getByCliente = async (req = request, res = response) => {
+    try {
+        const { clienteId } = req.params;
+        const cuentas = await getCuentasByCliente(clienteId);
+        return res.json(cuentas);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 export const update = async (req = request, res = response) => {
     try {
-        const { id } = req.params; 
+        const { id } = req.params;
         const cuenta = await updateCuenta(id, req.body);
         return res.json(cuenta);
     } catch (error) {
