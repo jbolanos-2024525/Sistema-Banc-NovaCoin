@@ -8,7 +8,7 @@
         "dev": "nodemon index.js"
     },
     "keywords": [],
-    "author": "Jose Cortez & IN6AM",
+    "author": "Los codigitos & IN6AM",
     "license": "ISC",
     "packageManager": "pnpm@10.7.1",
     "type": "module",
