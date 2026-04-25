@@ -15,12 +15,17 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TransService.Application\TransService.Application.csproj" />
     <ProjectReference Include="..\TransService.Persistence\TransService.Persistence.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  <NoWarn>$(NoWarn);1591</NoWarn> 
+  </PropertyGroup>
 
 </Project>

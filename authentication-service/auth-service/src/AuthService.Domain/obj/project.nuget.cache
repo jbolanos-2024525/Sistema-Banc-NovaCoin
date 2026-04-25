@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WPz/SmcOPf4=",
+  "dgSpecHash": "f17Q6bE4lrA=",
   "success": true,
-  "projectFilePath": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+  "projectFilePath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\CompuFire\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512",
     "C:\\Users\\CompuFire\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",

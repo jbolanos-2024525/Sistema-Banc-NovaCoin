@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "u0zBvs7gowc=",
+  "dgSpecHash": "wqaJUJ7y5R0=",
   "success": true,
-  "projectFilePath": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+  "projectFilePath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\CompuFire\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\CompuFire\\.nuget\\packages\\cloudinarydotnet\\1.27.7\\cloudinarydotnet.1.27.7.nupkg.sha512",
@@ -80,5 +80,18 @@
     "C:\\Users\\CompuFire\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
     "C:\\Users\\CompuFire\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "message": "Package 'MailKit' 4.13.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-9j88-vvj5-vhgr",
+      "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+      "libraryId": "MailKit",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

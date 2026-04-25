@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {}
+    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {
+    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
+        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
         "projectName": "TransService.Api",
-        "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
-        "packagesPath": "C:\\Users\\Emilio\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\obj\\",
+        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
+        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
+        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Emilio\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
-                "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
+              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
+                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
               },
-              "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
-                "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj"
+              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
+                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj"
               }
             }
           }
@@ -74,7 +74,7 @@
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.9.0, )"
+              "version": "[6.0.5, )"
             }
           },
           "imports": [
@@ -96,21 +96,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
+    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
+        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
         "projectName": "TransService.Application",
-        "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
-        "packagesPath": "C:\\Users\\Emilio\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\obj\\",
+        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
+        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
+        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Emilio\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -122,8 +122,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
-                "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
+              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
               }
             }
           }
@@ -176,21 +176,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
         "projectName": "TransService.Domain",
-        "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
-        "packagesPath": "C:\\Users\\Emilio\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
+        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
+        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Emilio\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -240,21 +240,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
+    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
+        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
         "projectName": "TransService.Persistence",
-        "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
-        "packagesPath": "C:\\Users\\Emilio\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\obj\\",
+        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
+        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
+        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Emilio\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -266,11 +266,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
-                "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
+              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
+                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
               },
-              "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
-                "projectPath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
+              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
               }
             }
           }
@@ -331,7 +331,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

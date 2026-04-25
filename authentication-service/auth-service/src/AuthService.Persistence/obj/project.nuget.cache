@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2pshzcaCRIM=",
+  "dgSpecHash": "gZfhd44PVnY=",
   "success": true,
-  "projectFilePath": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
+  "projectFilePath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\CompuFire\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\CompuFire\\.nuget\\packages\\cloudinarydotnet\\1.27.7\\cloudinarydotnet.1.27.7.nupkg.sha512",
