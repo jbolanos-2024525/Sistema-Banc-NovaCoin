@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AuthService.Api</name>
+    </assembly>
+    <members>
+        <member name="T:AuthService.Controllers.HealthController">
+            <summary>
+            Controlador para verificar la disponibilidad del servicio
+            </summary>
+        </member>
+        <member name="M:AuthService.Controllers.HealthController.Get">
+            <summary>
+            Verifica si el servicio de autenticación está activo
+            </summary>
+            <remarks>
+            Endpoint público que no requiere autenticación.
+            Útil para health checks de balanceadores de carga o monitoreo.
+            </remarks>
+            <returns>Estado actual del servicio</returns>
+            <response code="200">Servicio activo y funcionando correctamente</response>
+        </member>
+    </members>
+</doc>

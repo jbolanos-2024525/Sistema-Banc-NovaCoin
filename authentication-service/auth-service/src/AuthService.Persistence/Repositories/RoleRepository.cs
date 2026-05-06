@@ -5,73 +5,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Persistence.Repositories;
 
-public class RoleRepository : IRoleRepository
+public class RoleRepository(ApplicationDbContext context) : IRoleRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public RoleRepository(ApplicationDbContext context)
+    public async Task<Role?> GetByNameAsync(string roleName)
     {
-        _context = context;
+        return await (context.Roles ?? throw new InvalidOperationException("Roles DbSet is null."))
+            .FirstOrDefaultAsync(r => r.Name == roleName);
     }
 
-    public async Task<Role?> GetByIdAsync(string id)
+    public async Task<int> CountUsersInRoleAsync(string roleName)
     {
-        return await _context.Roles
-            .Include(r => r.UserRoles)
-            .FirstOrDefaultAsync(r => r.Id == id);
-    }
-
-    public async Task<Role?> GetByNameAsync(string name)
-    {
-        return await _context.Roles
-            .Include(r => r.UserRoles)
-            .FirstOrDefaultAsync(r => r.Name == name);
-    }
-
-    public async Task<List<Role>> GetAllAsync()
-    {
-        return await _context.Roles.ToListAsync();
-    }
-
-    public async Task<Role> CreateAsync(Role role)
-    {
-        await _context.Roles.AddAsync(role);
-        await _context.SaveChangesAsync();
-        return role;
-    }
-
-    public async Task<Role> UpdateAsync(Role role)
-    {
-        role.UpdatedAt = DateTime.UtcNow;
-        _context.Roles.Update(role);
-        await _context.SaveChangesAsync();
-        return role;
-    }
-
-    public async Task<bool> DeleteAsync(string id)
-    {
-        var role = await _context.Roles.FindAsync(id);
-        if (role == null)
-            return false;
-
-        _context.Roles.Remove(role);
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<int> CountUsersInRoleAsync(string roleId)
-    {
-        return await _context.UserRoles
-            .Where(ur => ur.RoleId == roleId)
+        return await (context.UserRoles ?? throw new InvalidOperationException("UserRoles DbSet is null."))
+            .Include(ur => ur.Role)
+            .Where(ur => ur.Role.Name == roleName)
+            .Select(ur => ur.UserId)
+            .Distinct()
             .CountAsync();
     }
 
-    public async Task<List<User>> GetUsersByRoleAsync(string roleId)
+    public async Task<IReadOnlyList<User>> GetUsersByRoleAsync(string roleName)
     {
-        return await _context.UserRoles
-            .Where(ur => ur.RoleId == roleId)
-            .Include(ur => ur.User)
-            .Select(ur => ur.User)
+        var users = await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName))
             .ToListAsync();
+        return users;
+    }
+
+    public async Task<IReadOnlyList<string>> GetUserRoleNamesAsync(string userId)
+    {
+        var roles = await (context.UserRoles ?? throw new InvalidOperationException("UserRoles DbSet is null."))
+            .Include(ur => ur.Role)
+            .Where(ur => ur.UserId == userId)
+            .Select(ur => ur.Role.Name)
+            .ToListAsync();
+        return roles;
     }
 }

@@ -9,3 +9,15 @@ C:\Users\Mnu\Documents\tareas 6to taller\sistema bancario\authentication-service
 C:\Users\Mnu\Documents\tareas 6to taller\sistema bancario\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
 C:\Users\Mnu\Documents\tareas 6to taller\sistema bancario\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
 C:\Users\Mnu\Documents\tareas 6to taller\sistema bancario\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.sourcelink.json
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\gitIN6AM2026\Sistema-Banc-NovaCoin\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll

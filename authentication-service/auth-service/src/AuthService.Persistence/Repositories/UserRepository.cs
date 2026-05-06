@@ -1,3 +1,4 @@
+using AuthService.Application.Services;
 using AuthService.Domain.Entities;
 using AuthService.Domain.Interfaces;
 using AuthService.Persistence.Data;
@@ -5,38 +6,130 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Persistence.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public UserRepository(ApplicationDbContext context)
+    public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        _context = context;
-    }
-
-    public User? GetByUsername(string username)
-    {
-        return _context.Users
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
-            .FirstOrDefault(u => u.Username == username);
+            .ToListAsync();
+    }
+    public async Task<User> GetByIdAsync(string id)
+    {
+        var user = await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Id == id);
+        return user ?? throw new InvalidOperationException($"User with id {id} not found.");
     }
 
-    public User? GetByEmail(string email)
+    public async Task<User?> GetByEmailAsync(string email)
     {
-        return _context.Users
-            .FirstOrDefault(u => u.Email == email);
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Email, email));
     }
 
-    public void Add(User user)
+    public async Task<User?> GetByUsernameAsync(string username)
     {
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Username, username));
     }
 
-    public void Update(User user)
+    public async Task<User?> GetByEmailVerificationTokenAsync(string token)
     {
-        _context.Users.Update(user);
-        _context.SaveChanges();
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.UserEmail != null &&
+                                    u.UserEmail.EmailVerificationToken == token &&
+                                    u.UserEmail.EmailVerificationTokenExpiry > DateTime.UtcNow);
+    }
+
+    public async Task<User?> GetByPasswordResetTokenAsync(string token)
+    {
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null."))
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.UserPasswordReset != null &&
+                                    u.UserPasswordReset.PasswordResetToken == token &&
+                                    u.UserPasswordReset.PasswordResetTokenExpiry > DateTime.UtcNow);
+    }
+
+    public async Task<User> CreateAsync(User user)
+    {
+        (context.Users ?? throw new InvalidOperationException("Users DbSet is null.")).Add(user);
+        await context.SaveChangesAsync();
+        return await GetByIdAsync(user.Id);
+    }
+
+    public async Task<User> UpdateAsync(User user)
+    {
+        // Entity is already tracked from GetByIdAsync, just save changes
+        await context.SaveChangesAsync();
+        return await GetByIdAsync(user.Id);
+    }
+
+    public async Task<bool> DeleteAsync(string id)
+    {
+        var user = await GetByIdAsync(id);
+        (context.Users ?? throw new InvalidOperationException("Users DbSet is null.")).Remove(user);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email)
+    {
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null.")).AnyAsync(u => EF.Functions.ILike(u.Email, email));
+    }
+
+    public async Task<bool> ExistsByUsernameAsync(string username)
+    {
+        return await (context.Users ?? throw new InvalidOperationException("Users DbSet is null.")).AnyAsync(u => EF.Functions.ILike(u.Username, username));
+    }
+
+    public async Task UpdateUserRoleAsync(string userId, string roleId)
+    {
+        // Remove existing user-role associations
+        var existingRoles = await (context.UserRoles ?? throw new InvalidOperationException("UserRoles DbSet is null."))
+            .Where(ur => ur.UserId == userId)
+            .ToListAsync();
+
+        context.UserRoles.RemoveRange(existingRoles);
+
+        // Add new user-role association with the existing role
+        var newUserRole = new UserRole
+        {
+            Id = UuidGenerator.GenerateUserId(), // Generate ID for the UserRole entry (not the Role)
+            UserId = userId,
+            RoleId = roleId, // Use the existing role ID from the roles table
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        context.UserRoles.Add(newUserRole);
+        await context.SaveChangesAsync();
     }
 }
