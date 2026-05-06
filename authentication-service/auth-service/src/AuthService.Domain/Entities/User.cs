@@ -1,40 +1,50 @@
-using System;
 using System.ComponentModel.DataAnnotations;
- 
+
 namespace AuthService.Domain.Entities;
- 
+
 public class User
 {
     [Key]
-    [MaxLength(50)]
+    [MaxLength(16)]
     public string Id { get; set; } = string.Empty;
- 
-    [Required]
-    [MaxLength(50)]
+
+    [Required(ErrorMessage = "El nombre es obligatorio.")]
+    [MaxLength(25, ErrorMessage = "El nombre no puede tener más de 25 caracteres.")]
     public string Name { get; set; } = string.Empty;
- 
-    [Required]
-    [MaxLength(50)]
+
+    [Required(ErrorMessage = "El apellido es obligatorio.")]
+    [MaxLength(25, ErrorMessage = "El apellido no puede tener más de 25 caracteres.")]
     public string Surname { get; set; } = string.Empty;
- 
-    [Required]
-    [MaxLength(50)]
+
+    [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
+    [MaxLength(50, ErrorMessage = "El nombre de usuario no puede tener más de 50 caracteres.")]
     public string Username { get; set; } = string.Empty;
- 
-    [Required]
-    [MaxLength(100)]
+
+    [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+    [EmailAddress(ErrorMessage = "El correo electrónico no tiene un formato válido.")]
+    [MaxLength(150, ErrorMessage = "El correo electrónico no puede tener más de 150 caracteres.")]
     public string Email { get; set; } = string.Empty;
- 
-    [Required]
+
+    [Required(ErrorMessage = "La contraseña es obligatoria.")]
+    [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
+    [MaxLength(255, ErrorMessage = "La contraseña no puede tener más de 255 caracteres.")]
     public string Password { get; set; } = string.Empty;
- 
+
     public bool Status { get; set; } = false;
- 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
- 
-    public UserProfile? UserProfile { get; set; }
-    public UserEmail? UserEmail { get; set; }
-    public UserPasswordReset? UserPasswordReset { get; set; }
-    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
+    [Required]
+    public DateTime CreatedAt { get; set; }
+
+    [Required]
+    public DateTime UpdatedAt { get; set; }
+
+    // Relaciones de navegación
+    public UserProfile UserProfile { get; set; } = null!;
+    public ICollection<UserRole> UserRoles { get; set; } = [];
+    public UserEmail UserEmail { get; set; } = null!;
+    public UserPasswordReset UserPasswordReset { get; set; } = null!;
+
+    // Refresh tokens
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
 }
