@@ -4,6 +4,8 @@ using AuthService.Api.ModelBinders;
 using AuthService.Persistence.Data;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
@@ -144,6 +146,37 @@ using (var scope = app.Services.CreateScope())
         throw; // Relanzar para detener la aplicación
     }
 }
+builder.Services.AddSwaggerGen(options =>
+{
+    options.EnableAnnotations();
+
+    // Incluir comentarios XML generados por el compilador
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+
+    // Soporte para JWT en Swagger UI
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingresa tu token JWT."
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 app.UseSwagger();
 app.UseSwaggerUI();
