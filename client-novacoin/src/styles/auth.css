@@ -1,0 +1,432 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.auth-page{
+    width:100%;
+    min-height:100vh;
+
+    background:#020617;
+
+    display:flex;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.auth-container{
+    width:100%;
+    min-height:100vh;
+
+    display:flex;
+
+    background:#ffffff;
+
+    overflow:hidden;
+}
+
+/* =========================
+   LEFT SIDE
+========================= */
+
+.auth-left{
+    width:42%;
+
+    position:relative;
+    overflow:hidden;
+
+    background:
+    radial-gradient(
+        circle at top left,
+        rgba(0,140,255,0.16),
+        transparent 35%
+    ),
+
+    radial-gradient(
+        circle at bottom,
+        rgba(0,255,200,0.06),
+        transparent 35%
+    ),
+
+    linear-gradient(
+        180deg,
+        #010817 0%,
+        #00163f 55%,
+        #020b1f 100%
+    );
+
+    color:white;
+
+    padding:65px 55px;
+
+    display:flex;
+    flex-direction:column;
+}
+
+
+/* GLOW EFFECTS */
+
+.auth-left::before{
+    content:"";
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:rgba(0,132,255,0.12);
+
+    border-radius:50%;
+
+    top:-200px;
+    left:-200px;
+
+    filter:blur(90px);
+
+    z-index:-1;
+}
+
+.auth-left::after{
+    content:"";
+    position:absolute;
+
+    width:400px;
+    height:400px;
+
+    background:rgba(0,255,200,0.08);
+
+    border-radius:50%;
+
+    bottom:-250px;
+    right:-200px;
+
+    filter:blur(90px);
+
+    z-index:-1;
+}
+
+/* =========================
+   LOGO
+========================= */
+.auth-left img{
+  width:320px;
+  margin-bottom:25px;
+
+  mix-blend-mode:lighten;
+
+  filter:
+    brightness(1.2)
+    contrast(1.1);
+
+  position:relative;
+  z-index:2;
+}
+
+/* =========================
+   LEFT TEXT
+========================= */
+
+.auth-left h2{
+    font-size:58px;
+    line-height:1.05;
+
+    font-weight:800;
+
+    letter-spacing:-2px;
+
+    margin-bottom:25px;
+}
+
+.auth-left h2 span{
+    color:#16f2d1;
+
+    text-shadow:
+    0 0 10px rgba(22,242,209,0.5),
+    0 0 25px rgba(22,242,209,0.2);
+}
+
+.auth-left p{
+    color:#cbd5e1;
+
+    font-size:19px;
+    line-height:1.8;
+
+    max-width:320px;
+}
+
+/* =========================
+   SHIELD IMAGE
+========================= */
+
+.shield-image{
+    width:420px;
+
+    margin-top:auto;
+    align-self:center;
+
+    opacity:0.22;
+
+    mix-blend-mode:screen;
+
+    filter:
+        blur(0.3px)
+        brightness(1.1)
+        contrast(1.05)
+        drop-shadow(0 0 35px rgba(0,140,255,0.25));
+
+    position:relative;
+    z-index:1;
+}
+
+
+
+/* =========================
+   RIGHT SIDE
+========================= */
+
+.auth-right{
+    width:58%;
+
+    background:#ffffff;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:70px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.auth-card{
+    width:100%;
+    max-width:540px;
+}
+
+.welcome-text{
+    color:#4f7cff;
+
+    font-size:15px;
+    font-weight:600;
+}
+
+.auth-card h2{
+    font-size:72px;
+
+    color:#0f172a;
+
+    margin-top:12px;
+    margin-bottom:45px;
+
+    font-weight:700;
+
+    letter-spacing:-2px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.input-group{
+    position:relative;
+    margin-bottom:22px;
+}
+
+.input-group input{
+    width:100%;
+    height:68px;
+
+    border:1px solid #dbe3ee;
+
+    border-radius:18px;
+
+    padding:0 58px;
+
+    font-size:16px;
+    color:#0f172a;
+
+    outline:none;
+
+    transition:0.3s ease;
+
+    background:#ffffff;
+}
+
+.input-group input::placeholder{
+    color:#94a3b8;
+}
+
+.input-group input:focus{
+    border-color:#3b82f6;
+
+    box-shadow:
+    0 0 0 5px rgba(59,130,246,0.12);
+}
+
+.input-icon{
+    position:absolute;
+
+    left:20px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#94a3b8;
+
+    font-size:18px;
+}
+
+.eye-icon{
+    position:absolute;
+
+    right:20px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#94a3b8;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+/* =========================
+   OPTIONS
+========================= */
+
+.auth-options{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:30px;
+
+    font-size:15px;
+}
+
+.auth-options label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    color:#64748b;
+}
+
+.auth-options a{
+    color:#2563eb;
+
+    text-decoration:none;
+
+    font-weight:500;
+}
+
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+.login-btn{
+    width:100%;
+    height:65px;
+
+    border:none;
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #2563eb,
+        #3b82f6
+    );
+
+    color:white;
+
+    font-size:19px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+
+    box-shadow:
+    0 10px 25px rgba(37,99,235,0.25);
+}
+
+.login-btn:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 15px 30px rgba(37,99,235,0.35);
+}
+
+/* =========================
+   REGISTER
+========================= */
+
+.register-text{
+    margin-top:35px;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:16px;
+}
+
+.register-text a{
+    color:#2563eb;
+
+    text-decoration:none;
+
+    font-weight:700;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    .auth-container{
+        flex-direction:column;
+    }
+
+    .auth-left{
+        width:100%;
+        min-height:320px;
+
+        padding:45px 30px;
+    }
+
+    .auth-right{
+        width:100%;
+
+        padding:40px 25px;
+    }
+
+    .auth-left h2{
+        font-size:42px;
+    }
+
+    .auth-card h2{
+        font-size:42px;
+    }
+
+    .shield-image{
+        display:none;
+    }
+
+    .logo{
+        width:190px;
+    }
+}
+

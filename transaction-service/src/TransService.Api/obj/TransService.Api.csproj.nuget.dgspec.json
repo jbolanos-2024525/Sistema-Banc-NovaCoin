@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {}
+    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {}
   },
   "projects": {
-    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {
+    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
+        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
         "projectName": "TransService.Api",
-        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
-        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
-        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\obj\\",
+        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\TransService.Api.csproj",
+        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
-                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
+              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
+                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
               },
-              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
-                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj"
+              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
+                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj"
               }
             }
           }
@@ -44,7 +44,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -88,6 +89,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -96,21 +115,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
+    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
+        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
         "projectName": "TransService.Application",
-        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
-        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
-        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\obj\\",
+        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj",
+        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -122,8 +141,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
-                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
+              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
               }
             }
           }
@@ -137,7 +156,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -171,26 +191,40 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
         "projectName": "TransService.Domain",
-        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
-        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
-        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
+        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -213,7 +247,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -235,26 +270,40 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
+    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
         "projectName": "TransService.Persistence",
-        "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
-        "packagesPath": "C:\\Users\\CompuFire\\.nuget\\packages\\",
-        "outputPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\obj\\",
+        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
+        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\CompuFire\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -266,11 +315,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
-                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
+              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj": {
+                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Application\\TransService.Application.csproj"
               },
-              "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
-                "projectPath": "C:\\JmendezIN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
+              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj"
               }
             }
           }
@@ -284,7 +333,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -326,12 +376,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

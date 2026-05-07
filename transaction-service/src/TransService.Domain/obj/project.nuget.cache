@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "YluXmSQfcOs=",
+  "dgSpecHash": "+dgj+CHiYkU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Emilio\\Documents\\IN6AM\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+  "projectFilePath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Emilio\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+    "C:\\Users\\roble\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512",
+    "C:\\Users\\roble\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.26\\microsoft.netcore.app.ref.8.0.26.nupkg.sha512",
+    "C:\\Users\\roble\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.26\\microsoft.windowsdesktop.app.ref.8.0.26.nupkg.sha512",
+    "C:\\Users\\roble\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.26\\microsoft.aspnetcore.app.ref.8.0.26.nupkg.sha512"
   ],
   "logs": []
 }
