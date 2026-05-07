@@ -4,6 +4,210 @@
         <name>AuthService.Api</name>
     </assembly>
     <members>
+        <member name="T:AuthService.Api.Controllers.AuthController">
+            <summary>
+            Autenticación, registro y gestión de perfil de usuarios.
+            </summary>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.Refresh(AuthService.Application.DTOs.RefreshRequestDto)">
+             <summary>
+             Rota el refresh token y devuelve un nuevo par de tokens.
+             </summary>
+             <remarks>
+             No requiere autenticación. Envía el refresh token vigente para obtener
+             un nuevo <c>accessToken</c> y un nuevo <c>refreshToken</c>.
+            
+             Ejemplo de body:
+             <code>
+             {
+               "refreshToken": "eyJhbGciOi..."
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.Logout(AuthService.Application.DTOs.RefreshRequestDto)">
+             <summary>
+             Cierra la sesión del usuario revocando su refresh token.
+             </summary>
+             <remarks>
+             Requiere un JWT válido en el header <c>Authorization: Bearer &lt;token&gt;</c>.
+            
+             Ejemplo de body:
+             <code>
+             {
+               "refreshToken": "eyJhbGciOi..."
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.GetProfile">
+            <summary>
+            Obtiene el perfil del usuario autenticado.
+            </summary>
+            <remarks>
+            El ID del usuario se extrae automáticamente del claim <c>sub</c> del JWT.
+            No requiere parámetros adicionales.
+            </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.GetProfileById(AuthService.Application.DTOs.GetProfileByIdDto)">
+             <summary>
+             Obtiene el perfil de un usuario por su ID.
+             </summary>
+             <remarks>
+             Endpoint público (sin autenticación requerida). Útil para servicios internos
+             que necesiten consultar datos de usuario por ID.
+            
+             Ejemplo de body:
+             <code>
+             {
+               "userId": "abc123"
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.Register(AuthService.Application.DTOs.RegisterDto)">
+             <summary>
+             Registra un nuevo usuario en el sistema.
+             </summary>
+             <remarks>
+             Acepta <c>multipart/form-data</c> con un límite de <b>10 MB</b>.
+             Puede incluir una imagen de perfil junto con los datos del usuario.
+            
+             Campos requeridos: <c>email</c>, <c>password</c>, <c>firstName</c>, <c>lastName</c>.
+             </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.Login(AuthService.Application.DTOs.LoginDto)">
+             <summary>
+             Inicia sesión con email y contraseña.
+             </summary>
+             <remarks>
+             Retorna un <c>accessToken</c> JWT y un <c>refreshToken</c> de rotación.
+            
+             Ejemplo de body:
+             <code>
+             {
+               "email": "usuario@ejemplo.com",
+               "password": "MiContraseña123!"
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.VerifyEmail(AuthService.Application.DTOs.Email.VerifyEmailDto)">
+            <summary>
+            Verifica el email del usuario con el token recibido por correo.
+            </summary>
+            <remarks>
+            Ejemplo de body:
+            <code>
+            {
+              "token": "abc123...",
+              "email": "usuario@ejemplo.com"
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.ResendVerification(AuthService.Application.DTOs.Email.ResendVerificationDto)">
+            <summary>
+            Reenvía el correo de verificación de cuenta.
+            </summary>
+            <remarks>
+            Ejemplo de body:
+            <code>
+            {
+              "email": "usuario@ejemplo.com"
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.ForgotPassword(AuthService.Application.DTOs.Email.ForgotPasswordDto)">
+             <summary>
+             Solicita el restablecimiento de contraseña mediante email.
+             </summary>
+             <remarks>
+             Por seguridad, siempre retorna éxito aunque el email no exista en el sistema,
+             evitando así la enumeración de usuarios.
+            
+             Ejemplo de body:
+             <code>
+             {
+               "email": "usuario@ejemplo.com"
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.ResetPassword(AuthService.Application.DTOs.Email.ResetPasswordDto)">
+            <summary>
+            Restablece la contraseña usando el token recibido por email.
+            </summary>
+            <remarks>
+            Ejemplo de body:
+            <code>
+            {
+              "email": "usuario@ejemplo.com",
+              "token": "abc123...",
+              "newPassword": "NuevaContraseña123!"
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.GetAllUsers">
+            <summary>
+            Obtiene la lista completa de usuarios registrados.
+            </summary>
+            <remarks>
+            Solo accesible por usuarios con rol <b>Admin</b>.
+            </remarks>
+        </member>
+        <member name="T:AuthService.Api.Controllers.UsersController">
+            <summary>
+            Gestión de usuarios: roles y consultas por rol.
+            </summary>
+        </member>
+        <member name="M:AuthService.Api.Controllers.UsersController.#ctor(AuthService.Application.Interfaces.IUserManagementService)">
+            <summary>
+            Gestión de usuarios: roles y consultas por rol.
+            </summary>
+        </member>
+        <member name="M:AuthService.Api.Controllers.UsersController.UpdateUserRole(System.String,AuthService.Application.DTOs.UpdateUserRoleDto)">
+             <summary>
+             Actualiza el rol de un usuario.
+             </summary>
+             <remarks>
+             Solo accesible por usuarios con rol <b>Admin</b>.
+            
+             Ejemplo de body:
+             <code>
+             {
+               "roleName": "Manager"
+             }
+             </code>
+             </remarks>
+             <param name="userId">ID del usuario cuyo rol se desea actualizar.</param>
+             <param name="dto">Objeto con el nombre del nuevo rol.</param>
+             <returns>El usuario actualizado con su nueva información de rol.</returns>
+        </member>
+        <member name="M:AuthService.Api.Controllers.UsersController.GetUserRoles(System.String)">
+            <summary>
+            Obtiene los roles asignados a un usuario.
+            </summary>
+            <remarks>
+            Cualquier usuario autenticado puede consultar los roles de un usuario por su ID.
+            </remarks>
+            <param name="userId">ID del usuario a consultar.</param>
+            <returns>Lista de nombres de roles asignados al usuario.</returns>
+        </member>
+        <member name="M:AuthService.Api.Controllers.UsersController.GetUsersByRole(System.String)">
+             <summary>
+             Obtiene todos los usuarios que pertenecen a un rol específico.
+             </summary>
+             <remarks>
+             Solo accesible por usuarios con rol <b>Admin</b>.
+            
+             Roles disponibles de ejemplo: <c>Admin</c>, <c>Manager</c>, <c>User</c>.
+             </remarks>
+             <param name="roleName">Nombre del rol por el cual filtrar usuarios.</param>
+             <returns>Lista de usuarios que poseen el rol indicado.</returns>
+        </member>
         <member name="T:AuthService.Controllers.HealthController">
             <summary>
             Controlador para verificar la disponibilidad del servicio
