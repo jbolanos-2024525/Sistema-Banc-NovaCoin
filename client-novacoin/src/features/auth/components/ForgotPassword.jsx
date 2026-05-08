@@ -6,9 +6,14 @@ import {
   Headphones
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 import logo from "../../../assets/img/logo2.png";
 
 const ForgotPassword = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="recover-card">
 
@@ -42,6 +47,7 @@ const ForgotPassword = () => {
 
         <div className="input-group">
           <Mail size={18} />
+
           <input
             type="email"
             placeholder="ejemplo@correo.com"
@@ -55,7 +61,11 @@ const ForgotPassword = () => {
 
       </form>
 
-      <button className="back-login">
+      {/* BOTON VOLVER */}
+      <button
+        className="back-login"
+        onClick={() => navigate("./Login.jsx")}
+      >
         ← Volver al inicio de sesión
       </button>
 
@@ -65,6 +75,7 @@ const ForgotPassword = () => {
         <div className="footer-item">
           <ShieldCheck size={28} />
           <h4>Seguro</h4>
+
           <p>
             Protegemos tu información con los más altos estándares.
           </p>
@@ -73,6 +84,7 @@ const ForgotPassword = () => {
         <div className="footer-item">
           <Lock size={28} />
           <h4>Privado</h4>
+
           <p>
             Tu información está siempre encriptada.
           </p>
@@ -81,6 +93,7 @@ const ForgotPassword = () => {
         <div className="footer-item">
           <Headphones size={28} />
           <h4>Soporte 24/7</h4>
+
           <p>
             Estamos aquí para ayudarte siempre.
           </p>

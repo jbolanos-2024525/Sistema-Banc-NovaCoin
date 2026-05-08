@@ -1,7 +1,7 @@
-import React from 'react'
+import Login from "./Login.jsx";
 
-export const AuthPage = () => {
-  return (
-    <div>AuthPage</div>
-  )
-}
+const AuthPage = () => {
+  return <Login />;
+};
+
+export default AuthPage;

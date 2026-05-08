@@ -1,13 +1,13 @@
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../features/auth/store/authStore';
-import { AuthPage } from '../../features/auth/pages/AuthPage';
+import AuthPage from '../../features/auth/pages/AuthPage.jsx';
 
 const ProtectedRoute = ({ children }) => {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     
     if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="./Login" replace />;
     }
     return children;
 };
