@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { axiosAuth } from '../../../shared/apis/api';
+import { loginRequest } from '../../../shared/apis/authService';
+
+
 
 export const useAuthStore = create(
     persist(
@@ -11,10 +13,12 @@ export const useAuthStore = create(
             loading: false,
             error: null,
             isAuthenticated: false,
-
-            setAccessToken: (token) => set({ 
-                accessToken: token 
-            }),
+            setTokens: (accessToken, refreshToken) =>
+                set({
+                    accessToken,
+                    refreshToken,
+                    isAuthenticated: true,
+                }),
 
             logout: () => {
                 set({
@@ -30,10 +34,13 @@ export const useAuthStore = create(
                 try {
                     set({ loading: true, error: null });
 
-                    const response = await axiosAuth.post('/auth/login', { 
-                        emailOrUsername, 
-                        password 
+
+                    const response = await loginRequest({
+                        emailOrUsername,
+                        password,
                     });
+
+
 
                     const { userDetails, accessToken, refreshToken } = response.data;
 
@@ -53,6 +60,17 @@ export const useAuthStore = create(
                 }
             },
         }),
-        { name: "auth-storage-bank" }
+                {
+                    name: 'auth-storage-bank',
+
+                    partialize: (state) => ({
+                        user: state.user,
+                        accessToken: state.accessToken,
+                        refreshToken: state.refreshToken,
+                        isAuthenticated: state.isAuthenticated,
+                    }),
+                }
+
+
     )
 );
