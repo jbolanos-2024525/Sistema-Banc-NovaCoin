@@ -46,25 +46,16 @@
 /* LOGO */
 
 .register-logo{
-    width:420px;
-
+    width:300px;
     display:block;
-
-    margin:0 auto 35px;
-
+    margin:0 auto 20px;
     object-fit:contain;
-
     background:transparent;
-
-    transition:0.3s ease;
-
+    transition:0.1s ease;
     filter:
     drop-shadow(0 4px 10px rgba(37,99,235,0.08));
 }
 
-.register-logo:hover{
-    transform:scale(1.02);
-}
 
 /* SUBTITLE */
 
