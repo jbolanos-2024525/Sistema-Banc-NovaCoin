@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import heroImg from '../assets/img/hero.png'
 
-// ❌ NO importar BrowserRouter aquí
 import { Routes, Route } from "react-router-dom";
 
 import Login from "../features/auth/pages/Login.jsx";
