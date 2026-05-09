@@ -1,74 +1,111 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
-
-import {
-  FaEnvelope,
-  FaLock
-} from "react-icons/fa";
-
-import { IoEyeOutline } from "react-icons/io5";
+import { FaEnvelope, FaLock } from "react-icons/fa";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5262/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailOrUsername, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setError(data.message || "Credenciales incorrectas");
+        return;
+      }
+
+      // Guardar token
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("accessToken", data.accessToken);
+      storage.setItem("refreshToken", data.refreshToken);
+      storage.setItem("user", JSON.stringify(data.userDetails));
+
+      navigate("/dashboard"); // cambia a tu ruta principal
+
+    } catch (err) {
+      setError("Error al conectar con el servidor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthLayout>
       <div className="auth-card">
-
-        <span className="welcome-text">
-          Bienvenido de vuelta
-        </span>
-
+        <span className="welcome-text">Bienvenido de vuelta</span>
         <h2>Inicia sesión</h2>
+
+        {error && (
+          <p style={{ color: "red", fontSize: "0.875rem", marginBottom: "8px" }}>
+            {error}
+          </p>
+        )}
 
         <div className="input-group">
           <FaEnvelope className="input-icon" />
-
           <input
-            type="email"
-            placeholder="ejemplo@correo.com"
+            type="text"
+            placeholder="Usuario o correo"
+            value={emailOrUsername}
+            onChange={(e) => setEmailOrUsername(e.target.value)}
           />
         </div>
 
         <div className="input-group">
           <FaLock className="input-icon" />
-
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="********"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
-
-          <IoEyeOutline className="eye-icon" />
+          {showPassword
+            ? <IoEyeOffOutline className="eye-icon" onClick={() => setShowPassword(false)} />
+            : <IoEyeOutline className="eye-icon" onClick={() => setShowPassword(true)} />
+          }
         </div>
 
         <div className="auth-options">
-
           <label>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
             Recordarme
           </label>
-
-          <Link to="/recover">
-            ¿Olvidaste tu contraseña?
-          </Link>
-
+          <Link to="/recover">¿Olvidaste tu contraseña?</Link>
         </div>
 
-        <button className="login-btn">
-          Iniciar sesión
+        <button
+          className="login-btn"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Iniciando..." : "Iniciar sesión"}
         </button>
 
-        <div className="divider">
-         
-        </div>
-
-       
         <p className="register-text">
           ¿No tienes una cuenta?{" "}
-
-          <Link to="/register">
-            Regístrate
-          </Link>
+          <Link to="/register">Regístrate</Link>
         </p>
-
       </div>
     </AuthLayout>
   );

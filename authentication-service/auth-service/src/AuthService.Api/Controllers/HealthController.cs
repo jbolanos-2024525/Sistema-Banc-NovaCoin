@@ -7,7 +7,7 @@ namespace AuthService.Controllers;
 /// Controlador para verificar la disponibilidad del servicio
 /// </summary>
 [ApiController]
-[Route("api/health")]
+[Route("api/v1/health")]
 [Produces("application/json")]
 public class HealthController : ControllerBase
 {

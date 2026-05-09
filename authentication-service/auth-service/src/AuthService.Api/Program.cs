@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 // CORRECCIÓN: Omitir validación SSL (Cloudinary, etc.)
 System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
@@ -25,13 +23,44 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 // Add services to the container
 builder.Services.AddControllers(options =>
 {
-    // Agregar el enlazador de modelos para IFileData
     options.ModelBinderProviders.Insert(0, new FileDataModelBinderProvider());
 })
 .AddJsonOptions(o =>
 {
-    // Estandarizar respuestas en camelCase para coincidir con auth-node
     o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+});
+
+builder.Services.AddEndpointsApiExplorer();
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.EnableAnnotations();
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingresa tu token JWT."
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 
 // Configure services through extension methods
@@ -43,6 +72,7 @@ builder.Services.AddRateLimitingPolicies();
 // Add security services
 builder.Services.AddSecurityPolicies(builder.Configuration);
 builder.Services.AddSecurityOptions();
+
 
 var app = builder.Build();
 
@@ -56,7 +86,7 @@ if (app.Environment.IsDevelopment())
 // Add Serilog request logging
 app.UseSerilogRequestLogging();
 
-// Add Security Headers using NetEscapades package
+// Add Security Headers
 app.UseSecurityHeaders(policies => policies
     .AddDefaultSecurityHeaders()
     .RemoveServerHeader()
@@ -83,8 +113,7 @@ app.UseSecurityHeaders(policies => policies
 // Manejo global de excepciones
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-// algo en q poner no¡?
-// Middlewares principales
+// Middlewares principales (orden correcto)
 app.UseHttpsRedirection();
 app.UseCors("DefaultCorsPolicy");
 app.UseRateLimiter();
@@ -131,53 +160,16 @@ using (var scope = app.Services.CreateScope())
     try
     {
         logger.LogInformation("Verificando conexión a la base de datos...");
-
-        // Garantizar que la base de datos se crea (similar a Sequelize sync en Node.js)
         await context.Database.EnsureCreatedAsync();
-
         logger.LogInformation("Base de datos lista. Ejecutando datos semilla...");
         await DataSeeder.SeedAsync(context);
-
         logger.LogInformation("Inicialización de base de datos completada exitosamente");
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "Ocurrió un error al inicializar la base de datos");
-        throw; // Relanzar para detener la aplicación
+        throw;
     }
 }
-builder.Services.AddSwaggerGen(options =>
-{
-    options.EnableAnnotations();
 
-    // Incluir comentarios XML generados por el compilador
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
-
-    // Soporte para JWT en Swagger UI
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Ingresa tu token JWT."
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-app.UseSwagger();
-app.UseSwaggerUI();
 app.Run();
