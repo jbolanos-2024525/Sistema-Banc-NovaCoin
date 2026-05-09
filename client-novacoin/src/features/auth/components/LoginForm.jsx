@@ -1,59 +1,171 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
+
+// Validación de campos
+const PASSWORD_MIN_LENGTH = 6;
+
+const validate = ({ emailOrUsername, password }) => {
+    const errors = {};
+
+    if (!emailOrUsername.trim()) {
+        errors.emailOrUsername = 'El usuario o correo es obligatorio.';
+    }
+
+    if (!password) {
+        errors.password = 'La contraseña es obligatoria.';
+    } else if (password.length < PASSWORD_MIN_LENGTH) {
+        errors.password = `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres.`;
+    }
+
+    return errors;
+};
 
 export const LoginForm = ({ onForgot }) => {
-    const [formData, setFormData] = useState({ emailOrUsername: '', password: '' });
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        emailOrUsername: '',
+        password: ''
+    });
+
+    const [fieldErrors, setFieldErrors] = useState({});
+    const [touched, setTouched] = useState({});
+
     const login = useAuthStore((state) => state.login);
     const { loading, error } = useAuthStore();
+    const clearError = useAuthStore((state) => state.clearError);
+
+    useEffect(() => {
+        clearError();
+    }, []);
+
+    const handleBlur = (field) => {
+        setTouched((prev) => ({ ...prev, [field]: true }));
+        const errors = validate(formData);
+        setFieldErrors((prev) => ({ ...prev, [field]: errors[field] }));
+    };
+
+    const handleChange = (field, value) => {
+        const updated = { ...formData, [field]: value };
+        setFormData(updated);
+
+        if (touched[field]) {
+            const errors = validate(updated);
+            setFieldErrors((prev) => ({ ...prev, [field]: errors[field] }));
+        }
+    };
+
+    const inputStyle = (field) => ({
+        border: fieldErrors[field]
+            ? '1.5px solid #ff4d4d'
+            : '1.5px solid transparent',
+        transition: 'border 0.2s',
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await login(formData);
+
+        // Validar antes de enviar
+        const errors = validate(formData);
         
+        // Actualizar estado de validación
+        setTouched({ emailOrUsername: true, password: true });
+        setFieldErrors(errors);
+
+        // Validar que no haya errores
+        if (Object.keys(errors).length > 0) {
+            return;
+        }
+
+        const result = await login(formData);
+
         if (result.success) {
-            window.location.href = '/dashboard';
+            // 🔥 REDIRECCIÓN CORRECTA (sin recargar toda la app)
+            navigate('/dashboard', { replace: true });
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <input 
-                type="text" 
-                placeholder="Usuario o Email" 
-                className="input-auth" 
-                onChange={(e) => setFormData({...formData, emailOrUsername: e.target.value})} 
-                required
-            />
-            <input 
-                type="password" 
-                placeholder="Contraseña" 
-                className="input-auth"
-                onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                required
-            />
-            
+        <form 
+            className="auth-form"
+            onSubmit={handleSubmit} 
+            noValidate 
+            style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+        >
+            {/* EMAIL / USERNAME */}
+            <div className="input-group">
+                <FaEnvelope className="input-icon" />
+                <input 
+                    type="text" 
+                    placeholder="Usuario o Email" 
+                    className="input-auth"
+                    style={inputStyle('emailOrUsername')}
+                    value={formData.emailOrUsername}
+                    onChange={(e) => handleChange('emailOrUsername', e.target.value)}
+                    onBlur={() => handleBlur('emailOrUsername')}
+                    disabled={loading}
+                />
+            </div>
+
+            {fieldErrors.emailOrUsername && (
+                <p className="auth-field-error">⚠ {fieldErrors.emailOrUsername}</p>
+            )}
+
+            {/* PASSWORD */}
+            <div className="input-group">
+                <FaLock className="input-icon" />
+                <input 
+                    type="password" 
+                    placeholder="Contraseña" 
+                    className="input-auth"
+                    style={inputStyle('password')}
+                    value={formData.password}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                    onBlur={() => handleBlur('password')}
+                    disabled={loading}
+                />
+            </div>
+
+            {fieldErrors.password && (
+                <p className="auth-field-error">⚠ {fieldErrors.password}</p>
+            )}
+
+            {/* FORGOT PASSWORD */}
             <div style={{ textAlign: 'right', marginBottom: '10px' }}>
                 <span 
-                    onClick={onForgot} 
+                    onClick={!loading ? onForgot : undefined} 
                     style={{ 
                         color: 'var(--dorado-principal)', 
-                        cursor: 'pointer', 
+                        cursor: loading ? 'not-allowed' : 'pointer', 
                         fontSize: '14px',
-                        textDecoration: 'underline' 
+                        textDecoration: 'underline',
+                        opacity: loading ? 0.6 : 1,
                     }}
                 >
                     ¿Olvidaste tu contraseña?
                 </span>
             </div>
 
+            {/* BOTÓN */}
             <button 
                 type="submit" 
-                className="btn-login" 
+                className="login-btn" 
                 disabled={loading}
+                aria-busy={loading}
             >
-                {loading ? 'Validando...' : 'Iniciar Sesión'}
+                {loading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                        <span className="btn-spinner" />
+                        Entrando...
+                    </span>
+                ) : (
+                    'Iniciar Sesión'
+                )}
             </button>
 
+            {/* ERROR GLOBAL */}
             {error && (
                 <p style={{ 
                     color: '#ff4d4d', 

@@ -46,16 +46,26 @@
 /* LOGO */
 
 .register-logo{
-    width:300px;
+    max-width:240px;
+    width:100%;
+
     display:block;
-    margin:0 auto 20px;
+
+    margin:0 auto 35px;
+
     object-fit:contain;
+
     background:transparent;
-    transition:0.1s ease;
+
+    transition:0.3s ease;
+
     filter:
     drop-shadow(0 4px 10px rgba(37,99,235,0.08));
 }
 
+.register-logo:hover{
+    transform:scale(1.02);
+}
 
 /* SUBTITLE */
 
@@ -126,6 +136,11 @@
     transition:0.3s;
 
     background:white;
+    color:#0f172a;
+}
+
+.register-input input::-webkit-text-fill-color{
+    color:#0f172a;
 }
 
 .register-input input:focus{
@@ -137,6 +152,27 @@
 
 .register-input input::placeholder{
     color:#94a3b8;
+}
+
+.eye-btn{
+    position:absolute;
+    right:18px;
+    top:50%;
+    transform:translateY(-50%);
+    border:none;
+    background:transparent;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+.register-error{
+    color:#ef4444;
+    font-size:13px;
+    margin-top:8px;
+    margin-left:10px;
 }
 
 /* ICONS */
