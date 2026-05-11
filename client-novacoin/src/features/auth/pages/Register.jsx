@@ -144,7 +144,7 @@ const Register = () => {
 
             <div className="register-input">
 
-              <FaUser className="input-icon" />
+              <FaUser className="register-input-icon" />
 
               <input
                 type="text"
@@ -173,7 +173,7 @@ const Register = () => {
 
             <div className="register-input">
 
-              <FaEnvelope className="input-icon" />
+              <FaEnvelope className="register-input-icon" />
 
               <input
                 type="email"
@@ -202,7 +202,7 @@ const Register = () => {
 
             <div className="register-input">
 
-              <FaPhoneAlt className="input-icon" />
+              <FaPhoneAlt className="register-input-icon" />
 
               <input
                 type="text"
@@ -231,7 +231,7 @@ const Register = () => {
 
             <div className="register-input">
 
-              <FaLock className="input-icon" />
+              <FaLock className="register-input-icon" />
 
               <input
                 type={showPassword ? "text" : "password"}
@@ -247,7 +247,7 @@ const Register = () => {
                 className="eye-btn"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <IoEyeOffOutline className="eye-icon" /> : <IoEyeOutline className="eye-icon" />}
+                {showPassword ? <IoEyeOffOutline className="register-eye-icon" /> : <IoEyeOutline className="register-eye-icon" />}
               </button>
 
             </div>
@@ -268,7 +268,7 @@ const Register = () => {
 
             <div className="register-input">
 
-              <FaLock className="input-icon" />
+              <FaLock className="register-input-icon" />
 
               <input
                 type={showPasswordConfirm ? "text" : "password"}
@@ -284,7 +284,7 @@ const Register = () => {
                 className="eye-btn"
                 onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
               >
-                {showPasswordConfirm ? <IoEyeOffOutline className="eye-icon" /> : <IoEyeOutline className="eye-icon" />}
+                {showPasswordConfirm ? <IoEyeOffOutline className="register-eye-icon" /> : <IoEyeOutline className="register-eye-icon" />}
               </button>
 
             </div>

@@ -46,12 +46,12 @@
 /* LOGO */
 
 .register-logo{
-    max-width:240px;
+    max-width:300px;
     width:100%;
 
     display:block;
 
-    margin:0 auto 35px;
+    margin:0 auto 15px;
 
     object-fit:contain;
 
@@ -177,7 +177,7 @@
 
 /* ICONS */
 
-.input-icon{
+.register-input-icon{
     position:absolute;
 
     left:18px;
@@ -190,7 +190,7 @@
     font-size:16px;
 }
 
-.eye-icon{
+.register-eye-icon{
     position:absolute;
 
     right:18px;
