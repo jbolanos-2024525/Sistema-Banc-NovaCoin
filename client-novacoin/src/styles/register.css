@@ -177,7 +177,7 @@
 
 /* ICONS */
 
-.input-icon{
+.register-input-icon{
     position:absolute;
 
     left:18px;
@@ -190,7 +190,7 @@
     font-size:16px;
 }
 
-.eye-icon{
+.register-eye-icon{
     position:absolute;
 
     right:18px;
