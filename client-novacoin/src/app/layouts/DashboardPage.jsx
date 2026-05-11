@@ -1,7 +1,12 @@
-import React from 'react'
+import { Outlet } from 'react-router-dom';
+
+import { DashboardContainer } from '../../shared/components/layout/DashboardContainer.jsx';
 
 export const DashboardPage = () => {
   return (
-    <div>DashboardPage</div>
-  )
-}
+    <DashboardContainer>
+      
+      <Outlet />
+    </DashboardContainer>
+  );
+};

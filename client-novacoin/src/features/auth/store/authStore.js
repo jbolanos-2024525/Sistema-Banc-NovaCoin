@@ -30,6 +30,8 @@ export const useAuthStore = create(
                 });
             },
 
+            clearError: () => set({ error: null }),
+
             login: async ({ emailOrUsername, password }) => {
                 try {
                     set({ loading: true, error: null });
