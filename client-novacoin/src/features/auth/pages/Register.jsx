@@ -32,6 +32,8 @@ const validateRegister = ({ fullName, email, phone, password, passwordConfirm, t
 
   if (!phone.trim()) {
     errors.phone = "El teléfono es obligatorio.";
+  } else if (!/^\d{4}-\d{4}$/.test(phone)) {
+    errors.phone = "El teléfono debe tener el formato 4545-2065.";
   }
 
   if (!password) {
@@ -203,23 +205,29 @@ const Register = () => {
             <div className="register-input">
 
               <FaPhoneAlt className="register-input-icon" />
+              <span style={{ position: "absolute", left: "40px", top: "50%", transform: "translateY(-50%)", color: "#64748b", fontSize: "15px", zIndex: 5 }}>+502</span>
 
               <input
                 type="text"
-                placeholder="+502 1234 5678"
+                placeholder="4545-2065"
+                maxLength={9}
                 value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                style={inputStyle("phone")}
+                onChange={(e) => {
+                  let val = e.target.value.replace(/\D/g, "");
+                  if (val.length > 4) val = val.slice(0, 4) + "-" + val.slice(4, 8);
+                  handleChange("phone", val);
+                }}
+                style={{ ...inputStyle("phone"), paddingLeft: "80px" }}
                 disabled={loading}
               />
 
             </div>
 
-            {fieldErrors.phone && (
-              <p className="register-error">⚠ {fieldErrors.phone}</p>
-            )}
+  {fieldErrors.phone && (
+    <p className="register-error">⚠ {fieldErrors.phone}</p>
+  )}
 
-          </div>
+</div>
 
           {/* PASSWORD */}
 
