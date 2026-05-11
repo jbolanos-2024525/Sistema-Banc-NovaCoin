@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
-  ArrowRight,
+  ArrowRight, 
   ShieldCheck,
   Lock,
   Headphones
@@ -10,6 +11,7 @@ import {
 import logo from "../../../assets/img/logo2.png";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
@@ -83,7 +85,7 @@ const ForgotPassword = () => {
 
       </form>
 
-      <button className="back-login">
+      <button className="back-login" onClick={() => navigate("/login")}>
         ← Volver al inicio de sesión
       </button>
 

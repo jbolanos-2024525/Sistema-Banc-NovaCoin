@@ -25,11 +25,11 @@
 .recover-logo{
     display:flex;
     justify-content:center;
-    margin-bottom:20px;
+    margin-bottom:3;
 }
 
 .recover-logo img{
-    width:180px;
+    width:340px;
     object-fit:contain;
 }
 
