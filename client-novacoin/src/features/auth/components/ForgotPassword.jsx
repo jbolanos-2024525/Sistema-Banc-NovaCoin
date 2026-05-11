@@ -64,7 +64,7 @@ const ForgotPassword = () => {
 
         <label>Correo electrónico</label>
 
-        <div className="input-group">
+        <div className="recover-input-group">
           <Mail size={18} />
           <input
             type="email"
