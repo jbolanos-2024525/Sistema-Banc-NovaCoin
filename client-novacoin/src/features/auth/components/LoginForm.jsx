@@ -82,7 +82,7 @@ export const LoginForm = ({ onForgot }) => {
         const result = await login(formData);
 
         if (result.success) {
-            // 🔥 REDIRECCIÓN CORRECTA (sin recargar toda la app)
+            
             navigate('/dashboard', { replace: true });
         }
     };

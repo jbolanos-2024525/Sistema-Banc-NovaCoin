@@ -1,7 +1,190 @@
-import React from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import logoImg from '../../../assets/img/N.novacoin.png';
+import { useAuthStore } from '../../../features/auth/store/authStore.js';
+import {
+  FiShield, FiUsers, FiUser, FiBriefcase,
+  FiCreditCard, FiRepeat, FiHome, FiSettings, FiLogOut,
+} from 'react-icons/fi';
+
+const menuItems = [
+  // 1. El Home siempre al principio
+  { label: 'Home', to: '/dashboard',icon: <FiHome />, exact: true },
+  
+  // Separador visual o etiqueta de sección para los servicios/entidades
+  { isHeader: true, label: 'GESTIÓN BANCARIA' },
+  
+  { label: 'Cuentas', to: '/dashboard/accounts',  icon: <FiUser /> },
+  { label: 'Préstamos', to: '/dashboard/loans',  icon: <FiCreditCard /> },
+  { label: 'Transacciones',to: '/dashboard/transactions', icon: <FiRepeat /> },
+  { label: 'Clientes', to: '/dashboard/customers', icon: <FiUsers /> },
+  { label: 'Empleados', to: '/dashboard/employees', icon: <FiBriefcase /> },
+  { label: 'Usuarios', to: '/dashboard/users',  icon: <FiUsers /> },
+  { label: 'Seguridad',  to: '/dashboard/auth', icon: <FiShield /> },
+
+  // 3. Ajustes al final de la lista
+  { isHeader: true, label: 'SISTEMA' },
+  { label: 'Configuración', to: '/dashboard/settings',     icon: <FiSettings /> },
+];
 
 export const Sidebar = () => {
+  const location = useLocation();
+  const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const isActive = (to, exact) =>
+    exact ? location.pathname === to : location.pathname.startsWith(to) && to !== '/dashboard';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
+
+  const name = user?.fullName || user?.username || user?.email || 'Admin';
+
   return (
-    <div>Sidebar</div>
-  )
-}
+    <aside style={{
+      width: '245px',
+      minHeight: '100vh', 
+      background: 'linear-gradient(165deg, #0a1a2f 0%, #050c18 45%, #082d33 100%)',
+      borderRight: '1px solid rgba(255,255,255,0.05)',
+      display: 'flex',
+      flexDirection: 'column',
+      flexShrink: 0,
+      position: 'relative',
+    }}>
+      {/* Header Logo */}
+      <div style={{
+        height: '64px',
+        padding: '0 20px',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        flexShrink: 0,
+      }}>
+        <img src={logoImg} alt="NovaCoin" style={{ height: '36px', width: 'auto' }} />
+        <span style={{
+          color: '#fff',
+          fontWeight: 700,
+          fontSize: '15px',
+          letterSpacing: '1.2px',
+          fontFamily: 'Poppins, sans-serif',
+        }}>NOVACOIN</span>
+      </div>
+
+      {/* Navegación Principal */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '15px 0' }}>
+        {menuItems.map((item, index) => {
+          if (item.isHeader) {
+            return (
+              <p key={index} style={{
+                color: 'rgba(255,255,255,0.3)',
+                fontSize: '10px',
+                fontWeight: 700,
+                letterSpacing: '1.5px',
+                padding: '20px 24px 8px',
+                margin: 0,
+                fontFamily: 'Poppins, sans-serif',
+              }}>
+                {item.label}
+              </p>
+            );
+          }
+
+          const active = isActive(item.to, item.exact);
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '11px 24px',
+                textDecoration: 'none',
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '13.5px',
+                fontWeight: active ? 600 : 400,
+                color: active ? '#fff' : 'rgba(255,255,255,0.6)',
+                backgroundColor: active ? 'rgba(0,242,254,0.08)' : 'transparent',
+                borderLeft: active ? '3px solid #00f2fe' : '3px solid transparent',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => {
+                if (!active) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.03)';
+              }}
+              onMouseLeave={e => {
+                if (!active) e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              <span style={{
+                fontSize: '17px',
+                color: active ? '#00f2fe' : 'rgba(255,255,255,0.3)',
+                display: 'flex',
+              }}>{item.icon}</span>
+              {item.label}
+            </Link>
+          );
+        })}
+
+        {/* Logo de fondo N hexagonal */}
+        <div style={{
+          height: '120px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: 0.3,
+          marginTop: '20px'
+        }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            background: 'linear-gradient(135deg, rgba(0,242,254,0.2) 0%, transparent 100%)',
+            clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px solid rgba(0,242,254,0.3)',
+          }}>
+            <span style={{ fontSize: '28px', fontWeight: '900', color: '#00f2fe' }}>N</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Usuario */}
+      <div style={{
+        padding: '16px 20px',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        backgroundColor: 'rgba(0,0,0,0.2)',
+      }}>
+        <div style={{
+          width: '34px',
+          height: '34px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #00f2fe, #4facfe)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#050c18',
+          fontWeight: 700,
+          fontSize: '13px',
+        }}>
+          {name.charAt(0).toUpperCase()}
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <p style={{ margin: 0, color: '#fff', fontSize: '12px', fontWeight: 600, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+            {name}
+          </p>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.4)', fontSize: '10px' }}>Admin</p>
+        </div>
+        <FiLogOut
+          onClick={handleLogout}
+          style={{ color: 'rgba(255,255,255,0.5)', fontSize: '16px', cursor: 'pointer' }}
+        />
+      </div>
+    </aside>
+  );
+};

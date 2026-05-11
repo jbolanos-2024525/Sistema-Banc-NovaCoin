@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { useAuthStore } from "../store/authStore";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { setTokens } = useAuthStore();
 
   const handleLogin = async () => {
     setError("");
@@ -31,13 +34,16 @@ const Login = () => {
         return;
       }
 
-      // Guardar token
+      // Guardar token en storage
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem("accessToken", data.accessToken);
       storage.setItem("refreshToken", data.refreshToken);
       storage.setItem("user", JSON.stringify(data.userDetails));
 
-      navigate("/dashboard"); // cambia a tu ruta principal
+      // Actualizar el store de zustand para que ProtectedRoute lo reconozca
+      setTokens(data.accessToken, data.refreshToken);
+
+      navigate("/dashboard");
 
     } catch (err) {
       setError("Error al conectar con el servidor");
