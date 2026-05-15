@@ -108,10 +108,6 @@ const Login = () => {
           {loading ? "Iniciando..." : "Iniciar sesión"}
         </button>
 
-        <p className="register-text">
-          ¿No tienes una cuenta?{" "}
-          <Link to="/register">Regístrate</Link>
-        </p>
       </div>
     </AuthLayout>
   );
