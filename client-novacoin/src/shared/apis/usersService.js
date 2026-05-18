@@ -1,8 +1,6 @@
-import { axiosBank } from './api';
+import { axiosAuth } from './api.js';
 
 export const getUsers = async () => {
-    const response = await axiosBank.get('/users');
-
+    const response = await axiosAuth.get('/auth/users');
     return response.data;
 };
-
