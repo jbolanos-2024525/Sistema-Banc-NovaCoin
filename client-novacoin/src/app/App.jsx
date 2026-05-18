@@ -4,7 +4,6 @@ import heroImg from '../assets/img/hero.png'
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../features/auth/pages/Login.jsx";
-import Register from "../features/auth/pages/Register.jsx";
 import Recover from "../features/auth/pages/Recover.jsx";
 import { DashboardPage } from "./layouts/DashboardPage.jsx";
 import { DashboardHome } from '../features/dashboard/pages/DashboardHome.jsx';
@@ -42,7 +41,6 @@ function App() {
       {/* Rutas públicas */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
       <Route path="/recover" element={<Recover />} />
       <Route path="/home" element={<Home />} />
 

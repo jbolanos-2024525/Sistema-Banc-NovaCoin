@@ -3,7 +3,7 @@ import { useAuthStore } from '../../features/auth/store/authStore';
 import { AuthPage } from '../../features/auth/pages/AuthPage';
 import { DashboardPage } from '../layouts/DashboardPage.jsx';
 import { DashboardHome } from '../../features/dashboard/pages/DashboardHome.jsx';
-
+import { VerifyEmailPage } from '../../features/auth/pages/VerifyEmailPage';
 import { AccountPage } from '../../features/account/pages/AccountPage.jsx';
 import { CustomerPage } from '../../features/customer/pages/CustomerPage.jsx';
 import { EmployeePage } from '../../features/employee/pages/EmployeePage.jsx';
