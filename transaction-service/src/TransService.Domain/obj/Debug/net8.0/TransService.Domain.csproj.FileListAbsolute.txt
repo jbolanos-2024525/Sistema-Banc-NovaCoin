@@ -22,3 +22,15 @@ C:\Users\Emilio\Documents\IN6AM\Sistema-Banc-NovaCoin\transaction-service\src\Tr
 C:\Users\Emilio\Documents\IN6AM\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\refint\TransService.Domain.dll
 C:\Users\Emilio\Documents\IN6AM\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.pdb
 C:\Users\Emilio\Documents\IN6AM\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\ref\TransService.Domain.dll
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.deps.json
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.dll
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.pdb
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.AssemblyInfoInputs.cache
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.AssemblyInfo.cs
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.csproj.CoreCompileInputs.cache
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.sourcelink.json
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.dll
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\refint\TransService.Domain.dll
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.pdb
+C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\ref\TransService.Domain.dll

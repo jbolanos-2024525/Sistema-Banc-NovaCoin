@@ -1,65 +1,82 @@
 import { Schema, model } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const empleadoSchema = new Schema(
   {
     Nombre: {
       type: String,
-      required: [true, 'El nombre es obligatorio'],
+      required: true,
       trim: true,
-      minLength: [2, 'El nombre debe tener al menos 2 caracteres'],
-      maxLength: [100, 'El nombre no puede exceder los 100 caracteres'],
     },
+
     Apellido: {
       type: String,
-      required: [true, 'El apellido es obligatorio'],
+      required: true,
       trim: true,
-      minLength: [2, 'El apellido debe tener al menos 2 caracteres'],
-      maxLength: [100, 'El apellido no puede exceder los 100 caracteres'],
     },
+
     DPI: {
       type: String,
-      required: [true, 'El DPI es obligatorio'],
+      required: true,
       unique: true,
-      minLength: [13, 'El DPI debe tener 13 dígitos'],
-      maxLength: [13, 'El DPI debe tener 13 dígitos'],
+      minlength: 13,
+      maxlength: 13,
     },
+
+    Correo: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+
+    Password: {
+  type: String,
+  required: true,
+  minlength: 6,
+  select: false
+},
+
     Puesto: {
       type: String,
-      required: [true, 'El puesto es obligatorio'],
-      trim: true,
-      minLength: [2, 'El puesto debe tener al menos 2 caracteres'],
-      maxLength: [100, 'El puesto no puede exceder los 100 caracteres'],
+      required: true,
     },
+
     Salario: {
       type: Number,
-      required: [true, 'El salario es obligatorio'],
-      min: [0, 'El salario no puede ser negativo'],
-      validate: {
-        validator: Number.isFinite,
-        message: 'El salario debe ser un número válido',
-      },
+      required: true,
+      min: 0,
     },
+
     Rol: {
       type: String,
-      required: [true, 'El rol es obligatorio'],
-      enum: {
-        values: ['Asesor', 'Cajero', 'Gerente', 'Administrador'],
-        message: 'Rol no válido',
-      },
+      enum: ['Asesor', 'Cajero', 'Gerente', 'Administrador'],
+      required: true,
     },
+
     isActive: {
       type: Boolean,
       default: true,
     },
+
+    isVerified: {
+    type: Boolean,
+    default: false
+},
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
     versionKey: false,
   }
 );
 
-empleadoSchema.index({ isActive: 1 });
-empleadoSchema.index({ Nombre: 1 });
-empleadoSchema.index({ isActive: 1, Nombre: 1 });
+// Encriptar password antes de guardar
+empleadoSchema.pre('save', async function () {
+  if (!this.isModified('Password')) return;
+
+  const salt = await bcrypt.genSalt(10);
+  this.Password = await bcrypt.hash(this.Password, salt);
+});
 
 export default model('Empleado', empleadoSchema);

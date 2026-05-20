@@ -5,11 +5,6 @@ import { checkValidators } from "./check-validators.js";
 export const validateCreateCuenta = [
   validateJWT,
 
-  body("NumeroCuenta")
-    .trim()
-    .notEmpty()
-    .withMessage("El número de cuenta es requerido"),
-
   body("TipoCuenta")
     .trim()
     .notEmpty()
