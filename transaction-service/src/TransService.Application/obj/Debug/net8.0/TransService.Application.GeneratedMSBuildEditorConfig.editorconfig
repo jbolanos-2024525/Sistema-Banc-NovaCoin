@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TransService.Application
-build_property.ProjectDir = C:\Users\roble\OneDrive\Documentos\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\
+build_property.ProjectDir = C:\Users\Informatica\Documents\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Application\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

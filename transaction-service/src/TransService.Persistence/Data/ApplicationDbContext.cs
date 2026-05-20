@@ -15,14 +15,16 @@ public class ApplicationDbContext
 
     public DbSet<Transaccion>
         Transacciones { get; set; }
+protected override void OnModelCreating(
+    ModelBuilder modelBuilder
+)
+{
+    base.OnModelCreating(modelBuilder);
 
-    protected override void OnModelCreating(
-        ModelBuilder modelBuilder
-    )
-    {
-        base.OnModelCreating(modelBuilder);
+    modelBuilder.Entity<Transaccion>()
+        .ToTable("transacciones");
 
-        modelBuilder.Entity<Transaccion>()
-            .HasKey(t => t.Id);
-    }
+    modelBuilder.Entity<Transaccion>()
+        .HasKey(t => t.Id);
+}
 }

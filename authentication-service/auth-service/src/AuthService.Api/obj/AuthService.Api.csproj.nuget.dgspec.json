@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj": {}
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj": {
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
+        "projectUniqueName": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
         "projectName": "AuthService.Api",
-        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
-        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\obj\\",
+        "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
+        "packagesPath": "C:\\Users\\Informatica\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Informatica\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
-                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj"
+              "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
+                "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj"
               },
-              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj": {
-                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj"
+              "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj": {
+                "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj"
               }
             }
           }
@@ -44,8 +44,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.200"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -101,24 +100,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -127,21 +108,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+        "projectUniqueName": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
         "projectName": "AuthService.Application",
-        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
-        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\obj\\",
+        "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+        "packagesPath": "C:\\Users\\Informatica\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Informatica\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -153,8 +134,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
-                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj"
+              "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
+                "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj"
               }
             }
           }
@@ -168,8 +149,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.200"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -223,40 +203,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
         "projectName": "AuthService.Domain",
-        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
-        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+        "packagesPath": "C:\\Users\\Informatica\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Informatica\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -279,8 +245,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.200"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -302,40 +267,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj": {
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
         "projectName": "AuthService.Persistence",
-        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
-        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\obj\\",
+        "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
+        "packagesPath": "C:\\Users\\Informatica\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Persistence\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Informatica\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -347,11 +298,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
-                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj"
+              "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
+                "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj"
               },
-              "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
-                "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj"
+              "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
+                "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj"
               }
             }
           }
@@ -365,8 +316,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.200"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -408,26 +358,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.26, 8.0.26]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
