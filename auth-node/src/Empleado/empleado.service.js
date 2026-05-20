@@ -5,123 +5,179 @@ import jwt from 'jsonwebtoken';
 import { transporter } from '../../utils/mailer.js';
 
 // Crear empleado
-export const createEmpleadoRecord = async (empleadoData) => {
+export const createEmpleadoRecord = async (
+    empleadoData
+) => {
 
-  const empleado = new Empleado(empleadoData);
+    const empleado =
+        new Empleado(empleadoData);
 
-  const savedEmpleado = await empleado.save();
+    const savedEmpleado =
+        await empleado.save();
 
-  // TOKEN DE VERIFICACION
-  const verifyToken = jwt.sign(
-    {
-      id: savedEmpleado._id
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: '1d'
-    }
-  );
+    // TOKEN DE VERIFICACIÓN
+    const verifyToken = jwt.sign(
 
-  // LINK DE VERIFICACION
-  const verifyURL =
-    `http://localhost:${process.env.PORT}/NovaCoin/Admin/v1/empleados/verify/${verifyToken}`;
+        {
+            id: savedEmpleado._id
+        },
 
-  // ENVIAR EMAIL
-  await transporter.sendMail({
+        process.env.JWT_SECRET,
 
-    from: process.env.EMAIL_USER,
+        {
+            expiresIn: '1d'
+        }
 
-    to: savedEmpleado.Correo,
+    );
 
-    subject: 'Verifica tu cuenta NovaCoin',
+    // LINK DE VERIFICACIÓN
+    const verifyURL =
+        `http://localhost:${process.env.PORT}/NovaCoin/Admin/v1/empleados/verify/${verifyToken}`;
 
-    html: `
-      <h1>Bienvenido a NovaCoin</h1>
+    // ENVIAR CORREO
+    await transporter.sendMail({
 
-      <p>Haz click en el botón para verificar tu cuenta:</p>
+        from: process.env.MAIL_USER,
 
-      <a href="${verifyURL}">
-        Verificar Cuenta
-      </a>
-    `
-  });
+        to: savedEmpleado.Correo,
 
-  // ELIMINAR PASSWORD
-  const empleadoSinPassword = savedEmpleado.toObject();
+        subject: 'Verifica tu cuenta NovaCoin',
 
-  delete empleadoSinPassword.Password;
+        html: `
+            <h1>Bienvenido a NovaCoin</h1>
 
-  return empleadoSinPassword;
+            <p>
+                Haz click en el botón para
+                verificar tu cuenta:
+            </p>
+
+            <a href="${verifyURL}">
+                Verificar Cuenta
+            </a>
+        `
+    });
+
+    // ELIMINAR PASSWORD
+    const empleadoSinPassword =
+        savedEmpleado.toObject();
+
+    delete empleadoSinPassword.Password;
+
+    return empleadoSinPassword;
 };
 
 // Obtener empleados
-export const getEmpleadosRecord = async () => {
-  return await Empleado.find({ isActive: true });
+export const getEmpleadosRecord =
+async () => {
+
+    return await Empleado.find({
+        isActive: true
+    });
+
 };
 
 // Login
-export const loginEmpleadoRecord = async (Correo, Password) => {
+export const loginEmpleadoRecord =
+async (
+    Correo,
+    Password
+) => {
 
-  const empleado = await Empleado
-    .findOne({ Correo })
-    .select('+Password');
+    const empleado =
+        await Empleado
+            .findOne({ Correo })
+            .select('+Password');
 
-  if (!empleado) {
-    throw new Error('Correo no encontrado');
-  }
+    if (!empleado) {
 
-  // VALIDAR SI ESTA VERIFICADO
-  if (!empleado.isVerified) {
-    throw new Error('Debes verificar tu correo');
-  }
+        throw new Error(
+            'Correo no encontrado'
+        );
 
-  const isMatch = await bcrypt.compare(
-    Password,
-    empleado.Password
-  );
-
-  if (!isMatch) {
-    throw new Error('Contraseña incorrecta');
-  }
-
-  const token = jwt.sign(
-    {
-      id: empleado._id,
-      rol: empleado.Rol,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: '2h'
     }
-  );
 
-  const empleadoSinPassword = empleado.toObject();
+    // VALIDAR VERIFICACIÓN
+    if (!empleado.isVerified) {
 
-  delete empleadoSinPassword.Password;
+        throw new Error(
+            'Debes verificar tu correo'
+        );
 
-  return {
-    token,
-    empleado: empleadoSinPassword,
-  };
+    }
+
+    const isMatch =
+        await bcrypt.compare(
+            Password,
+            empleado.Password
+        );
+
+    if (!isMatch) {
+
+        throw new Error(
+            'Contraseña incorrecta'
+        );
+
+    }
+
+    const token = jwt.sign(
+
+        {
+            id: empleado._id,
+            rol: empleado.Rol
+        },
+
+        process.env.JWT_SECRET,
+
+        {
+            expiresIn: '2h'
+        }
+
+    );
+
+    const empleadoSinPassword =
+        empleado.toObject();
+
+    delete empleadoSinPassword.Password;
+
+    return {
+
+        token,
+
+        empleado:
+            empleadoSinPassword
+
+    };
+
 };
 
-// VERIFICAR CORREO
-export const verifyEmpleadoEmail = async (token) => {
+// Verificar correo
+export const verifyEmpleadoEmail =
+async (token) => {
 
-  const decoded = jwt.verify(
-    token,
-    process.env.JWT_SECRET
-  );
+    const decoded = jwt.verify(
 
-  const empleado = await Empleado.findById(decoded.id);
+        token,
 
-  if (!empleado) {
-    throw new Error('Empleado no encontrado');
-  }
+        process.env.JWT_SECRET
 
-  empleado.isVerified = true;
+    );
 
-  await empleado.save();
+    const empleado =
+        await Empleado.findById(
+            decoded.id
+        );
 
-  return empleado;
+    if (!empleado) {
+
+        throw new Error(
+            'Empleado no encontrado'
+        );
+
+    }
+
+    empleado.isVerified = true;
+
+    await empleado.save();
+
+    return empleado;
 };

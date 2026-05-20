@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {}
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
+    "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
         "projectName": "TransService.Domain",
-        "projectPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
-        "packagesPath": "C:\\Users\\roble\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\roble\\OneDrive\\Documentos\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\TransService.Domain.csproj",
+        "packagesPath": "C:\\Users\\Informatica\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Informatica\\Documents\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\roble\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Informatica\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.418/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
