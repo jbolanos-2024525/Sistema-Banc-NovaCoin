@@ -1,11 +1,26 @@
 import { Router } from "express";
-import { create }  from "./cliente.controller.js";
-import { getAll }  from "./cliente.controller.js";
-import { getById } from "./cliente.controller.js";
-import { update }  from "./cliente.controller.js";
-import { remove }  from "./cliente.controller.js";
-import { validateCreateCliente } from "../../middlewares/cliente-validator.js";
-import { validateClienteId }     from "../../middlewares/cliente-validator.js";
+
+import {
+
+  create,
+  getAll,
+  getById,
+  update,
+  remove,
+
+  login,
+  verifyEmail
+
+} from "./cliente.controller.js";
+
+import {
+
+  validateCreateCliente,
+  validateClienteId
+
+} from "../../middlewares/cliente-validator.js";
+
+import { validateJWT } from "../../middlewares/validate-jwt.js";
 
 const router = Router();
 
@@ -21,68 +36,151 @@ const router = Router();
  *         - dpi
  *         - Telefono
  *         - Correo
+ *         - Password
  *         - Direccion
  *       properties:
  *         _id:
  *           type: string
  *           description: ID autogenerado por MongoDB
+ *
  *         Nombre:
  *           type: string
  *           description: Nombre del cliente
+ *
  *         Apellido:
  *           type: string
  *           description: Apellido del cliente
+ *
  *         dpi:
  *           type: string
- *           description: DPI del cliente (exactamente 13 dígitos)
+ *           description: DPI del cliente
+ *
  *         Telefono:
  *           type: string
- *           description: Teléfono del cliente
+ *           description: Número de teléfono
+ *
  *         Correo:
  *           type: string
  *           format: email
- *           description: Correo electrónico del cliente (único)
+ *           description: Correo electrónico único
+ *
+ *         Password:
+ *           type: string
+ *           description: Contraseña del cliente
+ *
+ *         Rol:
+ *           type: string
+ *           default: Cliente
+ *
+ *         isVerified:
+ *           type: boolean
+ *           default: false
+ *
  *         Direccion:
  *           type: string
  *           description: Dirección del cliente
+ *
  *         Estado:
  *           type: boolean
  *           default: true
- *           description: Estado activo del cliente
+ *
  *       example:
- *         Nombre: "Juan"
- *         Apellido: "Pérez"
- *         dpi: "1234567890123"
- *         Telefono: "50212345678"
- *         Correo: "juan.perez@email.com"
- *         Direccion: "Zona 10, Ciudad de Guatemala"
+ *         Nombre: "Carlos"
+ *         Apellido: "Lopez"
+ *         dpi: "1234567891234"
+ *         Telefono: "55554444"
+ *         Correo: "carlos@gmail.com"
+ *         Password: "123456"
+ *         Direccion: "Zona 1"
  */
 
 /**
  * @swagger
  * /cliente:
  *   post:
- *     summary: Crear un nuevo cliente
+ *     summary: Registrar un nuevo cliente
  *     tags: [Cliente]
+ *
  *     requestBody:
  *       required: true
+ *
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Cliente'
+ *
  *     responses:
  *       201:
- *         description: Cliente creado correctamente
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Cliente'
+ *         description: Cliente registrado correctamente
+ *
  *       400:
  *         description: Error de validación
- *       500:
- *         description: Error del servidor
  */
-router.post("/", validateCreateCliente, create);
+router.post(
+  "/",
+  validateCreateCliente,
+  create
+);
+
+/**
+ * @swagger
+ * /cliente/login:
+ *   post:
+ *     summary: Login de cliente
+ *     tags: [Cliente]
+ *
+ *     requestBody:
+ *       required: true
+ *
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *
+ *             properties:
+ *               Correo:
+ *                 type: string
+ *
+ *               Password:
+ *                 type: string
+ *
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ *
+ *       401:
+ *         description: Credenciales inválidas
+ */
+router.post(
+  "/login",
+  login
+);
+
+/**
+ * @swagger
+ * /cliente/verify/{token}:
+ *   get:
+ *     summary: Verificar correo del cliente
+ *     tags: [Cliente]
+ *
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *
+ *     responses:
+ *       200:
+ *         description: Correo verificado correctamente
+ *
+ *       400:
+ *         description: Token inválido
+ */
+router.get(
+  "/verify/:token",
+  verifyEmail
+);
 
 /**
  * @swagger
@@ -90,103 +188,154 @@ router.post("/", validateCreateCliente, create);
  *   get:
  *     summary: Obtener todos los clientes
  *     tags: [Cliente]
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
  *     responses:
  *       200:
  *         description: Lista de clientes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Cliente'
- *       500:
- *         description: Error del servidor
+ *
+ *       401:
+ *         description: Token inválido
  */
-router.get("/", getAll);
+router.get(
+  "/",
+  validateJWT,
+  getAll
+);
 
 /**
  * @swagger
  * /cliente/{id}:
  *   get:
- *     summary: Obtener un cliente por ID
+ *     summary: Obtener cliente por ID
  *     tags: [Cliente]
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del cliente
+ *
  *     responses:
  *       200:
  *         description: Cliente encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Cliente'
+ *
  *       404:
  *         description: Cliente no encontrado
- *       500:
- *         description: Error del servidor
  */
-router.get("/:id", validateClienteId, getById);
+router.get(
+  "/:id",
+  validateJWT,
+  validateClienteId,
+  getById
+);
 
 /**
  * @swagger
  * /cliente/{id}:
  *   put:
- *     summary: Actualizar un cliente
+ *     summary: Actualizar cliente
  *     tags: [Cliente]
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del cliente
+ *
  *     requestBody:
  *       required: true
+ *
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Cliente'
+ *
  *     responses:
  *       200:
  *         description: Cliente actualizado correctamente
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Cliente'
+ *
  *       400:
  *         description: Error de validación
- *       404:
- *         description: Cliente no encontrado
- *       500:
- *         description: Error del servidor
  */
-router.put("/:id", validateClienteId, update);
+router.put(
+  "/:id",
+  validateJWT,
+  validateClienteId,
+  update
+);
 
 /**
  * @swagger
  * /cliente/{id}:
  *   delete:
- *     summary: Eliminar un cliente
+ *     summary: Eliminar cliente
  *     tags: [Cliente]
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del cliente
+ *
  *     responses:
  *       200:
  *         description: Cliente eliminado correctamente
+ *
  *       404:
  *         description: Cliente no encontrado
- *       500:
- *         description: Error del servidor
  */
-router.delete("/:id", validateClienteId, remove);
+router.delete(
+  "/:id",
+  validateJWT,
+  validateClienteId,
+  remove
+);
+
+/**
+ * @swagger
+ * /cliente/profile/me:
+ *   get:
+ *     summary: Obtener perfil del cliente autenticado
+ *     tags: [Cliente]
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     responses:
+ *       200:
+ *         description: Perfil obtenido correctamente
+ */
+router.get(
+  "/profile/me",
+
+  validateJWT,
+
+  (req, res) => {
+
+    res.status(200).json({
+
+      success: true,
+
+      cliente: req.cliente || req.empleado
+
+    });
+
+  }
+);
 
 export default router;

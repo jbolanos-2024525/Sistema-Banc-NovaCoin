@@ -1,10 +1,7 @@
 import { body, param } from "express-validator";
-import { validateJWT } from "./validate-JWT.js";
 import { checkValidators } from "./check-validators.js";
 
-
 export const validateCreateCliente = [
-  validateJWT,
 
   body("Nombre")
     .trim()
@@ -27,39 +24,38 @@ export const validateCreateCliente = [
     .isEmail()
     .withMessage("Debe ingresar un correo válido"),
 
+  body("Password")
+    .trim()
+    .notEmpty()
+    .withMessage("La contraseña es requerida")
+    .isLength({ min: 6 })
+    .withMessage("La contraseña debe tener mínimo 6 caracteres"),
+
   body("Telefono")
     .trim()
     .notEmpty()
     .withMessage("El teléfono es requerido")
-    .isLength({ min: 8, max: 15 })
-    .withMessage("El teléfono debe tener entre 8 y 15 caracteres"),
+    .matches(/^\d{8,15}$/)
+    .withMessage("El teléfono debe contener entre 8 y 15 dígitos"),
 
-  body("DPI")
+  body("dpi")
     .trim()
     .notEmpty()
     .withMessage("El DPI es requerido")
-    .isLength({ min: 13, max: 13 })
-    .withMessage("El DPI debe tener 13 dígitos"),
+    .matches(/^\d{13}$/)
+    .withMessage("El DPI debe tener exactamente 13 dígitos"),
 
-  body("Dirección")
+  body("Direccion")
     .trim()
     .notEmpty()
     .withMessage("La dirección es requerida")
     .isLength({ max: 200 })
     .withMessage("La dirección no puede exceder 200 caracteres"),
 
-  body("monthlyIncome")
-    .notEmpty()
-    .withMessage("El ingreso mensual es requerido")
-    .isFloat({ min: 0 })
-    .withMessage("El ingreso mensual debe ser mayor o igual a 0"),
-
   checkValidators,
 ];
 
-
 export const validateClienteId = [
-  validateJWT,
 
   param("id")
     .isMongoId()

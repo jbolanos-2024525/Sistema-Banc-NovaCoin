@@ -1,59 +1,56 @@
 using Microsoft.EntityFrameworkCore;
+
 using TransService.Domain.Entities;
 using TransService.Domain.Interfaces;
+
 using TransService.Persistence.Data;
 
 namespace TransService.Persistence.Repositories;
 
-public class TransaccionRepository : ITransaccionRepository
+public class TransaccionRepository
+    : ITransaccionRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly
+        ApplicationDbContext
+        _context;
 
-    public TransaccionRepository(ApplicationDbContext context)
+    public TransaccionRepository(
+        ApplicationDbContext context
+    )
     {
         _context = context;
     }
 
-    public async Task<IEnumerable<Transaccion>> GetAllAsync() =>
-        await _context.Transacciones.OrderByDescending(t => t.FechaTransaccion).ToListAsync();
-
-    public async Task<Transaccion?> GetByIdAsync(int id) =>
-        await _context.Transacciones.FirstOrDefaultAsync(t => t.IdTransaccion == id);
-
-    public async Task<IEnumerable<Transaccion>> GetByCuentaIdAsync(int idCuenta) =>
-        await _context.Transacciones
-            .Where(t => t.IdCuenta == idCuenta)
-            .OrderByDescending(t => t.FechaTransaccion)
-            .ToListAsync();
-
-    public async Task<IEnumerable<Transaccion>> GetByTipoAsync(string tipo) =>
-        await _context.Transacciones
-            .Where(t => t.TipoTransaccion == tipo)
-            .OrderByDescending(t => t.FechaTransaccion)
-            .ToListAsync();
-
-    public async Task<bool> ExisteReferenciaAsync(string referencia) =>
-        await _context.Transacciones.AnyAsync(t => t.NumeroReferencia == referencia);
-
-    public async Task AddAsync(Transaccion transaccion)
+    public async Task<IEnumerable<Transaccion>>
+        GetAllAsync()
     {
-        await _context.Transacciones.AddAsync(transaccion);
-        await _context.SaveChangesAsync();
+        return await _context
+            .Transacciones
+            .OrderByDescending(
+                x => x.FechaCreacion
+            )
+            .ToListAsync();
     }
 
-    public async Task UpdateAsync(Transaccion transaccion)
+    public async Task<Transaccion?>
+        GetByIdAsync(Guid id)
     {
-        _context.Transacciones.Update(transaccion);
-        await _context.SaveChangesAsync();
+        return await _context
+            .Transacciones
+            .FirstOrDefaultAsync(
+                x => x.Id == id
+            );
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task CreateAsync(
+        Transaccion transaccion
+    )
     {
-        var transaccion = await _context.Transacciones.FindAsync(id);
-        if (transaccion != null)
-        {
-            _context.Transacciones.Remove(transaccion);
-            await _context.SaveChangesAsync();
-        }
+        await _context
+            .Transacciones
+            .AddAsync(transaccion);
+
+        await _context
+            .SaveChangesAsync();
     }
 }

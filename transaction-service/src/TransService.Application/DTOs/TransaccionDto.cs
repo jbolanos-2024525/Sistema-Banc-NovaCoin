@@ -1,31 +1,25 @@
-namespace TransService.Application.DTOs
+using TransService.Domain.Enums;
+
+namespace TransService.Application.DTOs;
+
+public class TransaccionDto
 {
-    public class CreateTransaccionDto
-    {
-        public string TipoTransaccion { get; set; } = string.Empty;  // Deposito | Retiro | Transferencia
-        public decimal Monto { get; set; }
-        public string NumeroReferencia { get; set; } = string.Empty;
-        public string? Descripcion { get; set; }
-        public int IdCuenta { get; set; }
-        public int IdEmpleado { get; set; }
-    }
+    public TipoTransaccion
+        TipoTransaccion { get; set; }
 
-    public class UpdateTransaccionDto
-    {
-        public string? Descripcion { get; set; }
-    }
+    public Guid?
+        CuentaOrigen { get; set; }
 
-    public class TransaccionResponseDto
-    {
-        public int IdTransaccion { get; set; }
-        public string TipoTransaccion { get; set; } = string.Empty;
-        public decimal Monto { get; set; }
-        public string NumeroReferencia { get; set; } = string.Empty;
-        public string? Descripcion { get; set; }
-        public DateTime FechaTransaccion { get; set; }
-        public int IdCuenta { get; set; }
-        public int IdEmpleado { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
+    public Guid?
+        CuentaDestino { get; set; }
+
+    public decimal
+        Monto { get; set; }
+
+    public string
+        Moneda { get; set; } = "GTQ";
+
+    public string
+        Descripcion { get; set; }
+            = string.Empty;
 }

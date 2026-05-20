@@ -14,6 +14,7 @@ import clienteroutes  from '../src/Cliente/cliente.routes.js';
 import empleadoroutes from '../src/Empleado/empleado.routes.js';
 import cuentaroutes   from '../src/Cuenta/cuenta.routes.js';
 import prestamoroutes from '../src/Prestamo/prestamo.routes.js';
+import transaccionroutes from '../src/Transaccion/transaccion.routes.js';
 
 const BASE_PATH = '/NovaCoin/Admin/v1';
 
@@ -22,6 +23,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/empleados`, empleadoroutes);
     app.use(`${BASE_PATH}/cuenta`,    cuentaroutes);
     app.use(`${BASE_PATH}/prestamo`,  prestamoroutes);
+    app.use(`${BASE_PATH}/transaccion`, transaccionroutes);
 
     app.get(`${BASE_PATH}/health`, (req, res) => {
         res.status(200).json({

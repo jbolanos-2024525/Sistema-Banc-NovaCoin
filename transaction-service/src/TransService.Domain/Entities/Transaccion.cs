@@ -1,47 +1,25 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using TransService.Domain.Enums;
 
-namespace TransService.Domain.Entities
+namespace TransService.Domain.Entities;
+
+public class Transaccion
 {
-    [Table("transacciones")]
-    public class Transaccion
-    {
-        [Key]
-        [Column("id_transaccion")]
-        public int IdTransaccion { get; set; }
+    public Guid Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        [Column("tipo_transaccion")]
-        public string TipoTransaccion { get; set; } = string.Empty;  // Deposito | Retiro | Transferencia
+    public TipoTransaccion TipoTransaccion { get; set; }
 
-        [Required]
-        [Column("monto", TypeName = "decimal(12,2)")]
-        public decimal Monto { get; set; }
+    public Guid? CuentaOrigen { get; set; }
 
-        [MaxLength(50)]
-        [Column("numero_referencia")]
-        public string NumeroReferencia { get; set; } = string.Empty;
+    public Guid? CuentaDestino { get; set; }
 
-        [MaxLength(200)]
-        [Column("descripcion")]
-        public string? Descripcion { get; set; }
+    public decimal Monto { get; set; }
 
-        [Column("fecha_transaccion")]
-        public DateTime FechaTransaccion { get; set; } = DateTime.UtcNow;
+    public string Moneda { get; set; } = "GTQ";
 
-        [Required]
-        [Column("id_cuenta")]
-        public int IdCuenta { get; set; }
+    public string Descripcion { get; set; } = string.Empty;
 
-        [Required]
-        [Column("id_empleado")]
-        public int IdEmpleado { get; set; }
+    public string Estado { get; set; } = "COMPLETADA";
 
-        [Column("created_at")]
-        public DateTime CreatedAt { get; set; }
-
-        [Column("updated_at")]
-        public DateTime UpdatedAt { get; set; }
-    }
+    public DateTime FechaCreacion { get; set; }
+        = DateTime.UtcNow;
 }

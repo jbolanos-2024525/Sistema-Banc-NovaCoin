@@ -1,9 +1,8 @@
-namespace TransService.Domain.Enums
+namespace TransService.Domain.Enums;
+
+public enum TipoTransaccion
 {
-    public enum TipoTransaccion
-    {
-        Deposito,
-        Retiro,
-        Transferencia
-    }
+    DEPOSITO = 1,
+    RETIRO = 2,
+    TRANSFERENCIA = 3
 }

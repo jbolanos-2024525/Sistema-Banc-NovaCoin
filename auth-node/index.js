@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
-import { initServer } from './configs/app.js';
 
 dotenv.config();
+
+const { initServer } = await import('./configs/app.js');
+
 initServer();

@@ -1,51 +1,78 @@
 import { Schema, model } from "mongoose";
 
 const CuentaSchema = new Schema({
+
     NumeroCuenta: {
         type: String,
-        required: [true, "El número de cuenta es obligatorio"],
         unique: true,
         trim: true
     },
+
     TipoCuenta: {
         type: String,
         required: [true, "El tipo de cuenta es obligatorio"],
         enum: ["AHORRO", "MONETARIA", "EMPRESARIAL"],
         uppercase: true
     },
+
     Moneda: {
         type: String,
-        required: [true, "La moneda es obligatoria"],
         enum: ["GTQ", "USD"],
         default: "GTQ",
         uppercase: true
     },
+
     Saldo: {
         type: Number,
-        required: [true, "El saldo inicial es obligatorio"],
+        default: 0,
         min: [0, "El saldo no puede ser negativo"]
     },
+
     LimiteRetiroDiario: {
         type: Number,
-        required: [true, "El límite de retiro es obligatorio"]
+        default: 5000
     },
+
     EstadoCuenta: {
         type: String,
         enum: ["ACTIVA", "BLOQUEADA", "CANCELADA"],
         default: "ACTIVA",
         uppercase: true
     },
+
     IdCliente: {
         type: Schema.Types.ObjectId,
         ref: "Cliente",
-        required: [true, "El ID del cliente es obligatorio"]
+        required: [true, "El cliente es obligatorio"]
     },
+
     Estado: {
         type: Boolean,
         default: true
     }
+
 }, {
-    timestamps: true
+
+    timestamps: true,
+    versionKey: false
+
 });
 
-export const Cuenta = model("Cuenta", CuentaSchema);
+// GENERAR NÚMERO DE CUENTA AUTOMÁTICO
+CuentaSchema.pre("save", async function () {
+
+    if (!this.NumeroCuenta) {
+
+        const random = Math.floor(
+            1000000000 + Math.random() * 9000000000
+        );
+
+        this.NumeroCuenta = `NC-${random}`;
+    }
+
+});
+
+export const Cuenta = model(
+    "Cuenta",
+    CuentaSchema
+);
