@@ -46,3 +46,15 @@ C:\Users\Informatica\Documents\Sistema-Banc-NovaCoin\transaction-service\src\Tra
 C:\Users\Informatica\Documents\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\refint\TransService.Domain.dll
 C:\Users\Informatica\Documents\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.pdb
 C:\Users\Informatica\Documents\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\ref\TransService.Domain.dll
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.deps.json
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.dll
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\bin\Debug\net8.0\TransService.Domain.pdb
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.AssemblyInfoInputs.cache
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.AssemblyInfo.cs
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.sourcelink.json
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.dll
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\refint\TransService.Domain.dll
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\TransService.Domain.pdb
+C:\Users\Emilio\Documents\INAMVER\Sistema-Banc-NovaCoin\transaction-service\src\TransService.Domain\obj\Debug\net8.0\ref\TransService.Domain.dll
