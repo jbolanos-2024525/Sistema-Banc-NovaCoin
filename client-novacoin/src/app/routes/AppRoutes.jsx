@@ -21,7 +21,7 @@ export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<AuthPage />} />
-
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route
         path="/dashboard/*"
         element={
