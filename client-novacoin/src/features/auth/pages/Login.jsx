@@ -8,13 +8,14 @@ import { useAuthStore } from "../store/authStore";
 const Login = () => {
   const navigate = useNavigate();
   const [emailOrUsername, setEmailOrUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [password, setPassword]               = useState("");
+  const [showPassword, setShowPassword]       = useState(false);
+  const [rememberMe, setRememberMe]           = useState(false);
+  const [loading, setLoading]                 = useState(false);
+  const [error, setError]                     = useState("");
 
-  const { setTokens } = useAuthStore();
+  // ✅ Ahora también tomamos setUser
+  const { setTokens, setUser } = useAuthStore();
 
   const handleLogin = async () => {
     setError("");
@@ -28,22 +29,28 @@ const Login = () => {
       });
 
       const data = await response.json();
+      console.log('USER DETAILS:', data.userDetails);
+
 
       if (!response.ok || !data.success) {
         setError(data.message || "Credenciales incorrectas");
         return;
       }
 
-      // Guardar token en storage
+      // Guardar en storage si marcó "Recordarme"
       const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("accessToken", data.accessToken);
+      storage.setItem("accessToken",  data.accessToken);
       storage.setItem("refreshToken", data.refreshToken);
-      storage.setItem("user", JSON.stringify(data.userDetails));
+      storage.setItem("user",         JSON.stringify(data.userDetails));
 
-      // Actualizar el store de zustand para que ProtectedRoute lo reconozca
+      // ✅ Guardar tokens Y user en el store
       setTokens(data.accessToken, data.refreshToken);
+      setUser(data.userDetails);
 
-      navigate("/dashboard");
+      // ✅ Redirigir según rol
+      const user    = data.userDetails;
+      const isAdmin = user?.role === 'ADMIN-ROLE' || user?.roles?.includes('ADMIN-ROLE');
+      navigate(isAdmin ? '/dashboard' : '/user', { replace: true });
 
     } catch (err) {
       setError("Error al conectar con el servidor");
@@ -71,6 +78,7 @@ const Login = () => {
             placeholder="Usuario o correo"
             value={emailOrUsername}
             onChange={(e) => setEmailOrUsername(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
           />
         </div>
 
@@ -81,10 +89,11 @@ const Login = () => {
             placeholder="********"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
           />
           {showPassword
             ? <IoEyeOffOutline className="eye-icon" onClick={() => setShowPassword(false)} />
-            : <IoEyeOutline className="eye-icon" onClick={() => setShowPassword(true)} />
+            : <IoEyeOutline    className="eye-icon" onClick={() => setShowPassword(true)}  />
           }
         </div>
 
@@ -107,7 +116,6 @@ const Login = () => {
         >
           {loading ? "Iniciando..." : "Iniciar sesión"}
         </button>
-
       </div>
     </AuthLayout>
   );

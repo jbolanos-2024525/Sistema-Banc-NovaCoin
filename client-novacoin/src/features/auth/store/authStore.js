@@ -21,6 +21,9 @@ export const useAuthStore = create(
         });
       },
 
+      // ✅ Nueva acción — guarda el user en el store
+      setUser: (user) => set({ user }),
+
       setTokens: (accessToken, refreshToken) =>
         set({ accessToken, refreshToken, isAuthenticated: true }),
 
