@@ -21,7 +21,6 @@ export const useAuthStore = create(
         });
       },
 
-      // ✅ Nueva acción — guarda el user en el store
       setUser: (user) => set({ user }),
 
       setTokens: (accessToken, refreshToken) =>
@@ -33,7 +32,7 @@ export const useAuthStore = create(
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
-          isLoadingAuth: true,
+          isLoadingAuth: false, // Evita bucles infinitos al limpiar sesión
           error: null,
         });
       },
@@ -43,8 +42,13 @@ export const useAuthStore = create(
       login: async ({ emailOrUsername, password }) => {
         try {
           set({ loading: true, error: null });
-          const response = await loginRequest({ emailOrUsername, password });
-          const { userDetails, accessToken, refreshToken } = response.data;
+          
+          // data ya contiene la respuesta directa del JSON devuelto por authService
+          const data = await loginRequest({ emailOrUsername, password });
+          
+          // Desestructuramos directamente desde 'data' alineado con tu backend de Identity
+          const { userDetails, accessToken, refreshToken } = data;
+          
           set({
             user: userDetails,
             accessToken,
@@ -63,12 +67,14 @@ export const useAuthStore = create(
       register: async (formData) => {
         try {
           set({ loading: true, error: null });
-          const response = await registerRequest(formData);
+          
+          const data = await registerRequest(formData);
+          
           set({ loading: false });
           return {
             success: true,
-            emailVerificationRequired: response.data?.emailVerificationRequired,
-            data: response.data,
+            emailVerificationRequired: data?.emailVerificationRequired,
+            data: data,
           };
         } catch (err) {
           const message = err.response?.data?.message || 'Error al registrar usuario';

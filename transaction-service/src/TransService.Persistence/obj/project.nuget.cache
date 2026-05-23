@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GCZwKG/EV5E=",
+  "dgSpecHash": "rN6KG0inF38=",
   "success": true,
   "projectFilePath": "C:\\gitIN6AM2026\\Sistema-Banc-NovaCoin\\transaction-service\\src\\TransService.Persistence\\TransService.Persistence.csproj",
   "expectedPackageFiles": [
@@ -46,10 +46,7 @@
     "C:\\Users\\CompuFire\\.nuget\\packages\\system.reflection.metadata\\6.0.1\\system.reflection.metadata.6.0.1.nupkg.sha512",
     "C:\\Users\\CompuFire\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\CompuFire\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
-    "C:\\Users\\CompuFire\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
-    "C:\\Users\\CompuFire\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\CompuFire\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\CompuFire\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
+    "C:\\Users\\CompuFire\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

@@ -12,7 +12,7 @@ using TransService.Persistence.Data;
 namespace TransService.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260520150007_InitialCreate")]
+    [Migration("20260523021852_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,36 +29,49 @@ namespace TransService.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("CuentaDestino")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("cuenta_destino");
 
                     b.Property<Guid?>("CuentaOrigen")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("cuenta_origen");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("descripcion");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("estado");
 
                     b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha_creacion");
 
                     b.Property<string>("Moneda")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("moneda");
 
                     b.Property<decimal>("Monto")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("monto");
 
                     b.Property<int>("TipoTransaccion")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("tipo_transaccion");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_transacciones");
 
                     b.ToTable("transacciones", (string)null);
                 });
