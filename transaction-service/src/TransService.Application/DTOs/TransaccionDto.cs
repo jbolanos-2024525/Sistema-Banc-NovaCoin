@@ -1,25 +1,29 @@
+using System.ComponentModel.DataAnnotations;
 using TransService.Domain.Enums;
 
 namespace TransService.Application.DTOs;
 
 public class TransaccionDto
 {
-    public TipoTransaccion
-        TipoTransaccion { get; set; }
+    public Guid Id { get; set; }
 
-    public Guid?
-        CuentaOrigen { get; set; }
+    public DateTime Fecha { get; set; }
 
-    public Guid?
-        CuentaDestino { get; set; }
+    [Required(ErrorMessage = "El tipo de transacción es obligatorio.")]
+    public TipoTransaccion TipoTransaccion { get; set; }
 
-    public decimal
-        Monto { get; set; }
+    // 🔄 Restaurados a Guid? para la consistencia original
+    public Guid? CuentaOrigen { get; set; }
 
-    public string
-        Moneda { get; set; } = "GTQ";
+    public Guid? CuentaDestino { get; set; }
 
-    public string
-        Descripcion { get; set; }
-            = string.Empty;
+    [Required]
+    [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a cero.")]
+    public decimal Monto { get; set; }
+
+    [StringLength(10)]
+    public string Moneda { get; set; } = "GTQ";
+
+    [StringLength(250, ErrorMessage = "La descripción no puede exceder los 250 caracteres.")]
+    public string Descripcion { get; set; } = string.Empty;
 }

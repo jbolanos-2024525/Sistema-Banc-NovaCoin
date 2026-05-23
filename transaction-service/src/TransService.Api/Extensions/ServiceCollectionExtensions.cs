@@ -10,30 +10,26 @@ using TransService.Persistence.Repositories;
 
 namespace TransService.Api.Extensions;
 
-public static class
-    ServiceCollectionExtensions
+public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection
-        AddApplicationServices(
-            this IServiceCollection services,
-            IConfiguration configuration
-        )
+    public static IServiceCollection AddApplicationServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
-
-        services.AddDbContext<
-            ApplicationDbContext
-        >(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
-
             options.UseNpgsql(
-
-                configuration
-                    .GetConnectionString(
-                        "DefaultConnection"
-                    )
-
-            );
-
+                configuration.GetConnectionString("DefaultConnection"),
+                npgsqlOptions => 
+                {
+                    // Fuerza a EF Core a buscar la tabla de historial con el formato exacto de Postgres
+                    npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "public");
+                }
+            )
+            // Esto asegura que todo el contexto use nombres de tablas y columnas en minúsculas (snake_case)
+            // de la misma manera que lo hace tu API de autenticación.
+            .UseSnakeCaseNamingConvention(); 
         });
 
         services.AddScoped<
@@ -48,22 +44,17 @@ public static class
 
         services.AddCors(options =>
         {
-
             options.AddPolicy(
                 "AllowAll",
                 policy =>
                 {
-
                     policy
                         .AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
-
                 });
-
         });
 
         return services;
-
     }
 }

@@ -1,7 +1,126 @@
-import React from 'react'
+import React from 'react';
 
-export const a = () => {
+export const TransactionsList = ({ transactions }) => {
+  
+  // Función para dar formato de moneda local de Guatemala (Q0.00)
+  const formatCurrency = (amount, currency = 'GTQ') => {
+    return new Intl.NumberFormat('es-GT', {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
+  };
+
+  // Función para formatear cualquier variante de string de fecha válida
+  const formatDate = (dateString) => {
+    if (!dateString) return '---';
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+
+    return date.toLocaleDateString('es-GT', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (!transactions || transactions.length === 0) {
+    return (
+      <div style={{
+        textAlign: 'center',
+        padding: '48px',
+        backgroundColor: '#111827',
+        borderRadius: '8px',
+        border: '1px dashed #374151',
+        color: '#9ca3af'
+      }}>
+        <p style={{ margin: 0, fontSize: '16px' }}>No se encontraron transacciones registradas.</p>
+        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#6b7280' }}>
+          Las operaciones que realices aparecerán en esta sección.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div>a</div>
-  )
-}
+    <div style={{
+      backgroundColor: '#111827',
+      borderRadius: '8px',
+      border: '1px solid #1f2937',
+      overflow: 'hidden',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)'
+    }}>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#1f2937', borderBottom: '1px solid #374151' }}>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Fecha y Hora</th>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Tipo</th>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Descripción</th>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Moneda</th>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px', textAlign: 'right' }}>Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((tx, index) => {
+              const isTransferencia = tx.tipoTransaccion === 'TRANSFERENCIA';
+              const isRetiro = tx.tipoTransaccion === 'RETIRO';
+              
+              // Extracción flexible de la propiedad fecha del JSON de .NET
+              const realDate = tx.fecha || tx.Fecha || tx.fechaCreacion || tx.FechaCreacion || tx.createdAt || tx.CreatedAt;
+
+              return (
+                <tr 
+                  key={tx.id || index} 
+                  style={{ 
+                    borderBottom: '1px solid #1f2937',
+                    transition: 'background-color 0.15s',
+                    cursor: 'default'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1f2937'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <td style={{ padding: '16px', fontSize: '14px', color: '#e5e7eb' }}>
+                    {formatDate(realDate)}
+                  </td>
+                  <td style={{ padding: '16px' }}>
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '4px 10px',
+                      borderRadius: '9999px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      backgroundColor: isTransferencia ? 'rgba(59, 130, 246, 0.15)' : isRetiro ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                      color: isTransferencia ? '#60a5fa' : isRetiro ? '#f87171' : '#34d399',
+                      border: isTransferencia ? '1px solid rgba(59, 130, 246, 0.3)' : isRetiro ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)'
+                    }}>
+                      {tx.tipoTransaccion}
+                    </span>
+                  </td>
+                  <td style={{ padding: '16px', fontSize: '14px', color: '#9ca3af', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {tx.descripcion || 'Sin descripción'}
+                  </td>
+                  <td style={{ padding: '16px', fontSize: '14px', color: '#9ca3af' }}>
+                    {tx.moneda || 'GTQ'}
+                  </td>
+                  <td style={{ 
+                    padding: '16px', 
+                    fontSize: '15px', 
+                    fontWeight: '600', 
+                    textAlign: 'right',
+                    color: (isTransferencia || isRetiro) ? '#f87171' : '#34d399'
+                  }}>
+                    {(isTransferencia || isRetiro) ? '- ' : '+ '}
+                    {formatCurrency(tx.monto, tx.moneda)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
