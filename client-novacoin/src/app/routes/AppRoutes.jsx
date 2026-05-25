@@ -2,7 +2,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../features/auth/store/authStore';
 import { AuthPage } from '../../features/auth/pages/AuthPage';
 import { DashboardPage } from '../layouts/DashboardPage.jsx';
+import { UserDashboardPage } from '../layouts/UserDashboardPage.jsx';
 import { DashboardHome } from '../../features/dashboard/pages/DashboardHome.jsx';
+import { UserDashboardHome } from '../../features/dashboard/pages/UserDashboardHome.jsx';
 import { VerifyEmailPage } from '../../features/auth/pages/VerifyEmailPage';
 import { AccountPage } from '../../features/account/pages/AccountPage.jsx';
 import { CustomerPage } from '../../features/customer/pages/CustomerPage.jsx';
@@ -22,6 +24,8 @@ export const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<AuthPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+      {/* ── Panel Administrador ── */}
       <Route
         path="/dashboard/*"
         element={
@@ -31,13 +35,26 @@ export const AppRoutes = () => {
         }
       >
         <Route index element={<DashboardHome />} />
-        
         <Route path="accounts"     element={<AccountPage />} />
         <Route path="customers"    element={<CustomerPage />} />
         <Route path="employees"    element={<EmployeePage />} />
         <Route path="loans"        element={<LoanPage />} />
         <Route path="transactions" element={<TransactionsPage />} />
         <Route path="users"        element={<Users />} />
+      </Route>
+
+      {/* ── Panel Usuario ── */}
+      <Route
+        path="/user/*"
+        element={
+          <ProtectedRoute>
+            <UserDashboardPage />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<UserDashboardHome />} />
+        <Route path="loans"        element={<LoanPage />} />
+        <Route path="transactions" element={<TransactionsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/login" replace />} />
