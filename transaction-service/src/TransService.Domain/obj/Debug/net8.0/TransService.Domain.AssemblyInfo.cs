@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TransService.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+015a8be56ff17aed356782d80b7115b336d76ac4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+45e7f7b944c653f475179151a8ffd064dceafd95")]
 [assembly: System.Reflection.AssemblyProductAttribute("TransService.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TransService.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

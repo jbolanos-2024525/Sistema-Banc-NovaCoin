@@ -1,6 +1,6 @@
 export const corsOptions = {
     origin: true,
-    Credential: true,
-    methods: ['GET', 'POST', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}
+    credentials: true, // 👈 Corregido: 'c' minúscula y en plural
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], // 👈 ¡Agregados PUT y DELETE!
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-token'] // Agregamos 'x-token' por si usas tu middleware
+};

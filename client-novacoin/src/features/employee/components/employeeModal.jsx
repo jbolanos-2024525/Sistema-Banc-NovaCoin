@@ -19,13 +19,17 @@ export const EmployeeModal = ({ isOpen, onClose, onSave, loading, employee }) =>
           Correo: employee.Correo,
           Puesto: employee.Puesto,
           Salario: employee.Salario,
-          Rol: employee.Rol,
-          Password: '' 
+          Rol: employee.Rol || 'Asesor'
         });
       } else {
         reset({
-          Nombre: '', Apellido: '', DPI: '', Correo: '',
-          Puesto: '', Salario: '', Rol: 'Asesor', Password: ''
+          Nombre: '', 
+          Apellido: '', 
+          DPI: '', 
+          Correo: '',
+          Puesto: '', 
+          Salario: '', 
+          Rol: 'Asesor'
         });
       }
     }
@@ -34,10 +38,19 @@ export const EmployeeModal = ({ isOpen, onClose, onSave, loading, employee }) =>
   if (!isOpen) return null;
 
   const submit = async (values) => {
-    if (employee && !values.Password) {
-      delete values.Password;
+    const payload = { ...values };
+
+    // Limpieza estricta del DPI
+    if (payload.DPI) {
+      payload.DPI = payload.DPI.trim();
     }
-    await onSave(values);
+
+    if (!employee) {
+      payload.isActive = true;
+      payload.isVerified = true;
+    }
+
+    await onSave(payload);
   };
 
   return (
@@ -83,14 +96,17 @@ export const EmployeeModal = ({ isOpen, onClose, onSave, loading, employee }) =>
             <div>
               <label style={{ display: 'block', fontSize: '13px', marginBottom: '6px', color: '#9ca3af' }}>Puesto</label>
               <input {...register('Puesto', { required: 'El puesto es obligatorio' })} type='text' style={{ width: '100%', padding: '10px', background: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: 'white', boxSizing: 'border-box' }} />
+              {errors.Puesto && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>{errors.Puesto.message}</p>}
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '13px', marginBottom: '6px', color: '#9ca3af' }}>Salario</label>
               <input {...register('Salario', { required: 'El salario es obligatorio', valueAsNumber: true })} type='number' step="0.01" style={{ width: '100%', padding: '10px', background: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: 'white', boxSizing: 'border-box' }} />
+              {errors.Salario && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>{errors.Salario.message}</p>}
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          {/* Ahora el Rol ocupa toda la fila ya que no tiene la contraseña a la par */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '13px', marginBottom: '6px', color: '#9ca3af' }}>Rol</label>
               <select {...register('Rol')} style={{ width: '100%', padding: '10px', background: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: 'white', boxSizing: 'border-box' }}>
@@ -99,10 +115,6 @@ export const EmployeeModal = ({ isOpen, onClose, onSave, loading, employee }) =>
                 <option value="Gerente">Gerente</option>
                 <option value="Administrador">Administrador</option>
               </select>
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', marginBottom: '6px', color: '#9ca3af' }}>Contraseña</label>
-              <input {...register('Password', { required: employee ? false : 'Requerida' })} type='password' style={{ width: '100%', padding: '10px', background: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: 'white', boxSizing: 'border-box' }} />
             </div>
           </div>
 
