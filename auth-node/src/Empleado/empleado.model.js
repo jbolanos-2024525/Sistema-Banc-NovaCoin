@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import bcrypt from 'bcryptjs';
 
 const empleadoSchema = new Schema(
   {
@@ -31,12 +30,6 @@ const empleadoSchema = new Schema(
       trim: true,
     },
 
-    Password: {
-  type: String,
-  required: true,
-  minlength: 6,
-  select: false
-},
 
     Puesto: {
       type: String,
@@ -61,22 +54,14 @@ const empleadoSchema = new Schema(
     },
 
     isVerified: {
-    type: Boolean,
-    default: false
-},
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
-
-// Encriptar password antes de guardar
-empleadoSchema.pre('save', async function () {
-  if (!this.isModified('Password')) return;
-
-  const salt = await bcrypt.genSalt(10);
-  this.Password = await bcrypt.hash(this.Password, salt);
-});
 
 export default model('Empleado', empleadoSchema);

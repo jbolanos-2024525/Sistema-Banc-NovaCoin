@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { useEmployee } from '../hooks/useEmployee';
 import { EmployeeModal } from '../components/employeeModal';
@@ -17,9 +16,10 @@ export const EmployeePage = () => {
     handleDelete,
   } = useEmployee();
 
+  // CORRECCIÓN: Arreglo de dependencias vacío [] para romper el bucle infinito
   useEffect(() => {
     fetchEmployees();
-  }, [fetchEmployees]);
+  }, []); 
 
   return (
     <div style={{ padding: '32px', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
