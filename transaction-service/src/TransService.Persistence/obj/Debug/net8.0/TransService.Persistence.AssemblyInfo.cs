@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TransService.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+45e7f7b944c653f475179151a8ffd064dceafd95")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7ff1bfaf53bb973a0d6b70b2db233dd50f0d669")]
 [assembly: System.Reflection.AssemblyProductAttribute("TransService.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TransService.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
