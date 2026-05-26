@@ -5,22 +5,21 @@ import Recover from "../features/auth/pages/Recover.jsx";
 import { VerifyEmailPage } from "../features/auth/pages/VerifyEmailPage.jsx";
 import { useAuthStore } from "../features/auth/store/authStore.js";
  
-// Dashboard Admin (el que ya tienes)
+// Dashboard Admin
 import { DashboardPage } from "./layouts/DashboardPage.jsx";
 import { DashboardHome } from '../features/dashboard/pages/DashboardHome.jsx';
-import { AccountPage } from "../features/account/pages/AccountPage.jsx";
+import { AccountPage } from "../features/account/pages/AccountPage.jsx"; // 👈 Este lo usamos para ambos
 import { CustomerPage } from "../features/customer/pages/CustomerPage.jsx";
 import { EmployeePage } from "../features/employee/pages/EmployeePage.jsx";
 import { LoanPage } from "../features/loan/pages/LoanPage.jsx";
 import { TransactionsPage } from "../features/transactions/pages/TransactionsPage.jsx";
 import { Users } from "../features/users/components/Users.jsx";
  
-// Dashboard Usuario (nuevo)
+// Dashboard Usuario
 import { UserDashboardPage } from "./layouts/UserDashboardPage.jsx";
 import { UserDashboardHome } from "../features/dashboard/pages/UserDashboardHome.jsx";
-// Reutilizamos las mismas páginas de Préstamos y Transacciones
-// Agrega aquí tu UserAccountPage y UserSecurityPage cuando las tengas:
-// import { UserAccountPage }   from "../features/account/pages/UserAccountPage.jsx";
+
+// Comenta o quita la importación vieja inexistente si te daba error:
 // import { UserSecurityPage }  from "../features/security/pages/UserSecurityPage.jsx";
  
 // ─── Guard genérico: requiere sesión ───────────────────────────
@@ -83,15 +82,17 @@ function App() {
         <Route path="users"           element={<Users />} />
       </Route>
  
-      {/* ── Dashboard Usuario ── */}
+      {/* ── Dashboard Usuario (CORREGIDO Y CONFIGURADO) ── */}
       <Route path="/user/*" element={
         <UserRoute><UserDashboardPage /></UserRoute>
       }>
         <Route index                  element={<UserDashboardHome />} />
         <Route path="loans"           element={<LoanPage />} />
         <Route path="transactions"    element={<TransactionsPage />} />
-        {/* Descomenta cuando tengas estas páginas: */}
-        {/* <Route path="account"      element={<UserAccountPage />} /> */}
+        
+        {/* 🌿 Descomentamos y apuntamos a la AccountPage dinámica que creamos en tus carpetas */}
+        <Route path="account"         element={<AccountPage />} /> 
+        
         {/* <Route path="security"     element={<UserSecurityPage />} /> */}
       </Route>
  
