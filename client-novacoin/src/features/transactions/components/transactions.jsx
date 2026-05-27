@@ -58,6 +58,7 @@ export const TransactionsList = ({ transactions }) => {
             <tr style={{ backgroundColor: '#1f2937', borderBottom: '1px solid #374151' }}>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Fecha y Hora</th>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Tipo</th>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>No. de Cuenta</th>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Descripción</th>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Moneda</th>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px', textAlign: 'right' }}>Monto</th>
@@ -70,6 +71,8 @@ export const TransactionsList = ({ transactions }) => {
               
               // Extracción flexible de la propiedad fecha del JSON de .NET
               const realDate = tx.fecha || tx.Fecha || tx.fechaCreacion || tx.FechaCreacion || tx.createdAt || tx.CreatedAt;
+
+              const numeroCuenta = tx.cuentaDestino || tx.CuentaDestino || tx.cuentaOrigen || tx.CuentaOrigen || tx.numeroCuenta || null;
 
               return (
                 <tr 
@@ -98,6 +101,17 @@ export const TransactionsList = ({ transactions }) => {
                     }}>
                       {tx.tipoTransaccion}
                     </span>
+                  </td>
+                  <td style={{ padding: '16px', fontSize: '13px', fontFamily: 'monospace', color: '#a5b4fc', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {numeroCuenta
+                      ? <span style={{
+                          backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                          border: '1px solid rgba(99, 102, 241, 0.25)',
+                          borderRadius: '6px',
+                          padding: '2px 8px'
+                        }}>{numeroCuenta}</span>
+                      : <span style={{ color: '#4b5563' }}>---</span>
+                    }
                   </td>
                   <td style={{ padding: '16px', fontSize: '14px', color: '#9ca3af', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {tx.descripcion || 'Sin descripción'}

@@ -9,6 +9,7 @@ public static class SecurityExtensions
     private static readonly string[] AllowedHttpMethods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
     private static readonly string[] AdminHttpMethods = ["GET", "POST", "PUT", "DELETE"];
     private static readonly string[] AdminAllowedHeaders = ["Content-Type", "Authorization"];
+
     public static IServiceCollection AddSecurityPolicies(this IServiceCollection services, IConfiguration configuration)
     {
         // Configurar CORS
@@ -63,15 +64,8 @@ public static class SecurityExtensions
             }
             // En Linux/macOS en producción, usar certificados o Azure Key Vault
         }
-        else
-        {
-            // En desarrollo, usar DPAPI (solo Windows) o sin encriptación
-            if (OperatingSystem.IsWindows())
-            {
-                dataProtectionBuilder.ProtectKeysWithDpapi();
-            }
-            // En Linux/macOS en desarrollo, las claves no se encriptan (solo para desarrollo)
-        }
+        // En desarrollo las claves NO se cifran con DPAPI para que sean
+        // portables entre máquinas, usuarios y sistemas operativos.
 
         // Configurar Antiforgery (CSRF Protection)
         services.AddAntiforgery(options =>

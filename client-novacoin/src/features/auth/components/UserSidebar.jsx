@@ -2,7 +2,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoImg from '../../../assets/img/N.novacoin.png';
 import { useAuthStore } from '../../../features/auth/store/authStore.js';
 import {
-  FiShield, FiUser, FiCreditCard, FiRepeat, FiHome, FiLogOut,
+  FiUser, FiCreditCard, FiRepeat, FiHome, FiLogOut,
+  FiMail, FiPhone, FiSettings,
 } from 'react-icons/fi';
 
 const menuItems = [
@@ -12,9 +13,6 @@ const menuItems = [
   { label: 'Cuenta',        to: '/user/account',      icon: <FiUser /> },
   { label: 'Préstamos',     to: '/user/loans',         icon: <FiCreditCard /> },
   { label: 'Transacciones', to: '/user/transactions',  icon: <FiRepeat /> },
-
-  { isHeader: true, label: 'SEGURIDAD' },
-  { label: 'Seguridad',     to: '/user/security',      icon: <FiShield /> },
 ];
 
 export const UserSidebar = () => {
@@ -139,6 +137,43 @@ export const UserSidebar = () => {
           }}>
             <span style={{ fontSize: '28px', fontWeight: '900', color: '#00f2fe' }}>N</span>
           </div>
+        </div>
+      </div>
+
+      {/* Contáctanos */}
+      <div style={{
+        padding: '14px 20px',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        backgroundColor: 'rgba(0,0,0,0.15)',
+      }}>
+        <p style={{
+          margin: '0 0 10px 0',
+          color: 'rgba(255,255,255,0.3)',
+          fontSize: '10px',
+          fontWeight: 700,
+          letterSpacing: '1.5px',
+          fontFamily: 'Poppins, sans-serif',
+        }}>CONTÁCTANOS</p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px' }}>
+          <FiMail style={{ color: '#00f2fe', fontSize: '13px', flexShrink: 0 }} />
+          <span style={{
+            color: 'rgba(255,255,255,0.55)',
+            fontSize: '11px',
+            fontFamily: 'Poppins, sans-serif',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>NovaCoin@gmail.com</span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FiPhone style={{ color: '#00f2fe', fontSize: '13px', flexShrink: 0 }} />
+          <span style={{
+            color: 'rgba(255,255,255,0.55)',
+            fontSize: '11px',
+            fontFamily: 'Poppins, sans-serif',
+          }}>+502 4521-8763</span>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { useAuthStore } from '../../../features/auth/store/authStore.js';
 import {
   FiShield, FiUsers, FiUser, FiBriefcase,
   FiCreditCard, FiRepeat, FiHome, FiSettings, FiLogOut,
+  FiMail, FiPhone,
 } from 'react-icons/fi';
 
 const menuItems = [
@@ -18,7 +19,7 @@ const menuItems = [
   { label: 'Transacciones',to: '/dashboard/transactions', icon: <FiRepeat /> },
   { label: 'Empleados', to: '/dashboard/employees', icon: <FiBriefcase /> },
   { label: 'Usuarios', to: '/dashboard/users',  icon: <FiUsers /> },
- 
+
 
   
 ];
@@ -148,8 +149,44 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      {/* Footer Usuario */}
+      {/* Contáctanos */}
       <div style={{
+        padding: '14px 20px',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        backgroundColor: 'rgba(0,0,0,0.15)',
+      }}>
+        <p style={{
+          margin: '0 0 10px 0',
+          color: 'rgba(255,255,255,0.3)',
+          fontSize: '10px',
+          fontWeight: 700,
+          letterSpacing: '1.5px',
+          fontFamily: 'Poppins, sans-serif',
+        }}>CONTÁCTANOS</p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px' }}>
+          <FiMail style={{ color: '#00f2fe', fontSize: '13px', flexShrink: 0 }} />
+          <span style={{
+            color: 'rgba(255,255,255,0.55)',
+            fontSize: '11px',
+            fontFamily: 'Poppins, sans-serif',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>NovaCoin@gmail.com</span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FiPhone style={{ color: '#00f2fe', fontSize: '13px', flexShrink: 0 }} />
+          <span style={{
+            color: 'rgba(255,255,255,0.55)',
+            fontSize: '11px',
+            fontFamily: 'Poppins, sans-serif',
+          }}>+502 4521-8763</span>
+        </div>
+      </div>
+
+      {/* Footer Usuario */}      <div style={{
         padding: '16px 20px',
         borderTop: '1px solid rgba(255,255,255,0.06)',
         display: 'flex',
