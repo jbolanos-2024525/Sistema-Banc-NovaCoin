@@ -72,14 +72,13 @@ function App() {
         <AdminRoute><DashboardPage /></AdminRoute>
       }>
         <Route index                  element={<DashboardHome />} />
-        <Route path="accounts" element={<AdminAccountPage />} />
+        <Route path="accounts"        element={<AdminAccountPage />} />
         <Route path="employees"       element={<EmployeePage />} />
         <Route path="loans"           element={<LoanPage />} />
         <Route path="transactions"    element={<TransactionsPage />} />
         <Route path="users"           element={<Users />} />
       </Route>
  
-      {/* ── Dashboard Usuario (CORREGIDO Y CONFIGURADO) ── */}
       <Route path="/user/*" element={
         <UserRoute><UserDashboardPage /></UserRoute>
       }>
@@ -87,13 +86,10 @@ function App() {
         <Route path="loans"           element={<LoanPage />} />
         <Route path="transactions"    element={<TransactionsPage />} />
         
-        {/* 🌿 Descomentamos y apuntamos a la AccountPage dinámica que creamos en tus carpetas */}
         <Route path="account"         element={<AccountPage />} /> 
         
-        {/* <Route path="security"     element={<UserSecurityPage />} /> */}
       </Route>
  
-      {/* Comodín */}
       <Route path="*" element={<Navigate to="/login" replace />} />
  
     </Routes>

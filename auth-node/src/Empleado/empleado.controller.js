@@ -1,7 +1,7 @@
 import {
   createEmpleadoRecord,
   getEmpleadosRecord,
-  deleteEmpleadoAbsoluteRecord // 👈 Importamos la nueva función de eliminación física
+  deleteEmpleadoAbsoluteRecord 
 } from './empleado.service.js';
 
 // Crear empleado
@@ -41,12 +41,10 @@ export const getEmpleados = async (req, res) => {
   }
 };
 
-// Eliminar empleado (Hard Delete - Borrado Físico de Mongo)
 export const deleteEmpleadoSoft = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Ejecuta la destrucción del documento directo en MongoDB
     const empleadoEliminado = await deleteEmpleadoAbsoluteRecord(id);
 
     if (!empleadoEliminado) {

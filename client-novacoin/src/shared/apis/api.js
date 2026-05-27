@@ -19,8 +19,7 @@ const axiosBank = axios.create({
     },
 });
 
-// 3. NUEVA INSTANCIA: Específica para el Microservicio de Transacciones
-// Apuntará a la URL de tu backend de transacciones (ej: http://localhost:5150/api)
+// 3. Instancia para el Microservicio de Transacciones
 const axiosTrans = axios.create({
     baseURL: import.meta.env.VITE_TRANS_URL || 'http://localhost:5150/api',
     timeout: 15000,
@@ -42,7 +41,7 @@ const requestInterceptor = (config) => {
 
 axiosAuth.interceptors.request.use(requestInterceptor);
 axiosBank.interceptors.request.use(requestInterceptor);
-axiosTrans.interceptors.request.use(requestInterceptor); // <-- Protege transacciones
+axiosTrans.interceptors.request.use(requestInterceptor);
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -82,11 +81,12 @@ const handleResponseError = (axiosInstance) => async (error) => {
         isRefreshing = true;
 
         try {
-            const refreshToken = useAuthStore.getState().refreshToken;
+            const currentRefreshToken = useAuthStore.getState().refreshToken;
 
+            // 🌟 CORRECCIÓN CRÍTICA: Cambiado de { token } a { refreshToken } para hacer match con tu DTO de .NET
             const response = await axiosAuth.post(
                 '/auth/refresh',
-                { token: refreshToken }
+                { refreshToken: currentRefreshToken }
             );
 
             const { accessToken, refreshToken: newRefreshToken } = response.data;

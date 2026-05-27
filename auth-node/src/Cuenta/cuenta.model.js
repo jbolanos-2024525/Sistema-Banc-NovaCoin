@@ -40,7 +40,6 @@ const CuentaSchema = new Schema({
         uppercase: true
     },
 
-    // UUID del usuario registrado en el auth-service (C#)
     IdUsuario: {
         type: String,
         required: [true, "El ID del usuario es obligatorio"],

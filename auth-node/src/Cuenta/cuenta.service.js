@@ -23,7 +23,10 @@ export const getCuentaById = async (id) => {
 };
 
 export const getCuentasByUsuario = async (usuarioId) => {
-    return await Cuenta.find({ IdUsuario: usuarioId, Estado: true }).sort({ createdAt: -1 });
+    return await Cuenta.find({ 
+        IdUsuario: String(usuarioId), 
+        Estado: true 
+    }).sort({ createdAt: -1 });
 };
 
 export const updateCuenta = async (id, accountData) => {
@@ -80,4 +83,4 @@ export const transferir = async (cuentaOrigenId, cuentaDestinoId, monto) => {
     await registrarTransferencia(origen._id, destino._id, monto, origen.Moneda);
 
     return { origen, destino };
-};
+};  

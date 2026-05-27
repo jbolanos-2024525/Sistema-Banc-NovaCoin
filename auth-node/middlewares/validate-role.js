@@ -1,13 +1,11 @@
 export const isAdmin = (req, res, next) => {
 
-    // Usuario del auth-service de C# (guardado en req.cliente)
     const role = req.cliente?.role || req.cliente?.Role;
 
     if (role === 'ADMIN_ROLE') {
         return next();
     }
 
-    // Empleado de MongoDB (guardado en req.empleado)
     if (req.empleado && req.empleado.Rol === 'Administrador') {
         return next();
     }

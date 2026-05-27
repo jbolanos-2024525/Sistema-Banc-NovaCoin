@@ -21,7 +21,6 @@ public class AuthService(
     IPasswordHashService passwordHashService,
     IJwtTokenService jwtTokenService,
     IEmailService emailService,
-    // IConfiguration configuration, // Removed unused parameter
     ILogger<AuthService> logger) : IAuthService
 {
     public async Task<RegisterResponseDto> RegisterAsync(RegisterDto registerDto)
@@ -49,7 +48,6 @@ public class AuthService(
         var userEmailId = UuidGenerator.GenerateUserId();
         var userRoleId = UuidGenerator.GenerateUserId();
 
-        // Obtener el rol por defecto (USER_ROLE) ya seedado en DB
         var defaultRole = await roleRepository.GetByNameAsync(RoleConstants.USER_ROLE);
         if (defaultRole == null)
         {
