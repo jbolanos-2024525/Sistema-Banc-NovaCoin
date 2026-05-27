@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
-
 import Empleado from '../src/Empleado/empleado.model.js';
-import { Cliente } from '../src/Cliente/cliente.model.js';
 
 export const validateJWT = async (req, res, next) => {
 
@@ -10,52 +8,38 @@ export const validateJWT = async (req, res, next) => {
         const token = req.header('Authorization');
 
         if (!token) {
-
             return res.status(401).json({
                 success: false,
                 message: 'Token requerido'
             });
-
         }
 
-        const cleanToken = token.replace(
-            'Bearer ',
-            ''
-        );
+        const cleanToken = token.replace('Bearer ', '');
 
         const decoded = jwt.verify(
             cleanToken,
             process.env.JWT_SECRET
         );
 
-        // BUSCAR EMPLEADO
-        let empleado = await Empleado.findById(
-            decoded.id
-        );
+        const userId = decoded.sub || decoded.id || decoded.Id;
 
-        // SI NO ES EMPLEADO → BUSCAR CLIENTE
-        if (!empleado) {
+        const isMongoId = /^[a-f\d]{24}$/i.test(userId);
 
-            const cliente = await Cliente.findById(
-                decoded.id
-            );
-
-            if (!cliente) {
-
-                return res.status(401).json({
-                    success: false,
-                    message: 'Usuario no existe'
-                });
-
+        if (isMongoId) {
+            const empleado = await Empleado.findById(userId);
+            if (empleado) {
+                req.empleado = empleado;
+                req.cliente  = empleado;
+                return next();
             }
-
-            req.cliente = cliente;
-
-            return next();
-
         }
 
-        req.empleado = empleado;
+        req.cliente = {
+            id:       userId,
+            email:    decoded.email    || decoded.Email,
+            username: decoded.username || decoded.Username,
+            role:     decoded.role     || decoded.Role,
+        };
 
         next();
 

@@ -8,19 +8,17 @@ import { useAuthStore } from "../features/auth/store/authStore.js";
 // Dashboard Admin
 import { DashboardPage } from "./layouts/DashboardPage.jsx";
 import { DashboardHome } from '../features/dashboard/pages/DashboardHome.jsx';
-import { AccountPage } from "../features/account/pages/AccountPage.jsx"; // 👈 Este lo usamos para ambos
-import { CustomerPage } from "../features/customer/pages/CustomerPage.jsx";
+import { AccountPage } from "../features/account/pages/AccountPage.jsx"; 
 import { EmployeePage } from "../features/employee/pages/EmployeePage.jsx";
 import { LoanPage } from "../features/loan/pages/LoanPage.jsx";
 import { TransactionsPage } from "../features/transactions/pages/TransactionsPage.jsx";
 import { Users } from "../features/users/components/Users.jsx";
- 
+import { AdminAccountPage } from '../features/adminAccount/pages/AdminAccountPage.jsx';
+
 // Dashboard Usuario
 import { UserDashboardPage } from "./layouts/UserDashboardPage.jsx";
 import { UserDashboardHome } from "../features/dashboard/pages/UserDashboardHome.jsx";
 
-// Comenta o quita la importación vieja inexistente si te daba error:
-// import { UserSecurityPage }  from "../features/security/pages/UserSecurityPage.jsx";
  
 // ─── Guard genérico: requiere sesión ───────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -74,8 +72,7 @@ function App() {
         <AdminRoute><DashboardPage /></AdminRoute>
       }>
         <Route index                  element={<DashboardHome />} />
-        <Route path="accounts"        element={<AccountPage />} />
-        <Route path="customers"       element={<CustomerPage />} />
+        <Route path="accounts" element={<AdminAccountPage />} />
         <Route path="employees"       element={<EmployeePage />} />
         <Route path="loans"           element={<LoanPage />} />
         <Route path="transactions"    element={<TransactionsPage />} />
