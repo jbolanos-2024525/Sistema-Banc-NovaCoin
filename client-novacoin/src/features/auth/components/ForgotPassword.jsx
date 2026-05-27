@@ -2,26 +2,35 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Mail,
-  ArrowRight, 
+  ArrowRight,
   ShieldCheck,
   Lock,
-  Headphones
+  Headphones,
+  CheckCircle,
+  AlertCircle,
+  Loader2
 } from "lucide-react";
 
 import logo from "../../../assets/img/logo2.png";
+import { forgotPasswordRequest } from "../../../shared/apis/authService";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [notification, setNotification] = useState(null); // { type: 'success' | 'error', message: '' }
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setNotification(null);
+    setError("");
+
     if (!email.trim()) {
       setError("El correo electrónico es requerido.");
       return;
@@ -30,22 +39,66 @@ const ForgotPassword = () => {
       setError("Por favor, ingresa un correo electrónico válido.");
       return;
     }
-    setError("");
-    // Aquí puedes agregar la lógica para enviar el enlace de recuperación
-    alert("Enlace de recuperación enviado a " + email);
+
+    setLoading(true);
+    try {
+      await forgotPasswordRequest(email);
+      setNotification({
+        type: "success",
+        message: `Se ha enviado un enlace de recuperación a ${email}. Revisa tu bandeja de entrada.`,
+      });
+      setEmail("");
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        "No se pudo enviar el correo. Intenta de nuevo más tarde.";
+      setNotification({ type: "error", message: msg });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="recover-card">
+
+      {/* NOTIFICACIÓN BANNER */}
+      {notification && (
+        <div
+          className={`recover-notification ${notification.type}`}
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "10px",
+            padding: "14px 18px",
+            borderRadius: "10px",
+            marginBottom: "18px",
+            fontSize: "0.92rem",
+            lineHeight: "1.45",
+            fontWeight: 500,
+            backgroundColor:
+              notification.type === "success" ? "#ecfdf5" : "#fef2f2",
+            color:
+              notification.type === "success" ? "#065f46" : "#991b1b",
+            border: `1px solid ${
+              notification.type === "success" ? "#6ee7b7" : "#fca5a5"
+            }`,
+          }}
+        >
+          {notification.type === "success" ? (
+            <CheckCircle size={20} style={{ flexShrink: 0, marginTop: "1px", color: "#059669" }} />
+          ) : (
+            <AlertCircle size={20} style={{ flexShrink: 0, marginTop: "1px", color: "#dc2626" }} />
+          )}
+          <span>{notification.message}</span>
+        </div>
+      )}
 
       {/* LOGO */}
       <div className="recover-logo">
         <img src={logo} alt="Novacoin Logo" />
       </div>
 
-      <span className="recover-subtitle">
-        Recuperar contraseña
-      </span>
+      <span className="recover-subtitle">Recuperar contraseña</span>
 
       <h1>¿Olvidaste tu contraseña?</h1>
 
@@ -73,14 +126,31 @@ const ForgotPassword = () => {
             placeholder="ejemplo@correo.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
           />
         </div>
 
-        {error && <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+        {error && (
+          <div
+            className="error-message"
+            style={{ color: "#dc2626", marginTop: "8px", fontSize: "0.88rem" }}
+          >
+            {error}
+          </div>
+        )}
 
-        <button className="recover-btn" type="submit">
-          Enviar enlace de recuperación
-          <ArrowRight size={18} />
+        <button className="recover-btn" type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2 size={18} className="spin" style={{ animation: "spin 1s linear infinite" }} />
+              Enviando...
+            </>
+          ) : (
+            <>
+              Enviar enlace de recuperación
+              <ArrowRight size={18} />
+            </>
+          )}
         </button>
 
       </form>
@@ -91,31 +161,21 @@ const ForgotPassword = () => {
 
       {/* FOOTER */}
       <div className="recover-footer">
-
         <div className="footer-item">
           <ShieldCheck size={28} />
           <h4>Seguro</h4>
-          <p>
-            Protegemos tu información con los más altos estándares.
-          </p>
+          <p>Protegemos tu información con los más altos estándares.</p>
         </div>
-
         <div className="footer-item">
           <Lock size={28} />
           <h4>Privado</h4>
-          <p>
-            Tu información está siempre encriptada.
-          </p>
+          <p>Tu información está siempre encriptada.</p>
         </div>
-
         <div className="footer-item">
           <Headphones size={28} />
           <h4>Soporte 24/7</h4>
-          <p>
-            Estamos aquí para ayudarte siempre.
-          </p>
+          <p>Estamos aquí para ayudarte siempre.</p>
         </div>
-
       </div>
 
     </div>

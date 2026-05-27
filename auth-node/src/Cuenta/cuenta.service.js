@@ -1,10 +1,6 @@
 import { Cuenta } from './cuenta.model.js';
 
-import {
-    registrarDeposito,
-    registrarRetiro,
-    registrarTransferencia
-} from '../Transaccion/transaccion.service.js';
+
 
 export const createCuenta = async (accountData) => {
     const cuenta = new Cuenta(accountData);
@@ -47,7 +43,7 @@ export const depositar = async (cuentaId, monto) => {
 
     cuenta.Saldo += monto;
     await cuenta.save();
-    await registrarDeposito(cuenta._id, monto, cuenta.Moneda);
+
 
     return cuenta;
 };
@@ -61,7 +57,7 @@ export const retirar = async (cuentaId, monto) => {
 
     cuenta.Saldo -= monto;
     await cuenta.save();
-    await registrarRetiro(cuenta._id, monto, cuenta.Moneda);
+
 
     return cuenta;
 };
@@ -80,7 +76,7 @@ export const transferir = async (cuentaOrigenId, cuentaDestinoId, monto) => {
 
     await origen.save();
     await destino.save();
-    await registrarTransferencia(origen._id, destino._id, monto, origen.Moneda);
+
 
     return { origen, destino };
-};  
+};

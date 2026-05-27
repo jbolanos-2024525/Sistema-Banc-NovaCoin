@@ -29,6 +29,13 @@ const prestamoSchema = new mongoose.Schema(
         min: 1
     },
 
+    proposito:
+    {
+        type: String,
+        trim: true,
+        default: null
+    },
+
     cuotaMensual:
     {
         type: Number
@@ -60,16 +67,16 @@ const prestamoSchema = new mongoose.Schema(
 
     cliente:
     {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cliente",
-        required: true
+        type: String,
+        required: true,
+        trim: true
     },
 
     empleado:
     {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Empleado",
-        required: true
+        default: null
     }
 },
 { timestamps: true }

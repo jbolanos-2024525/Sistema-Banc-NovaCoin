@@ -18,11 +18,9 @@ const menuItems = [
   { label: 'Transacciones',to: '/dashboard/transactions', icon: <FiRepeat /> },
   { label: 'Empleados', to: '/dashboard/employees', icon: <FiBriefcase /> },
   { label: 'Usuarios', to: '/dashboard/users',  icon: <FiUsers /> },
-  { label: 'Seguridad',  to: '/dashboard/auth', icon: <FiShield /> },
+ 
 
-  // 3. Ajustes al final de la lista
-  { isHeader: true, label: 'SISTEMA' },
-  { label: 'Configuración', to: '/dashboard/settings',     icon: <FiSettings /> },
+  
 ];
 
 export const Sidebar = () => {
