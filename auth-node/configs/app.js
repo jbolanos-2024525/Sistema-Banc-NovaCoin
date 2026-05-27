@@ -10,24 +10,25 @@ import { dbConnection }  from './db.configuration.js';
 import { requestLimit }  from './rateLimit.configuration.js';
 import { swaggerDocs }   from './documentation.js';
 
-import clienteroutes   from '../src/Cliente/cliente.routes.js';
-import empleadoroutes  from '../src/Empleado/empleado.routes.js';
-import cuentaroutes    from '../src/Cuenta/cuenta.routes.js';
-import prestamoroutes  from '../src/Prestamo/prestamo.routes.js';
+import empleadoroutes    from '../src/Empleado/empleado.routes.js';
+import prestamoroutes    from '../src/Prestamo/prestamo.routes.js';
 import transaccionroutes from '../src/Transaccion/transaccion.routes.js';
 
-const BASE_PATH = '/NovaCoin/Admin/v1';
+import { adminCuentaRouter, userCuentaRouter } from '../src/Cuenta/cuenta.routes.js';
+
+const ADMIN_PATH = '/NovaCoin/Admin/v1';
+const USER_PATH  = '/NovaCoin/v1';
 
 const routes = (app) => {
-    // Endpoints Globales del Sistema NovaCoin
-    app.use(`${BASE_PATH}/cliente`,     clienteroutes);
-    app.use(`${BASE_PATH}/empleados`,   empleadoroutes);
-    app.use(`${BASE_PATH}/cuenta`,      cuentaroutes);
-    app.use(`${BASE_PATH}/prestamo`,    prestamoroutes);
-    app.use(`${BASE_PATH}/transaccion`, transaccionroutes);
 
-    // Endpoint de control para verificar el estado del servidor
-    app.get(`${BASE_PATH}/health`, (req, res) => {
+    app.use(`${ADMIN_PATH}/empleados`,   empleadoroutes);
+    app.use(`${ADMIN_PATH}/cuenta`,      adminCuentaRouter);
+    app.use(`${ADMIN_PATH}/prestamo`,    prestamoroutes);
+    app.use(`${ADMIN_PATH}/transaccion`, transaccionroutes);
+
+    app.use(`${USER_PATH}/cuenta`, userCuentaRouter);
+
+    app.get(`${ADMIN_PATH}/health`, (req, res) => {
         res.status(200).json({
             status: 'Healthy',
             timeStamp: new Date().toISOString(),
@@ -35,11 +36,10 @@ const routes = (app) => {
         });
     });
 
-    // Capturador global de rutas no encontradas (Manejo del 404 estructurado)
     app.use((req, res) => {
         res.status(404).json({
             success: false,
-            message: `El endpoint [${req.method}] ${req.originalUrl} no fue encontrado en este servidor.`
+            message: `El endpoint [${req.method}] ${req.originalUrl} no fue encontrado.`
         });
     });
 };
@@ -54,7 +54,8 @@ const middlewares = (app) => {
 };
 
 export const initServer = async () => {
-    const app = express();
+
+    const app  = express();
     const PORT = process.env.PORT || 3020;
     app.set('trust proxy', 1);
 
@@ -65,14 +66,11 @@ export const initServer = async () => {
         routes(app);
 
         app.listen(PORT, () => {
-            console.log(`===================================================`);
             console.log(`NovaCoin Admin Server running on port ${PORT}`);
-            console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/health`);
-            console.log(`Swagger docs: http://localhost:${PORT}/api-docs`);
-            console.log(`===================================================`);
         });
+
     } catch (err) {
-        console.error(`❌ NovaCoin - Error al iniciar el servidor: ${err.message}`);
+        console.error(`Error al iniciar el servidor: ${err.message}`);
         process.exit(1);
     }
 };

@@ -27,16 +27,14 @@ export const DashboardContainer = ({ children }) => {
 
         {/* Área de Contenido Principal */}
         <main style={{
-          flex: 1,
-          padding: '32px', // Un poco más de padding
-          overflowY: 'auto',
-          // --- CAMBIO DE COLOR DE FONDO ---
-          // Cambiado de '#f0f4f8' a '#f4f7fc' (gris azulado ultra suave)
-          backgroundColor: '#f4f7fc',
-          scrollbarWidth: 'thin', // Scrollbar fino para el contenido
-          scrollbarColor: 'rgba(0,0,0,0.1) transparent'
+            flex: 1,
+            padding: '0',
+            overflowY: 'auto',
+            backgroundColor: '#0d1117',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(0,0,0,0.1) transparent'
         }}>
-          {children}
+            {children}
         </main>
       </div>
     </div>

@@ -1,86 +1,89 @@
 import { useEffect } from 'react';
-import { useEmployee } from '../hooks/useEmployee';
-import { EmployeeModal } from '../components/employeeModal';
+import { useEmployee }     from '../hooks/useEmployee';
+import { EmployeeModal }   from '../components/employeeModal';
 
 export const EmployeePage = () => {
-  const {
-    employees,
-    loading,
-    isModalOpen,
-    selectedEmployee,
-    fetchEmployees,
-    openCreateModal,
-    openEditModal,
-    closeModal,
-    handleSave,
-    handleDelete,
-  } = useEmployee();
 
-  // CORRECCIÓN: Arreglo de dependencias vacío [] para romper el bucle infinito
-  useEffect(() => {
-    fetchEmployees();
-  }, []); 
+    const { employees, loading, isModalOpen, selectedEmployee, fetchEmployees, openCreateModal, openEditModal, closeModal, handleSave, handleDelete } = useEmployee();
 
-  return (
-    <div style={{ padding: '32px', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
-      
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#0f172a', margin: 0 }}>Empleados</h1>
-        <button
-          onClick={openCreateModal}
-          style={{ padding: '10px 20px', background: 'linear-gradient(90deg, #b8860b 0%, #8B6914 100%)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
-        >
-          + Nuevo Empleado
-        </button>
-      </div>
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
-      {/* Tabla estilo NovaCoin */}
-      <div style={{ backgroundColor: '#0b1320', borderRadius: '16px', padding: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', color: '#f1f5f9', textAlign: 'left', fontSize: '14px' }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid #1e293b' }}>
-              {['Nombre', 'Apellido', 'Puesto', 'Email', 'Rol', 'Acciones'].map((h) => (
-                <th key={h} style={{ padding: '16px 20px', color: '#94a3b8', fontWeight: 600 }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {loading && employees.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>Cargando...</td></tr>
-            ) : employees.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>No hay empleados registrados</td></tr>
-            ) : (
-              employees.map((emp) => (
-                <tr key={emp._id} style={{ borderBottom: '1px solid #131c2e' }}>
-                  <td style={{ padding: '16px 20px' }}>{emp.Nombre}</td>
-                  <td style={{ padding: '16px 20px' }}>{emp.Apellido}</td>
-                  <td style={{ padding: '16px 20px', color: '#cbd5e1' }}>{emp.Puesto}</td>
-                  <td style={{ padding: '16px 20px', color: '#cbd5e1' }}>{emp.Correo}</td>
-                  <td style={{ padding: '16px 20px' }}>
-                    <span style={{ backgroundColor: 'rgba(184, 134, 11, 0.15)', color: '#d97706', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, border: '1px solid rgba(184, 134, 11, 0.3)' }}>
-                      {emp.Rol ? `${emp.Rol.toUpperCase()}_ROLE` : 'USER_ROLE'}
-                    </span>
-                  </td>
-                  <td style={{ padding: '16px 20px' }}>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button onClick={() => openEditModal(emp)} style={{ background: 'transparent', color: '#3b82f6', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>Editar</button>
-                      <button onClick={() => handleDelete(emp._id)} style={{ background: 'transparent', color: '#ef4444', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>Eliminar</button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+    return (
+        <div style={{ padding: '24px', color: '#f3f4f6', minHeight: '100vh', backgroundColor: '#0d1117' }}>
 
-      <EmployeeModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSave={handleSave}
-        loading={loading}
-        employee={selectedEmployee}
-      />
-    </div>
-  );
+            {/* Encabezado */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid #1f2937', paddingBottom: '16px' }}>
+                <div>
+                    <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#fff', margin: 0 }}>Empleados</h1>
+                    <p style={{ color: '#9ca3af', fontSize: '14px', marginTop: '4px' }}>
+                        Administra el equipo de trabajo de NovaCoin.
+                    </p>
+                </div>
+                <button
+                    onClick={openCreateModal}
+                    style={{ backgroundColor: '#00f2fe', color: '#050c18', padding: '10px 20px', borderRadius: '6px', border: 'none', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,242,254,0.2)' }}
+                    onMouseEnter={e => e.target.style.backgroundColor = '#00c8d4'}
+                    onMouseLeave={e => e.target.style.backgroundColor = '#00f2fe'}
+                >
+                    + Nuevo Empleado
+                </button>
+            </div>
+
+            {/* Tabla */}
+            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#e5e7eb', fontSize: '14px' }}>
+                    <thead>
+                        <tr style={{ borderBottom: '1px solid #1f2937' }}>
+                            {['Nombre', 'Apellido', 'Puesto', 'Email', 'Rol', 'Acciones'].map((h) => (
+                                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: '11px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                    {h}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading && employees.length === 0 ? (
+                            <tr><td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: '#9ca3af' }}>Cargando empleados...</td></tr>
+                        ) : employees.length === 0 ? (
+                            <tr><td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: '#9ca3af' }}>No hay empleados registrados</td></tr>
+                        ) : (
+                            employees.map((emp) => (
+                                <tr key={emp._id} style={{ borderBottom: '1px solid #1f2937' }}>
+                                    <td style={{ padding: '14px 16px' }}>{emp.Nombre}</td>
+                                    <td style={{ padding: '14px 16px' }}>{emp.Apellido}</td>
+                                    <td style={{ padding: '14px 16px', color: '#9ca3af' }}>{emp.Puesto}</td>
+                                    <td style={{ padding: '14px 16px', color: '#9ca3af' }}>{emp.Correo}</td>
+                                    <td style={{ padding: '14px 16px' }}>
+                                        <span style={{ padding: '4px 10px', backgroundColor: 'rgba(0,242,254,0.1)', color: '#00f2fe', borderRadius: '20px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>
+                                            {emp.Rol ? `${emp.Rol.toUpperCase()}_ROLE` : 'USER_ROLE'}
+                                        </span>
+                                    </td>
+                                    <td style={{ padding: '14px 16px' }}>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button onClick={() => openEditModal(emp)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #374151', borderRadius: '6px', color: '#e5e7eb', cursor: 'pointer', fontSize: '12px' }}>
+                                                Editar
+                                            </button>
+                                            <button onClick={() => handleDelete(emp._id)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            <EmployeeModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onSave={handleSave}
+                loading={loading}
+                employee={selectedEmployee}
+            />
+        </div>
+    );
 };

@@ -16,7 +16,6 @@ const menuItems = [
   { label: 'Cuentas', to: '/dashboard/accounts',  icon: <FiUser /> },
   { label: 'Préstamos', to: '/dashboard/loans',  icon: <FiCreditCard /> },
   { label: 'Transacciones',to: '/dashboard/transactions', icon: <FiRepeat /> },
-  { label: 'Clientes', to: '/dashboard/customers', icon: <FiUsers /> },
   { label: 'Empleados', to: '/dashboard/employees', icon: <FiBriefcase /> },
   { label: 'Usuarios', to: '/dashboard/users',  icon: <FiUsers /> },
   { label: 'Seguridad',  to: '/dashboard/auth', icon: <FiShield /> },

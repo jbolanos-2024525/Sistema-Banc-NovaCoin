@@ -40,10 +40,11 @@ const CuentaSchema = new Schema({
         uppercase: true
     },
 
-    IdCliente: {
-        type: Schema.Types.ObjectId,
-        ref: "Cliente",
-        required: [true, "El cliente es obligatorio"]
+    // UUID del usuario registrado en el auth-service (C#)
+    IdUsuario: {
+        type: String,
+        required: [true, "El ID del usuario es obligatorio"],
+        trim: true
     },
 
     Estado: {
@@ -52,27 +53,29 @@ const CuentaSchema = new Schema({
     }
 
 }, {
-
     timestamps: true,
     versionKey: false
-
 });
 
-// GENERAR NÚMERO DE CUENTA AUTOMÁTICO
 CuentaSchema.pre("save", async function () {
 
     if (!this.NumeroCuenta) {
 
-        const random = Math.floor(
-            1000000000 + Math.random() * 9000000000
-        );
+        const hoy = new Date();
+        const fecha = `${hoy.getFullYear()}${String(hoy.getMonth() + 1).padStart(2, '0')}${String(hoy.getDate()).padStart(2, '0')}`;
 
-        this.NumeroCuenta = `NC-${random}`;
+        let numeroCuenta;
+        let existe = true;
+
+        while (existe) {
+            const aleatorio = Math.floor(100000 + Math.random() * 900000);
+            numeroCuenta = `NC-${fecha}-${aleatorio}`;
+            existe = await model("Cuenta").findOne({ NumeroCuenta: numeroCuenta });
+        }
+
+        this.NumeroCuenta = numeroCuenta;
     }
 
 });
 
-export const Cuenta = model(
-    "Cuenta",
-    CuentaSchema
-);
+export const Cuenta = model("Cuenta", CuentaSchema);
