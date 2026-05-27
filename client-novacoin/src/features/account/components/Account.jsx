@@ -9,6 +9,16 @@ const ESTADO_COLOR = {
 export const AccountCard = ({ cuenta, formatCurrency }) => {
     const colorEstado = ESTADO_COLOR[cuenta?.EstadoCuenta] || '#9ca3af';
 
+    // Función de respaldo por si acaso no detecta el formatCurrency global
+    const renderSaldo = (saldo, moneda) => {
+        if (typeof formatCurrency === 'function') {
+            return formatCurrency(saldo, moneda);
+        }
+        const divisa = moneda || 'GTQ';
+        const simbolo = divisa === 'GTQ' ? 'Q' : '$';
+        return `${simbolo} ${Number(saldo || 0).toFixed(2)}`;
+    };
+
     return (
         <div style={{
             background: 'linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #050c18 100%)',
@@ -42,7 +52,7 @@ export const AccountCard = ({ cuenta, formatCurrency }) => {
                     Saldo Disponible
                 </p>
                 <p style={{ fontSize: '36px', fontWeight: '700', color: '#00f2fe', margin: 0 }}>
-                    {formatCurrency(cuenta?.Saldo, cuenta?.Moneda)}
+                    {renderSaldo(cuenta?.Saldo, cuenta?.Moneda)}
                 </p>
             </div>
 
@@ -53,14 +63,13 @@ export const AccountCard = ({ cuenta, formatCurrency }) => {
                         {cuenta?.EstadoCuenta}
                     </strong>
                 </span>
-                <span>Moneda: {cuenta?.Moneda}</span>
+                <span>Moneda: {cuenta?.Moneda || 'GTQ'}</span>
             </div>
         </div>
     );
 };
 
 export const Account = ({ user, cuentas, formatCurrency }) => {
-
     if (!cuentas || cuentas.length === 0) {
         return (
             <div style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '48px', textAlign: 'center', border: '1px solid #1f2937', color: '#9ca3af' }}>
@@ -70,12 +79,38 @@ export const Account = ({ user, cuentas, formatCurrency }) => {
         );
     }
 
+    const camposMapeados = [
+        { 
+            label: 'Nombres', 
+            value: user?.firstName || user?.FirstName || user?.nombre || user?.Nombre || user?.name || user?.Name || 'No asignado' 
+        },
+        { 
+            label: 'Apellidos', 
+            value: user?.lastName || user?.LastName || user?.apellido || user?.Apellido || user?.surname || user?.Surname || 'No asignado' 
+        },
+        { 
+            label: 'Nombre de Usuario',  
+            value: user?.username || user?.Username || user?.usuario || user?.Usuario ? `@${user.username || user.Username || user.usuario || user.Usuario}` : 'Sin usuario', 
+            mono: true, 
+            accent: true 
+        },
+        { 
+            label: 'Correo Electrónico', 
+            value: user?.email || user?.Email || user?.correo || user?.Correo || 'No asignado', 
+            mono: true 
+        },
+    ];
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
                 {cuentas.map((cuenta) => (
-                    <AccountCard key={cuenta._id} cuenta={cuenta} formatCurrency={formatCurrency} />
+                    <AccountCard 
+                        key={cuenta._id || cuenta.id || Math.random()} 
+                        cuenta={cuenta} 
+                        formatCurrency={formatCurrency} 
+                    />
                 ))}
             </div>
 
@@ -86,18 +121,13 @@ export const Account = ({ user, cuentas, formatCurrency }) => {
                 </h3>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px 40px' }}>
-                    {[
-                        { label: 'Nombres',           value: user?.firstName || user?.Nombre },
-                        { label: 'Apellidos',          value: user?.lastName  || user?.Apellido },
-                        { label: 'Nombre de Usuario',  value: `@${user?.username || user?.NombreUsuario || 'Sin usuario'}`, mono: true, accent: true },
-                        { label: 'Correo Electrónico', value: user?.email     || user?.Email, mono: true },
-                    ].map(({ label, value, mono, accent }) => (
+                    {camposMapeados.map(({ label, value, mono, accent }) => (
                         <div key={label}>
                             <label style={{ fontSize: '10px', fontWeight: '600', color: '#6b7280', display: 'block', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '6px' }}>
                                 {label}
                             </label>
                             <p style={{ fontSize: '16px', fontWeight: mono ? '500' : '600', fontFamily: mono ? 'monospace' : 'inherit', color: accent ? '#00f2fe' : '#e5e7eb', borderBottom: '1px solid #1f2937', paddingBottom: '8px', margin: 0 }}>
-                                {value || 'No asignado'}
+                                {value}
                             </p>
                         </div>
                     ))}
