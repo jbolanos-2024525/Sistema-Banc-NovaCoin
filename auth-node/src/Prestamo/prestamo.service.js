@@ -83,3 +83,13 @@ export const cancelarPrestamo = async (id) =>
 
     return prestamo.save();
 };
+
+export const deletePrestamo = async (id) =>
+{
+    const prestamo = await Prestamo.findById(id);
+
+    if (!prestamo)
+        throw new Error("Prestamo no encontrado");
+
+    return Prestamo.findByIdAndDelete(id);
+};

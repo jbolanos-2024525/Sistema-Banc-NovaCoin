@@ -1,5 +1,5 @@
 import { request, response } from "express";
-import { createPrestamo, getPrestamos, getPrestamoById, updatePrestamo, cancelarPrestamo } from "./prestamo.service.js";
+import { createPrestamo, getPrestamos, getPrestamoById, updatePrestamo, cancelarPrestamo, deletePrestamo } from "./prestamo.service.js";
 
 export const create = async (req = request, res = response) => {
     try {
@@ -89,6 +89,24 @@ export const cancelar = async (req = request, res = response) => {
         return res.status(400).json({
             ok: false,
             message: "No se pudo cancelar el prestamo",
+            error: error.message
+        });
+    }
+};
+
+export const remove = async (req = request, res = response) => {
+    try {
+        const prestamo = await deletePrestamo(req.params.id);
+        return res.json({
+            ok: true,
+            message: "Prestamo eliminado correctamente",
+            data: prestamo
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            ok: false,
+            message: "No se pudo eliminar el prestamo",
             error: error.message
         });
     }

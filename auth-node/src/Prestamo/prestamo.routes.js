@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, getAll, getById, update, cancelar } from "./prestamo.controller.js";
+import { create, getAll, getById, update, cancelar, remove } from "./prestamo.controller.js";
 import { validateJWT } from "../../middlewares/validate-JWT.js";
 
 const router = Router();
@@ -85,10 +85,6 @@ const router = Router();
  *     responses:
  *       201:
  *         description: Préstamo creado correctamente
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Prestamo'
  *       400:
  *         description: Error de validación
  *       500:
@@ -105,12 +101,6 @@ router.post("/", validateJWT, create);
  *     responses:
  *       200:
  *         description: Lista de préstamos
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Prestamo'
  *       500:
  *         description: Error del servidor
  */
@@ -128,14 +118,9 @@ router.get("/", getAll);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del préstamo
  *     responses:
  *       200:
  *         description: Préstamo encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Prestamo'
  *       404:
  *         description: Préstamo no encontrado
  *       500:
@@ -155,20 +140,9 @@ router.get("/:id", getById);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del préstamo
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Prestamo'
  *     responses:
  *       200:
  *         description: Préstamo actualizado correctamente
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Prestamo'
  *       400:
  *         description: Error de validación
  *       404:
@@ -190,17 +164,38 @@ router.put("/:id", update);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del préstamo a cancelar
  *     responses:
  *       200:
  *         description: Préstamo cancelado correctamente
  *       400:
- *         description: El préstamo no puede cancelarse (ya está pagado, vencido o cancelado)
+ *         description: El préstamo no puede cancelarse
  *       404:
  *         description: Préstamo no encontrado
  *       500:
  *         description: Error del servidor
  */
 router.patch("/:id/cancelar", cancelar);
+
+/**
+ * @swagger
+ * /prestamo/{id}:
+ *   delete:
+ *     summary: Eliminar un préstamo
+ *     tags: [Prestamo]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Préstamo eliminado correctamente
+ *       404:
+ *         description: Préstamo no encontrado
+ *       500:
+ *         description: Error del servidor
+ */
+router.delete("/:id", validateJWT, remove);
 
 export default router;
