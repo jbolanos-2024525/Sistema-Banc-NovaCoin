@@ -1,0 +1,15 @@
+# Data Protection keys — nunca subir al repositorio
+**/keys/*.xml
+
+# Build outputs
+**/bin/
+**/obj/
+
+# User secrets
+**/*.user
+
+# Environment files
+**/.env
+
+
+**/logs/

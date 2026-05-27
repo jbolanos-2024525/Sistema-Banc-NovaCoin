@@ -27,6 +27,8 @@ export const useTransactionsStore = create((set, get) => ({
             set({ loading: true, error: null });
             const response = await createTransactionRequest(transactionData);
             
+        console.log('Respuesta del backend:', response);
+
             // Si la transacción fue exitosa, la agregamos de inmediato a la lista del estado
             if (response.success) {
                 set((state) => ({

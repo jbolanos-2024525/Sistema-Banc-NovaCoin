@@ -19,7 +19,6 @@ import { AdminAccountPage } from '../features/adminAccount/pages/AdminAccountPag
 // Dashboard Usuario
 import { UserDashboardPage } from "./layouts/UserDashboardPage.jsx";
 import { UserDashboardHome } from "../features/dashboard/pages/UserDashboardHome.jsx";
-
  
 // ─── Guard genérico: requiere sesión ───────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -87,9 +86,7 @@ function App() {
         <Route index                  element={<UserDashboardHome />} />
         <Route path="loans"           element={<LoanPage />} />
         <Route path="transactions"    element={<TransactionsPage />} />
-        
         <Route path="account"         element={<AccountPage />} /> 
-        
       </Route>
  
       <Route path="*" element={<Navigate to="/login" replace />} />
