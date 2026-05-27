@@ -48,7 +48,8 @@ export const AdminAccounts = ({ cuentas, loading, onEdit, onDelete, formatCurren
                                 <td style={{ padding: '14px 16px' }}>
                                     <div style={{ display: 'flex', gap: '8px' }}>
                                         <button onClick={() => onEdit(cuenta)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #374151', borderRadius: '6px', color: '#e5e7eb', cursor: 'pointer', fontSize: '12px' }}>Editar</button>
-                                        <button onClick={() => onDelete(cuenta._id)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>Eliminar</button>
+                                        {/* SE CORRIGIÓ: Ahora pasamos el objeto 'cuenta' completo */}
+                                        <button onClick={() => onDelete(cuenta)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>Eliminar</button>
                                     </div>
                                 </td>
                             </tr>

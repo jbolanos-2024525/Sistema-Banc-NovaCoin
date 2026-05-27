@@ -16,7 +16,7 @@ export const AdminAccountPage = () => {
         formatCurrency, clearError
     } = useAdminAccount();
 
-    const [confirm, setConfirm] = useState(null); // { id, numeroCuenta }
+    const [confirm, setConfirm] = useState(null); // Estado para confirmación: { id, numeroCuenta }
     const [successMsg, setSuccessMsg] = useState(null);
 
     const showSuccess = (msg) => {
@@ -34,14 +34,21 @@ export const AdminAccountPage = () => {
         }
     };
 
+    // CORREGIDO: Recibe el objeto completo y extrae las propiedades de forma segura
     const handleDeleteClick = (cuenta) => {
-        setConfirm({ id: cuenta._id, numeroCuenta: cuenta.NumeroCuenta });
+        if (cuenta && cuenta._id) {
+            setConfirm({ id: cuenta._id, numeroCuenta: cuenta.NumeroCuenta });
+        } else {
+            console.error("No se pudo obtener el ID de la cuenta para eliminar.");
+        }
     };
 
     const handleConfirmDelete = async () => {
-        await deleteCuenta(confirm.id);
-        setConfirm(null);
-        showSuccess('Cuenta eliminada correctamente');
+        if (confirm && confirm.id) {
+            await deleteCuenta(confirm.id);
+            setConfirm(null);
+            showSuccess('Cuenta eliminada correctamente');
+        }
     };
 
     const inputStyle = { flex: 1, minWidth: '260px', padding: '8px 12px', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '6px', color: '#f3f4f6', fontSize: '13px', outline: 'none' };

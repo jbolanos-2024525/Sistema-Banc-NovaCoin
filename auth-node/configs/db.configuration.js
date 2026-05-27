@@ -26,13 +26,13 @@ export const dbConnection = async () => {
             maxPoolSize: 10,
         });
     }catch(err){
-        console.error(`Kinal Sports - Error al conectar la db: ${err.message}`)
+        console.error(`NovaCoin - Error al conectar la db: ${err.message}`)
         process.exit(1);
     }
 }
 
 const gracefulShutdown = async (signal) => {
-    console.log(`Mongo DB | Recibida señal de ${siganl}, cerrando conexion a mongo DB...`);
+    console.log(`Mongo DB | Recibida señal de ${signal}, cerrando conexion a mongo DB...`);
     try{
         await mongoose.disconnect();
         console.log(`Mongo DB | Conexion cerrada exitosamente`)
