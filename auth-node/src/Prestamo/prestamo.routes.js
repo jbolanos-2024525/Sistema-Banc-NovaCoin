@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { create, getAll, getById, update, cancelar } from "./prestamo.controller.js";
+import { validateJWT } from "../../middlewares/validate-JWT.js";
 
 const router = Router();
 
@@ -93,7 +94,7 @@ const router = Router();
  *       500:
  *         description: Error del servidor
  */
-router.post("/", create);
+router.post("/", validateJWT, create);
 
 /**
  * @swagger

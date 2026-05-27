@@ -1,19 +1,32 @@
-import { useEffect } from 'react';
-import { useEmployee }     from '../hooks/useEmployee';
-import { EmployeeModal }   from '../components/employeeModal';
+import { useEffect, useState } from 'react';
+import { useEmployee }      from '../hooks/useEmployee';
+import { EmployeeModal }    from '../components/employeeModal';
+import { ConfirmModal }     from '../../../shared/components/ConfirmModal.jsx';
 
 export const EmployeePage = () => {
 
     const { employees, loading, isModalOpen, selectedEmployee, fetchEmployees, openCreateModal, openEditModal, closeModal, handleSave, handleDelete } = useEmployee();
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
+    const [confirmConfig, setConfirmConfig] = useState(null);
+
+    useEffect(() => { fetchEmployees(); }, []);
+
+    const handleDeleteConfirm = (id) => {
+        setConfirmConfig({
+            title: 'Eliminar empleado',
+            message: 'Esta acción es permanente e irreversible. El empleado será eliminado del sistema y no podrá recuperarse.',
+            confirmText: 'Sí, eliminar',
+            confirmColor: '#dc2626',
+            onConfirm: async () => {
+                await handleDelete(id);
+                setConfirmConfig(null);
+            }
+        });
+    };
 
     return (
         <div style={{ padding: '24px', color: '#f3f4f6', minHeight: '100vh', backgroundColor: '#0d1117' }}>
 
-            {/* Encabezado */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid #1f2937', paddingBottom: '16px' }}>
                 <div>
                     <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#fff', margin: 0 }}>Empleados</h1>
@@ -23,7 +36,7 @@ export const EmployeePage = () => {
                 </div>
                 <button
                     onClick={openCreateModal}
-                    style={{ backgroundColor: '#00f2fe', color: '#050c18', padding: '10px 20px', borderRadius: '6px', border: 'none', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,242,254,0.2)' }}
+                    style={{ backgroundColor: '#00f2fe', color: '#050c18', padding: '10px 20px', borderRadius: '6px', border: 'none', fontWeight: '600', cursor: 'pointer' }}
                     onMouseEnter={e => e.target.style.backgroundColor = '#00c8d4'}
                     onMouseLeave={e => e.target.style.backgroundColor = '#00f2fe'}
                 >
@@ -31,7 +44,6 @@ export const EmployeePage = () => {
                 </button>
             </div>
 
-            {/* Tabla */}
             <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', color: '#e5e7eb', fontSize: '14px' }}>
                     <thead>
@@ -50,7 +62,10 @@ export const EmployeePage = () => {
                             <tr><td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: '#9ca3af' }}>No hay empleados registrados</td></tr>
                         ) : (
                             employees.map((emp) => (
-                                <tr key={emp._id} style={{ borderBottom: '1px solid #1f2937' }}>
+                                <tr key={emp._id} style={{ borderBottom: '1px solid #1f2937' }}
+                                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1f2937'}
+                                    onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                                >
                                     <td style={{ padding: '14px 16px' }}>{emp.Nombre}</td>
                                     <td style={{ padding: '14px 16px' }}>{emp.Apellido}</td>
                                     <td style={{ padding: '14px 16px', color: '#9ca3af' }}>{emp.Puesto}</td>
@@ -62,12 +77,61 @@ export const EmployeePage = () => {
                                     </td>
                                     <td style={{ padding: '14px 16px' }}>
                                         <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button onClick={() => openEditModal(emp)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #374151', borderRadius: '6px', color: '#e5e7eb', cursor: 'pointer', fontSize: '12px' }}>
+
+                                            {/* Editar */}
+                                            <button
+                                                onClick={() => openEditModal(emp)}
+                                                style={{
+                                                    padding: '6px 14px',
+                                                    backgroundColor: 'transparent',
+                                                    border: '1px solid #f59e0b',
+                                                    borderRadius: '6px',
+                                                    color: '#f59e0b',
+                                                    cursor: 'pointer',
+                                                    fontSize: '12px',
+                                                }}
+                                            >
                                                 Editar
                                             </button>
-                                            <button onClick={() => handleDelete(emp._id)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>
+
+                                            {/* Cancelar (deshabilitar) */}
+                                            <button
+                                                onClick={() => setConfirmConfig({
+                                                    title: 'Cancelar empleado',
+                                                    message: '¿Estás seguro de que deseas desactivar a este empleado del sistema?',
+                                                    confirmText: 'Sí, cancelar',
+                                                    confirmColor: '#ef4444',
+                                                    onConfirm: () => setConfirmConfig(null)
+                                                })}
+                                                style={{
+                                                    padding: '6px 14px',
+                                                    backgroundColor: 'transparent',
+                                                    border: '1px solid #ef4444',
+                                                    borderRadius: '6px',
+                                                    color: '#ef4444',
+                                                    cursor: 'pointer',
+                                                    fontSize: '12px',
+                                                }}
+                                            >
+                                                Cancelar
+                                            </button>
+
+                                            {/* Eliminar */}
+                                            <button
+                                                onClick={() => handleDeleteConfirm(emp._id)}
+                                                style={{
+                                                    padding: '6px 14px',
+                                                    backgroundColor: 'transparent',
+                                                    border: '1px solid #6b7280',
+                                                    borderRadius: '6px',
+                                                    color: '#6b7280',
+                                                    cursor: 'pointer',
+                                                    fontSize: '12px',
+                                                }}
+                                            >
                                                 Eliminar
                                             </button>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -84,6 +148,18 @@ export const EmployeePage = () => {
                 loading={loading}
                 employee={selectedEmployee}
             />
+
+            {confirmConfig && (
+                <ConfirmModal
+                    isOpen={true}
+                    title={confirmConfig.title}
+                    message={confirmConfig.message}
+                    confirmText={confirmConfig.confirmText}
+                    confirmColor={confirmConfig.confirmColor}
+                    onConfirm={confirmConfig.onConfirm}
+                    onClose={() => setConfirmConfig(null)}
+                />
+            )}
         </div>
     );
 };

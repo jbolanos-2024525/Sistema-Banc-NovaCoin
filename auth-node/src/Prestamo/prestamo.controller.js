@@ -1,17 +1,27 @@
 import { request, response } from "express";
-
-import {createPrestamo, getPrestamos, getPrestamoById, updatePrestamo, cancelarPrestamo} from "./prestamo.service.js";
+import { createPrestamo, getPrestamos, getPrestamoById, updatePrestamo, cancelarPrestamo } from "./prestamo.service.js";
 
 export const create = async (req = request, res = response) => {
-    try{
-        const prestamo = await createPrestamo(req.body);
+    try {
+        const clienteId = req.empleado?._id?.toString()
+                       || req.cliente?.id
+                       || req.cliente?._id?.toString();
+
+        const empleadoId = req.empleado?._id?.toString() ?? null;
+
+        const prestamo = await createPrestamo({
+            ...req.body,
+            cliente: clienteId,
+            empleado: empleadoId
+        });
+
         return res.status(201).json({
             ok: true,
             message: "Prestamo creado correctamente",
             data: prestamo
         });
     }
-    catch (error){
+    catch (error) {
         return res.status(400).json({
             ok: false,
             message: "No fue posible crear el prestamo",
@@ -25,7 +35,7 @@ export const getAll = async (req = request, res = response) => {
         const prestamos = await getPrestamos();
         return res.json({ ok: true, data: prestamos });
     }
-    catch (error){
+    catch (error) {
         return res.status(500).json({
             ok: false,
             message: "Error al obtener prestamos",
@@ -39,7 +49,7 @@ export const getById = async (req = request, res = response) => {
         const prestamo = await getPrestamoById(req.params.id);
         return res.json({ ok: true, data: prestamo });
     }
-    catch (error){
+    catch (error) {
         return res.status(404).json({
             ok: false,
             message: "Prestamo no encontrado",
@@ -49,7 +59,7 @@ export const getById = async (req = request, res = response) => {
 };
 
 export const update = async (req = request, res = response) => {
-    try{
+    try {
         const prestamo = await updatePrestamo(req.params.id, req.body);
         return res.json({
             ok: true,
@@ -57,7 +67,7 @@ export const update = async (req = request, res = response) => {
             data: prestamo
         });
     }
-    catch (error){
+    catch (error) {
         return res.status(400).json({
             ok: false,
             message: "No se pudo actualizar el prestamo",
@@ -66,8 +76,8 @@ export const update = async (req = request, res = response) => {
     }
 };
 
-export const cancelar = async (req = request, res = response) =>{
-    try{
+export const cancelar = async (req = request, res = response) => {
+    try {
         const prestamo = await cancelarPrestamo(req.params.id);
         return res.json({
             ok: true,
@@ -75,7 +85,7 @@ export const cancelar = async (req = request, res = response) =>{
             data: prestamo
         });
     }
-    catch (error){
+    catch (error) {
         return res.status(400).json({
             ok: false,
             message: "No se pudo cancelar el prestamo",

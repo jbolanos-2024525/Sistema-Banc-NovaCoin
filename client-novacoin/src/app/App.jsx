@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
  
 import Login from "../features/auth/pages/Login.jsx";
 import Recover from "../features/auth/pages/Recover.jsx";
+import ResetPasswordPage from "../features/auth/pages/ResetPasswordPage.jsx";
 import { VerifyEmailPage } from "../features/auth/pages/VerifyEmailPage.jsx";
 import { useAuthStore } from "../features/auth/store/authStore.js";
  
@@ -59,8 +60,9 @@ function App() {
       {/* ── Rutas públicas ── */}
       <Route path="/"             element={<Navigate to="/login" replace />} />
       <Route path="/login"        element={<Login />} />
-      <Route path="/recover"      element={<Recover />} />
-      <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/recover"        element={<Recover />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/verify-email"   element={<VerifyEmailPage />} />
  
       {/* Redirige al home correcto según rol */}
       <Route path="/home" element={

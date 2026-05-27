@@ -6,6 +6,8 @@ import { UserDashboardPage } from '../layouts/UserDashboardPage.jsx';
 import { DashboardHome }     from '../../features/dashboard/pages/DashboardHome.jsx';
 import { UserDashboardHome } from '../../features/dashboard/pages/UserDashboardHome.jsx';
 import { VerifyEmailPage }   from '../../features/auth/pages/VerifyEmailPage';
+import Recover               from '../../features/auth/pages/Recover';
+import ResetPasswordPage     from '../../features/auth/pages/ResetPasswordPage.jsx';
 
 // Panel Usuario
 import { AccountPage }       from '../../features/account/pages/AccountPage.jsx';
@@ -28,6 +30,8 @@ export const AppRoutes = () => {
         <Routes>
             <Route path="/login"        element={<AuthPage />} />
             <Route path="/verify-email" element={<VerifyEmailPage />} />
+            <Route path="/recover"        element={<Recover />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             {/* Panel Administrador */}
             <Route path="/dashboard/*" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>}>
