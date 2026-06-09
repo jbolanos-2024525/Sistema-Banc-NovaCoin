@@ -1,6 +1,19 @@
 import { Router } from "express";
-import { create, getAll, getById, update, cancelar, remove } from "./prestamo.controller.js";
+import { 
+    create, 
+    getAll, 
+    getById, 
+    getByCliente,
+    getByEstado,
+    getByEmpleado,
+    update, 
+    pagar,
+    cancelar, 
+    remove,
+    cambiarEstado
+} from "./prestamo.controller.js";
 import { validateJWT } from "../../middlewares/validate-JWT.js";
+import { isAdmin } from "../../middlewares/validate-role.js";
 
 const router = Router();
 
@@ -92,110 +105,24 @@ const router = Router();
  */
 router.post("/", validateJWT, create);
 
-/**
- * @swagger
- * /prestamo:
- *   get:
- *     summary: Obtener todos los préstamos
- *     tags: [Prestamo]
- *     responses:
- *       200:
- *         description: Lista de préstamos
- *       500:
- *         description: Error del servidor
- */
-router.get("/", getAll);
+router.get("/", validateJWT, isAdmin, getAll);
 
-/**
- * @swagger
- * /prestamo/{id}:
- *   get:
- *     summary: Obtener un préstamo por ID
- *     tags: [Prestamo]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Préstamo encontrado
- *       404:
- *         description: Préstamo no encontrado
- *       500:
- *         description: Error del servidor
- */
-router.get("/:id", getById);
+router.get("/:id", validateJWT, getById);
 
-/**
- * @swagger
- * /prestamo/{id}:
- *   put:
- *     summary: Actualizar un préstamo
- *     tags: [Prestamo]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Préstamo actualizado correctamente
- *       400:
- *         description: Error de validación
- *       404:
- *         description: Préstamo no encontrado
- *       500:
- *         description: Error del servidor
- */
-router.put("/:id", update);
+router.get("/cliente/:clienteId", validateJWT, getByCliente);
 
-/**
- * @swagger
- * /prestamo/{id}/cancelar:
- *   patch:
- *     summary: Cancelar un préstamo activo
- *     tags: [Prestamo]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Préstamo cancelado correctamente
- *       400:
- *         description: El préstamo no puede cancelarse
- *       404:
- *         description: Préstamo no encontrado
- *       500:
- *         description: Error del servidor
- */
-router.patch("/:id/cancelar", cancelar);
+router.get("/estado/:estado", validateJWT, isAdmin, getByEstado);
 
-/**
- * @swagger
- * /prestamo/{id}:
- *   delete:
- *     summary: Eliminar un préstamo
- *     tags: [Prestamo]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Préstamo eliminado correctamente
- *       404:
- *         description: Préstamo no encontrado
- *       500:
- *         description: Error del servidor
- */
-router.delete("/:id", validateJWT, remove);
+router.get("/empleado/:empleadoId", validateJWT, isAdmin, getByEmpleado);
+
+router.put("/:id", validateJWT, isAdmin, update);
+
+router.patch("/pagar/:id", validateJWT, pagar);
+
+router.patch("/cancelar/:id", validateJWT, isAdmin, cancelar);
+
+router.patch("/estado/:id", validateJWT, isAdmin, cambiarEstado);
+
+router.delete("/:id", validateJWT, isAdmin, remove);
 
 export default router;

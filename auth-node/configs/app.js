@@ -12,6 +12,7 @@ import { swaggerDocs }   from './documentation.js';
 
 import empleadoroutes    from '../src/Empleado/empleado.routes.js';
 import prestamoroutes    from '../src/Prestamo/prestamo.routes.js';
+import { adminTransaccionRouter, userTransaccionRouter } from '../src/Transaccion/transaccion.routes.js';
 
 import { adminCuentaRouter, userCuentaRouter } from '../src/Cuenta/cuenta.routes.js';
 
@@ -23,8 +24,10 @@ const routes = (app) => {
     app.use(`${ADMIN_PATH}/empleados`,   empleadoroutes);
     app.use(`${ADMIN_PATH}/cuenta`,      adminCuentaRouter);
     app.use(`${ADMIN_PATH}/prestamo`,    prestamoroutes);
+    app.use(`${ADMIN_PATH}/transaccion`, adminTransaccionRouter);
 
     app.use(`${USER_PATH}/cuenta`, userCuentaRouter);
+    app.use(`${USER_PATH}/transaccion`, userTransaccionRouter);
 
     app.get(`${ADMIN_PATH}/health`, (req, res) => {
         res.status(200).json({
