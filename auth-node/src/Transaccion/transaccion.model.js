@@ -151,11 +151,10 @@ transaccionSchema.index({ CuentaDestino: 1, Estado: 1 });
 transaccionSchema.index({ TipoTransaccion: 1, EstadoTransaccion: 1 });
 transaccionSchema.index({ FechaTransaccion: -1 });
 
-transaccionSchema.pre("save", function(next) {
+transaccionSchema.pre("save", function() {
     if (this.isNew) {
         this.FechaTransaccion = this.FechaTransaccion || new Date();
     }
-    next();
 });
 
 export const Transaccion = model("Transaccion", transaccionSchema);

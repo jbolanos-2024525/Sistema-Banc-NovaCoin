@@ -17,12 +17,17 @@ import {
 
 export const create = async (req = request, res = response) => {
     try {
-        const userId = req.user?.uid || 
-                       req.user?.id || 
-                       req.usuario?.uid || 
-                       req.usuario?.id || 
-                       req.cliente?.id || 
+        console.log('Body recibido:', req.body);
+        console.log('Usuario del token:', req.user);
+
+        const userId = req.user?.uid ||
+                       req.user?.id ||
+                       req.usuario?.uid ||
+                       req.usuario?.id ||
+                       req.cliente?.id ||
                        req.cliente?._id?.toString();
+
+        console.log('UserId extraído:', userId);
 
         const transaccion = await createTransaccion({
             ...req.body,
@@ -37,6 +42,7 @@ export const create = async (req = request, res = response) => {
             data: transaccion
         });
     } catch (error) {
+        console.error('Error al crear transacción:', error);
         return res.status(400).json({
             success: false,
             message: "No fue posible crear la transacción",

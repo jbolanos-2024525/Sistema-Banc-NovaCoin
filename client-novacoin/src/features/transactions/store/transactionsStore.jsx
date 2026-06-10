@@ -13,8 +13,9 @@ export const useTransactionsStore = create((set, get) => ({
     fetchTransactions: async () => {
         try {
             set({ loading: true, error: null });
-            const data = await getAllTransactionsRequest();
-            set({ transactions: data, loading: false });
+            const response = await getAllTransactionsRequest();
+            // Node.js service returns { success: true, data: transacciones, count: n }
+            set({ transactions: response.data || response, loading: false });
         } catch (err) {
             const message = err.response?.data?.message || 'Error al cargar las transacciones';
             set({ error: message, loading: false });
@@ -26,13 +27,13 @@ export const useTransactionsStore = create((set, get) => ({
         try {
             set({ loading: true, error: null });
             const response = await createTransactionRequest(transactionData);
-            
+
         console.log('Respuesta del backend:', response);
 
             // Si la transacción fue exitosa, la agregamos de inmediato a la lista del estado
             if (response.success) {
                 set((state) => ({
-                    transactions: [response.transaccion, ...state.transactions],
+                    transactions: [response.data, ...state.transactions],
                     loading: false
                 }));
             }

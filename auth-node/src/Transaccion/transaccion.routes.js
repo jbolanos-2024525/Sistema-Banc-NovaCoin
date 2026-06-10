@@ -18,6 +18,7 @@ import {
 
 import { validateJWT } from "../../middlewares/validate-JWT.js";
 import { isAdmin } from "../../middlewares/validate-role.js";
+import { validateCreateTransaccion } from "../../middlewares/transaccion-validator.js";
 
 // ── ROUTER USUARIO  →  /NovaCoin/v1/transaccion ──────────────────────────────────
 export const userTransaccionRouter = Router();
@@ -30,7 +31,7 @@ userTransaccionRouter.get("/cuenta/:cuentaId", validateJWT, getByCuenta);
 // ── ROUTER ADMIN  →  /NovaCoin/Admin/v1/transaccion ──────────────────────────────
 export const adminTransaccionRouter = Router();
 
-adminTransaccionRouter.post("/", validateJWT, create);
+adminTransaccionRouter.post("/", validateJWT, validateCreateTransaccion, create);
 adminTransaccionRouter.get("/", validateJWT, isAdmin, getAll);
 adminTransaccionRouter.get("/:id", validateJWT, isAdmin, getById);
 adminTransaccionRouter.get("/usuario/:usuarioId", validateJWT, isAdmin, getByUsuario);
