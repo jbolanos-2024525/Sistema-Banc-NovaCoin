@@ -19,9 +19,18 @@ const axiosBank = axios.create({
     },
 });
 
-// 3. Instancia para el Microservicio de Transacciones
+// 3. Instancia para el Microservicio de Transacciones (Usuario)
 const axiosTrans = axios.create({
-    baseURL: import.meta.env.VITE_TRANS_URL || 'http://localhost:5150/api',
+    baseURL: import.meta.env.VITE_TRANS_URL || 'http://localhost:3020/NovaCoin/v1',
+    timeout: 15000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// 4. Instancia para el Microservicio de Transacciones (Admin - para crear transacciones)
+const axiosTransAdmin = axios.create({
+    baseURL: 'http://localhost:3020/NovaCoin/Admin/v1',
     timeout: 15000,
     headers: {
         'Content-Type': 'application/json',
@@ -42,6 +51,7 @@ const requestInterceptor = (config) => {
 axiosAuth.interceptors.request.use(requestInterceptor);
 axiosBank.interceptors.request.use(requestInterceptor);
 axiosTrans.interceptors.request.use(requestInterceptor);
+axiosTransAdmin.interceptors.request.use(requestInterceptor);
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -114,5 +124,6 @@ const handleResponseError = (axiosInstance) => async (error) => {
 // Aplicamos el interceptor de respuestas y refresco a Bank y a Transacciones
 axiosBank.interceptors.response.use((res) => res, handleResponseError(axiosBank));
 axiosTrans.interceptors.response.use((res) => res, handleResponseError(axiosTrans));
+axiosTransAdmin.interceptors.response.use((res) => res, handleResponseError(axiosTransAdmin));
 
-export { axiosAuth, axiosBank, axiosTrans };
+export { axiosAuth, axiosBank, axiosTrans, axiosTransAdmin };

@@ -26,14 +26,14 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
       return;
     }
 
-    // Estructura limpia que espera el backend en C#
+    // Estructura limpia que espera el backend en Node.js (PascalCase)
     const dto = {
-      tipoTransaccion,
-      monto: parseFloat(monto),
-      moneda,
-      descripcion,
-      cuentaDestino: tipoTransaccion === 'TRANSFERENCIA' ? cuentaDestino.trim() : null,
-      cuentaOrigen: null 
+      TipoTransaccion: tipoTransaccion,
+      Monto: parseFloat(monto),
+      Moneda: moneda,
+      Descripcion: descripcion,
+      CuentaDestino: tipoTransaccion === 'TRANSFERENCIA' ? cuentaDestino.trim() : null,
+      CuentaOrigen: null
     };
 
     // 💡 Detector inteligente de funciones pasadas por el componente padre
