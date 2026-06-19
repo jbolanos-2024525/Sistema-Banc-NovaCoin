@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "NovaCoin Mobile",
+    "slug": "client-novacoin-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.novacoin.mobile"
+    },
+    "android": {
+      "package": "com.novacoin.mobile"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "client-novacoin-mobile"
+      }
+    }
+  }
+}
