@@ -5,7 +5,7 @@ export const requestLimit = rateLimit({
     max: 100,
     handler: (req, res) => {
         console.log(`Peticiones excedidas desde IP: ${req.ip}, Endpoint: ${req.path}`);
-        res.status(429).jsaon({
+        res.status(429).json({
             success: false,
             message: 'Demasiadas peticiones desde esta IP, intenta de nuevo más tarde',
             error: 'RATE_LIMIT_EXCEEDED',

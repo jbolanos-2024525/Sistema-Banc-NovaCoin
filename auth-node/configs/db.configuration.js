@@ -43,6 +43,6 @@ const gracefulShutdown = async (signal) => {
     }
 }
 
-process.on('SIGNIT', () => gracefulShutdown('SIGINT'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGUSR2', () => gracefulShutdown('SIGUSR2'));

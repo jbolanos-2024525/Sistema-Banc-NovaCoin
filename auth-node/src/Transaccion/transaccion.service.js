@@ -13,8 +13,19 @@ export const createTransaccion = async (transaccionData) => {
     }
 };
 
+const sanitizeFilters = (filters) => {
+    const clean = {};
+    const allowed = ['TipoTransaccion', 'EstadoTransaccion', 'Moneda', 'Usuario'];
+    for (const key of allowed) {
+        if (filters[key] !== undefined && typeof filters[key] === 'string') {
+            clean[key] = filters[key];
+        }
+    }
+    return clean;
+};
+
 export const getTransacciones = async (filters = {}) => {
-    const query = { Estado: true, ...filters };
+    const query = { Estado: true, ...sanitizeFilters(filters) };
     return await Transaccion.find(query)
         .populate("Empleado", "Nombre Apellido Rol")
         .sort({ FechaTransaccion: -1 })

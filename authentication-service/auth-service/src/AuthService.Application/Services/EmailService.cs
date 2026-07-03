@@ -104,9 +104,12 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
             var timeoutMs = int.Parse(smtpSettings["Timeout"] ?? "30000");
             client.Timeout = timeoutMs;
 
-            // FIX: Bypass SSL (Cloudinary, etc.)
-            client.CheckCertificateRevocation = false;
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            var ignoreCertErrors = bool.Parse(smtpSettings["IgnoreCertificateErrors"] ?? "false");
+            if (ignoreCertErrors)
+            {
+                client.CheckCertificateRevocation = false;
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            }
 
             try
             {
@@ -127,9 +130,6 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
                     await client.ConnectAsync(host, port, SecureSocketOptions.Auto);
                 }
 
-                // Autenticación
-                logger.LogInformation("SMTP USER: {User}", username);
-                logger.LogInformation("SMTP PASS: {Pass}", password);
                 await client.AuthenticateAsync(username, password);
 
                 // Crear mensaje con MimeKit

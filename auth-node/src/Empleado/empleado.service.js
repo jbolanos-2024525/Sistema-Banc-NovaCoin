@@ -13,8 +13,19 @@ export const createEmpleadoRecord = async (empleadoData) => {
     }
 };
 
+const sanitizeFilters = (filters) => {
+    const clean = {};
+    const allowed = ['Nombre', 'Apellido', 'Puesto', 'Rol', 'Estado'];
+    for (const key of allowed) {
+        if (filters[key] !== undefined && typeof filters[key] === 'string') {
+            clean[key] = filters[key];
+        }
+    }
+    return clean;
+};
+
 export const getEmpleadosRecord = async (filters = {}) => {
-    const query = { isActive: true, ...filters };
+    const query = { isActive: true, ...sanitizeFilters(filters) };
     return await Empleado.find(query)
         .sort({ createdAt: -1 })
         .lean();

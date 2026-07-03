@@ -1,3 +1,17 @@
 **/bin/
 **/obj/
 **/logs/
+
+# Environment and secrets
+.env
+.env.local
+.env.production
+appsettings.json
+appsettings.*.json
+!appsettings.Example.json
+
+# Dependencies
+**/node_modules/
+
+# Data Protection keys
+**/keys/

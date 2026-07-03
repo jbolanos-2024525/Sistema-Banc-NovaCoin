@@ -159,6 +159,7 @@ namespace AuthService.Api.Controllers
         /// </code>
         /// </remarks>
         [HttpPost("profile/by-id")]
+        [Authorize]
         [EnableRateLimiting("ApiPolicy")]
         [SwaggerOperation(
             Summary = "Obtener perfil por ID",

@@ -13,8 +13,19 @@ export const createCuenta = async (accountData) => {
     }
 };
 
+const sanitizeFilters = (filters) => {
+    const clean = {};
+    const allowed = ['TipoCuenta', 'Moneda', 'EstadoCuenta', 'IdUsuario'];
+    for (const key of allowed) {
+        if (filters[key] !== undefined && typeof filters[key] === 'string') {
+            clean[key] = filters[key];
+        }
+    }
+    return clean;
+};
+
 export const getCuentas = async (filters = {}) => {
-    const query = { Estado: true, ...filters };
+    const query = { Estado: true, ...sanitizeFilters(filters) };
     return await Cuenta.find(query)
         .sort({ createdAt: -1 })
         .lean();

@@ -10,10 +10,10 @@ export const helmetOptions = {
             fontSrc: ["'self'"],
             objectSrc: ["'none'"],
             baseUri: ["'self'"],
-            frameAcestors: ["'none'"]
+            frameAncestors: ["'none'"]
         }
     },
-    hats: false,
+    hsts: false,
     frameguard:{action: 'deny'},
     hidePoweredBy: true,
     crossOriginResourcePolicy: {policy: 'cross-origin'},

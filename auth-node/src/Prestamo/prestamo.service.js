@@ -41,8 +41,19 @@ export const createPrestamo = async (data) => {
     }
 };
 
+const sanitizeFilters = (filters) => {
+    const clean = {};
+    const allowed = ['tipoPrestamo', 'estadoPrestamo', 'cliente'];
+    for (const key of allowed) {
+        if (filters[key] !== undefined && typeof filters[key] === 'string') {
+            clean[key] = filters[key];
+        }
+    }
+    return clean;
+};
+
 export const getPrestamos = async (filters = {}) => {
-    const query = { Estado: true, ...filters };
+    const query = { Estado: true, ...sanitizeFilters(filters) };
     return await Prestamo.find(query)
         .populate("empleado", "Nombre Apellido Rol")
         .sort({ createdAt: -1 })
