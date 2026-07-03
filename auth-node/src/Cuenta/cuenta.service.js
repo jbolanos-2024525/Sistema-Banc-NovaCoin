@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Cuenta } from './cuenta.model.js';
 
 export const createCuenta = async (accountData) => {
@@ -134,13 +135,24 @@ export const transferir = async (cuentaOrigenId, cuentaDestinoId, monto, descrip
     if (origen.Saldo < monto) throw new Error('Saldo insuficiente');
     if (monto > origen.LimiteRetiroDiario) throw new Error('Monto excede el límite de retiro diario');
     
-    origen.Saldo -= monto;
-    destino.Saldo += monto;
-    
-    await origen.save();
-    await destino.save();
-    
-    return { origen, destino };
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+
+        origen.Saldo -= monto;
+        destino.Saldo += monto;
+
+        await origen.save({ session });
+        await destino.save({ session });
+
+        await session.commitTransaction();
+        return { origen, destino };
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
 };
 
 export const cambiarEstadoCuenta = async (id, nuevoEstado) => {

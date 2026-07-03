@@ -13,6 +13,15 @@ import {
     cambiarEstadoPrestamo
 } from "./prestamo.service.js";
 
+const getErrorStatusCode = (error) => {
+    const msg = (error.message || '').toLowerCase();
+    if (msg.includes('no encontrad') || msg.includes('not found')) return 404;
+    if (msg.includes('requerido') || msg.includes('inválid') || msg.includes('no válid') || msg.includes('no hay campos') || msg.includes('incompletos')) return 400;
+    if (msg.includes('ya está') || msg.includes('no se puede') || msg.includes('solo se pueden') || msg.includes('excede')) return 400;
+    if (msg.includes('ya existe')) return 409;
+    return 500;
+};
+
 export const create = async (req = request, res = response) => {
     try {
         const clienteId = req.user?.uid || 
@@ -54,7 +63,7 @@ export const getAll = async (req = request, res = response) => {
             count: prestamos.length 
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: "Error al obtener préstamos",
             error: error.message
@@ -88,7 +97,7 @@ export const getByCliente = async (req = request, res = response) => {
             count: prestamos.length 
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -105,7 +114,7 @@ export const getByEstado = async (req = request, res = response) => {
             count: prestamos.length 
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -122,7 +131,7 @@ export const getByEmpleado = async (req = request, res = response) => {
             count: prestamos.length 
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });

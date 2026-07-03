@@ -127,9 +127,6 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
                     await client.ConnectAsync(host, port, SecureSocketOptions.Auto);
                 }
 
-                // Autenticación
-                logger.LogInformation("SMTP USER: {User}", username);
-                logger.LogInformation("SMTP PASS: {Pass}", password);
                 await client.AuthenticateAsync(username, password);
 
                 // Crear mensaje con MimeKit

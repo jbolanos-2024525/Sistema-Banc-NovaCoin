@@ -15,6 +15,14 @@ import {
     getResumenTransacciones
 } from "./transaccion.service.js";
 
+const getErrorStatusCode = (error) => {
+    const msg = (error.message || '').toLowerCase();
+    if (msg.includes('no encontrad') || msg.includes('not found')) return 404;
+    if (msg.includes('requerido') || msg.includes('inválid') || msg.includes('no válid') || msg.includes('no hay campos')) return 400;
+    if (msg.includes('ya existe')) return 409;
+    return 500;
+};
+
 export const create = async (req = request, res = response) => {
     try {
         console.log('Body recibido:', req.body);
@@ -61,7 +69,7 @@ export const getAll = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: "Error al obtener transacciones",
             error: error.message
@@ -95,7 +103,7 @@ export const getByUsuario = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -125,7 +133,7 @@ export const getMisTransacciones = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -142,7 +150,7 @@ export const getByCuenta = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -159,7 +167,7 @@ export const getByTipo = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -176,7 +184,7 @@ export const getByEstado = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -193,7 +201,7 @@ export const getByFecha = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -210,7 +218,7 @@ export const getByPrestamo = async (req = request, res = response) => {
             count: transacciones.length
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -239,7 +247,7 @@ export const getResumen = async (req = request, res = response) => {
             data: resumen
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });
@@ -274,7 +282,7 @@ export const remove = async (req = request, res = response) => {
             data: transaccion
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(getErrorStatusCode(error)).json({
             success: false,
             message: error.message
         });

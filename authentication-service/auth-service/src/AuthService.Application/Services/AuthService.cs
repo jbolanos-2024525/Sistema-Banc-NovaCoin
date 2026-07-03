@@ -100,19 +100,8 @@ public class AuthService(
 
         logger.LogUserRegistered(createdUser.Username);
 
-        // Enviar email de verificación en background
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await emailService.SendEmailVerificationAsync(createdUser.Email, createdUser.Username, emailVerificationToken);
-                logger.LogInformation("Verification email sent");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to send verification email");
-            }
-        });
+        // Enviar email de verificación en background (observed to prevent UnobservedTaskException)
+        _ = SendVerificationEmailInBackground(createdUser.Email, createdUser.Username, emailVerificationToken);
 
         // Crear respuesta sin JWT - solo confirmación de registro
         return new RegisterResponseDto
@@ -176,6 +165,19 @@ public class AuthService(
             ExpiresIn = 900,
             UserDetails = MapToUserDetailsDto(user)
         };
+    }
+
+    private async Task SendVerificationEmailInBackground(string email, string username, string token)
+    {
+        try
+        {
+            await emailService.SendEmailVerificationAsync(email, username, token);
+            logger.LogInformation("Verification email sent to {Email}", email);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send verification email to {Email}", email);
+        }
     }
 
     private UserResponseDto MapToUserResponseDto(User user)
@@ -346,6 +348,12 @@ public class AuthService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to send password reset email to {Email}", user.Email);
+            return new EmailResponseDto
+            {
+                Success = false,
+                Message = "Error al enviar el correo de recuperación. Inténtelo de nuevo más tarde.",
+                Data = new { email = forgotPasswordDto.Email, initiated = false }
+            };
         }
 
         return new EmailResponseDto

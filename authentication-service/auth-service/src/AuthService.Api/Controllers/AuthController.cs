@@ -278,6 +278,10 @@ namespace AuthService.Api.Controllers
         public async Task<ActionResult<EmailResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
         {
             var result = await _authService.VerifyEmailAsync(verifyEmailDto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
             return Ok(result);
         }
 
@@ -390,6 +394,10 @@ namespace AuthService.Api.Controllers
         public async Task<ActionResult<EmailResponseDto>> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var result = await _authService.ResetPasswordAsync(resetPasswordDto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
             return Ok(result);
         }
 

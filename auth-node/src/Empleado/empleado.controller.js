@@ -11,6 +11,14 @@ import {
   cambiarEstadoEmpleado
 } from './empleado.service.js';
 
+const getErrorStatusCode = (error) => {
+    const msg = (error.message || '').toLowerCase();
+    if (msg.includes('no encontrad') || msg.includes('not found')) return 404;
+    if (msg.includes('requerido') || msg.includes('inválid') || msg.includes('no válid') || msg.includes('no hay campos')) return 400;
+    if (msg.includes('ya existe')) return 409;
+    return 500;
+};
+
 export const createEmpleado = async (req, res) => {
   try {
     const empleado = await createEmpleadoRecord(req.body);
@@ -38,7 +46,7 @@ export const getEmpleados = async (req, res) => {
       count: empleados.length
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(getErrorStatusCode(err)).json({
       success: false,
       message: 'Error al obtener empleados',
       error: err.message,
@@ -104,7 +112,7 @@ export const getEmpleadosByRolController = async (req, res) => {
       count: empleados.length
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(getErrorStatusCode(err)).json({
       success: false,
       message: err.message,
     });
@@ -139,7 +147,7 @@ export const deleteEmpleado = async (req, res) => {
       data: empleado
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(getErrorStatusCode(err)).json({
       success: false,
       message: 'Error al desactivar el empleado',
       error: err.message,
@@ -157,7 +165,7 @@ export const deleteEmpleadoHard = async (req, res) => {
       data: empleado
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(getErrorStatusCode(err)).json({
       success: false,
       message: 'Error al eliminar el empleado',
       error: err.message,

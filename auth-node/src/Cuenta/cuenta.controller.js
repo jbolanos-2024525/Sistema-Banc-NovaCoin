@@ -14,6 +14,15 @@ import {
     cambiarEstadoCuenta
 } from "./cuenta.service.js";
 
+const getErrorStatusCode = (error) => {
+    const msg = (error.message || '').toLowerCase();
+    if (msg.includes('no encontrad') || msg.includes('not found')) return 404;
+    if (msg.includes('requerido') || msg.includes('inválid') || msg.includes('no válid') || msg.includes('no hay campos')) return 400;
+    if (msg.includes('insuficiente') || msg.includes('excede') || msg.includes('no está activa') || msg.includes('misma cuenta')) return 400;
+    if (msg.includes('ya existe')) return 409;
+    return 500;
+};
+
 export const create = async (req = request, res = response) => {
     try {
         const cuenta = await createCuenta(req.body);
@@ -40,7 +49,7 @@ export const getAll = async (req = request, res = response) => {
             count: cuentas.length 
         });
     } catch (error) {
-        return res.status(500).json({ 
+        return res.status(getErrorStatusCode(error)).json({ 
             success: false, 
             message: error.message 
         });
@@ -89,7 +98,7 @@ export const getByUsuario = async (req = request, res = response) => {
             count: cuentas.length 
         });
     } catch (error) {
-        return res.status(500).json({ 
+        return res.status(getErrorStatusCode(error)).json({ 
             success: false, 
             message: error.message 
         });
@@ -120,7 +129,7 @@ export const getMisCuentas = async (req = request, res = response) => {
             count: cuentas.length 
         });
     } catch (error) {
-        return res.status(500).json({ 
+        return res.status(getErrorStatusCode(error)).json({ 
             success: false, 
             message: error.message 
         });
@@ -154,7 +163,7 @@ export const remove = async (req = request, res = response) => {
             data: cuenta 
         });
     } catch (error) {
-        return res.status(500).json({ 
+        return res.status(getErrorStatusCode(error)).json({ 
             success: false, 
             message: error.message 
         });
