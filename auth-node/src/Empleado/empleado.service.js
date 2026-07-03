@@ -1,127 +1,63 @@
 import Empleado from './empleado.model.js';
+import {
+    createRecord,
+    findById,
+    findAll,
+    updateRecord,
+    softDelete,
+    changeStatus
+} from '../../utils/serviceHelpers.js';
 
-export const createEmpleadoRecord = async (empleadoData) => {
-    try {
-        const empleado = new Empleado(empleadoData);
-        await empleado.save();
-        return empleado.toObject();
-    } catch (error) {
-        if (error.code === 11000) {
-            throw new Error('Ya existe un empleado con estos datos (DPI o correo)');
-        }
-        throw error;
-    }
+const ENTITY = 'empleado';
+
+export const createEmpleadoRecord = async (data) => {
+    const empleado = await createRecord(Empleado, data, ENTITY);
+    return empleado.toObject ? empleado.toObject() : empleado;
 };
 
-export const getEmpleadosRecord = async (filters = {}) => {
-    const query = { isActive: true, ...filters };
-    return await Empleado.find(query)
-        .sort({ createdAt: -1 })
-        .lean();
-};
+export const getEmpleadosRecord = (filters = {}) =>
+    findAll(Empleado, filters, { activeField: 'isActive' });
 
-export const getEmpleadoById = async (id) => {
-    if (!id) throw new Error('ID de empleado es requerido');
-    
-    const empleado = await Empleado.findById(id).lean();
-    if (!empleado) throw new Error('Empleado no encontrado');
-    
-    return empleado;
-};
+export const getEmpleadoById = (id) => findById(Empleado, id, ENTITY);
 
 export const getEmpleadoByDPI = async (dpi) => {
     if (!dpi) throw new Error('DPI es requerido');
-    
+
     const empleado = await Empleado.findOne({ DPI: dpi }).lean();
     if (!empleado) throw new Error('Empleado no encontrado');
-    
+
     return empleado;
 };
 
 export const getEmpleadoByCorreo = async (correo) => {
     if (!correo) throw new Error('Correo es requerido');
-    
+
     const empleado = await Empleado.findOne({ Correo: correo.toLowerCase() }).lean();
     if (!empleado) throw new Error('Empleado no encontrado');
-    
+
     return empleado;
 };
 
-export const getEmpleadosByRol = async (rol) => {
+export const getEmpleadosByRol = (rol) => {
     if (!rol) throw new Error('Rol es requerido');
-    
-    return await Empleado.find({ 
-        Rol: rol, 
-        isActive: true 
-    })
-    .sort({ createdAt: -1 })
-    .lean();
+
+    return findAll(Empleado, { Rol: rol }, { activeField: 'isActive' });
 };
 
-export const updateEmpleadoRecord = async (id, updateData) => {
-    if (!id) throw new Error('ID de empleado es requerido');
-    
-    const allowedUpdates = ['Nombre', 'Apellido', 'Telefono', 'Puesto', 'Salario', 'Rol', 'Estado'];
-    const updates = {};
-    
-    for (const key of allowedUpdates) {
-        if (updateData[key] !== undefined) {
-            updates[key] = updateData[key];
-        }
-    }
-    
-    if (Object.keys(updates).length === 0) {
-        throw new Error('No hay campos válidos para actualizar');
-    }
-    
-    const empleado = await Empleado.findByIdAndUpdate(
-        id,
-        updates,
-        { new: true, runValidators: true }
-    );
-    
-    if (!empleado) throw new Error('Empleado no encontrado');
-    
-    return empleado;
-};
+export const updateEmpleadoRecord = (id, data) =>
+    updateRecord(Empleado, id, data, ['Nombre', 'Apellido', 'Telefono', 'Puesto', 'Salario', 'Rol', 'Estado'], ENTITY);
 
-export const deleteEmpleadoSoft = async (id) => {
-    if (!id) throw new Error('ID de empleado es requerido');
-    
-    const empleado = await Empleado.findByIdAndUpdate(
-        id,
-        { isActive: false },
-        { new: true }
-    );
-    
-    if (!empleado) throw new Error('Empleado no encontrado');
-    
-    return empleado;
-};
+export const deleteEmpleadoSoft = (id) =>
+    softDelete(Empleado, id, ENTITY, 'isActive');
 
 export const deleteEmpleadoAbsolute = async (id) => {
     if (!id) throw new Error('ID de empleado es requerido');
-    
+
     const empleado = await Empleado.findByIdAndDelete(id);
-    
     if (!empleado) throw new Error('Empleado no encontrado');
-    
+
     return empleado;
 };
 
-export const cambiarEstadoEmpleado = async (id, nuevoEstado) => {
-    if (!id) throw new Error('ID de empleado es requerido');
-    if (!['ACTIVO', 'INACTIVO', 'SUSPENDIDO'].includes(nuevoEstado)) {
-        throw new Error('Estado no válido');
-    }
-    
-    const empleado = await Empleado.findByIdAndUpdate(
-        id,
-        { Estado: nuevoEstado },
-        { new: true, runValidators: true }
-    );
-    
-    if (!empleado) throw new Error('Empleado no encontrado');
-    
-    return empleado;
-};
+export const cambiarEstadoEmpleado = (id, nuevoEstado) =>
+    changeStatus(Empleado, id, nuevoEstado, ['ACTIVO', 'INACTIVO', 'SUSPENDIDO'], 'Estado', ENTITY);

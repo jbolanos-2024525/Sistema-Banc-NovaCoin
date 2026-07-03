@@ -1,185 +1,68 @@
+import { catchAsync } from "../../utils/catchAsync.js";
+
 import {
-  createEmpleadoRecord,
-  getEmpleadosRecord,
-  getEmpleadoById,
-  getEmpleadoByDPI,
-  getEmpleadoByCorreo,
-  getEmpleadosByRol,
-  updateEmpleadoRecord,
-  deleteEmpleadoSoft,
-  deleteEmpleadoAbsolute,
-  cambiarEstadoEmpleado
+    createEmpleadoRecord,
+    getEmpleadosRecord,
+    getEmpleadoById,
+    getEmpleadoByDPI,
+    getEmpleadoByCorreo,
+    getEmpleadosByRol,
+    updateEmpleadoRecord,
+    deleteEmpleadoSoft,
+    deleteEmpleadoAbsolute,
+    cambiarEstadoEmpleado
 } from './empleado.service.js';
 
-export const createEmpleado = async (req, res) => {
-  try {
-    const empleado = await createEmpleadoRecord(req.body);
-    res.status(201).json({
-      success: true,
-      message: 'Empleado registrado con éxito.',
-      data: empleado,
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: 'Error al registrar el empleado',
-      error: err.message,
-    });
-  }
-};
+export const createEmpleado = catchAsync(
+    async (req) => await createEmpleadoRecord(req.body),
+    { successStatus: 201, errorStatus: 400, successMessage: "Empleado registrado con éxito." }
+);
 
-export const getEmpleados = async (req, res) => {
-  try {
-    const filters = req.query || {};
-    const empleados = await getEmpleadosRecord(filters);
-    res.status(200).json({
-      success: true,
-      data: empleados,
-      count: empleados.length
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener empleados',
-      error: err.message,
-    });
-  }
-};
+export const getEmpleados = catchAsync(
+    async (req) => await getEmpleadosRecord(req.query || {}),
+    { errorStatus: 500 }
+);
 
-export const getEmpleado = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleado = await getEmpleadoById(id);
-    res.status(200).json({
-      success: true,
-      data: empleado,
-    });
-  } catch (err) {
-    res.status(404).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+export const getEmpleado = catchAsync(
+    async (req) => await getEmpleadoById(req.params.id),
+    { errorStatus: 404 }
+);
 
-export const getEmpleadoByDPIController = async (req, res) => {
-  try {
-    const { dpi } = req.params;
-    const empleado = await getEmpleadoByDPI(dpi);
-    res.status(200).json({
-      success: true,
-      data: empleado,
-    });
-  } catch (err) {
-    res.status(404).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+export const getEmpleadoByDPIController = catchAsync(
+    async (req) => await getEmpleadoByDPI(req.params.dpi),
+    { errorStatus: 404 }
+);
 
-export const getEmpleadoByCorreoController = async (req, res) => {
-  try {
-    const { correo } = req.params;
-    const empleado = await getEmpleadoByCorreo(correo);
-    res.status(200).json({
-      success: true,
-      data: empleado,
-    });
-  } catch (err) {
-    res.status(404).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+export const getEmpleadoByCorreoController = catchAsync(
+    async (req) => await getEmpleadoByCorreo(req.params.correo),
+    { errorStatus: 404 }
+);
 
-export const getEmpleadosByRolController = async (req, res) => {
-  try {
-    const { rol } = req.params;
-    const empleados = await getEmpleadosByRol(rol);
-    res.status(200).json({
-      success: true,
-      data: empleados,
-      count: empleados.length
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+export const getEmpleadosByRolController = catchAsync(
+    async (req) => await getEmpleadosByRol(req.params.rol),
+    { errorStatus: 500 }
+);
 
-export const updateEmpleado = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleado = await updateEmpleadoRecord(id, req.body);
-    res.status(200).json({
-      success: true,
-      message: 'Empleado actualizado con éxito.',
-      data: empleado,
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: 'Error al actualizar el empleado',
-      error: err.message,
-    });
-  }
-};
+export const updateEmpleado = catchAsync(
+    async (req) => await updateEmpleadoRecord(req.params.id, req.body),
+    { errorStatus: 400, successMessage: "Empleado actualizado con éxito." }
+);
 
-export const deleteEmpleado = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleado = await deleteEmpleadoSoft(id);
-    res.status(200).json({
-      success: true,
-      message: 'Empleado desactivado correctamente',
-      data: empleado
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Error al desactivar el empleado',
-      error: err.message,
-    });
-  }
-};
+export const deleteEmpleado = catchAsync(
+    async (req) => await deleteEmpleadoSoft(req.params.id),
+    { errorStatus: 500, successMessage: "Empleado desactivado correctamente" }
+);
 
-export const deleteEmpleadoHard = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleado = await deleteEmpleadoAbsolute(id);
-    res.status(200).json({
-      success: true,
-      message: 'Empleado eliminado permanentemente de la base de datos',
-      data: empleado
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Error al eliminar el empleado',
-      error: err.message,
-    });
-  }
-};
+export const deleteEmpleadoHard = catchAsync(
+    async (req) => await deleteEmpleadoAbsolute(req.params.id),
+    { errorStatus: 500, successMessage: "Empleado eliminado permanentemente de la base de datos" }
+);
 
-export const cambiarEstado = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { estado } = req.body;
-    const empleado = await cambiarEstadoEmpleado(id, estado);
-    res.status(200).json({
-      success: true,
-      message: 'Estado de empleado actualizado correctamente',
-      data: empleado
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: 'Error al actualizar el estado del empleado',
-      error: err.message,
-    });
-  }
-};
+export const cambiarEstado = catchAsync(
+    async (req) => {
+        const { id } = req.params;
+        const { estado } = req.body;
+        return await cambiarEstadoEmpleado(id, estado);
+    },
+    { errorStatus: 400, successMessage: "Estado de empleado actualizado correctamente" }
+);

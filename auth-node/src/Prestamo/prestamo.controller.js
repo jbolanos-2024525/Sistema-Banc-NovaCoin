@@ -1,4 +1,6 @@
-import { request, response } from "express";
+import { catchAsync } from "../../utils/catchAsync.js";
+import { extractUserId } from "../../utils/requestHelpers.js";
+
 import { 
     createPrestamo, 
     getPrestamos, 
@@ -13,207 +15,73 @@ import {
     cambiarEstadoPrestamo
 } from "./prestamo.service.js";
 
-export const create = async (req = request, res = response) => {
-    try {
-        const clienteId = req.user?.uid || 
-                         req.user?.id || 
-                         req.usuario?.uid || 
-                         req.usuario?.id || 
-                         req.cliente?.id || 
-                         req.cliente?._id?.toString();
-
+export const create = catchAsync(
+    async (req) => {
+        const clienteId = extractUserId(req);
         const empleadoId = req.empleado?._id?.toString() ?? null;
-
-        const prestamo = await createPrestamo({
+        return await createPrestamo({
             ...req.body,
             cliente: clienteId,
             empleado: empleadoId
         });
+    },
+    { successStatus: 201, errorStatus: 400, successMessage: "Préstamo creado correctamente" }
+);
 
-        return res.status(201).json({
-            success: true,
-            message: "Préstamo creado correctamente",
-            data: prestamo
-        });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "No fue posible crear el préstamo",
-            error: error.message
-        });
-    }
-};
+export const getAll = catchAsync(
+    async (req) => await getPrestamos(req.query || {}),
+    { errorStatus: 500 }
+);
 
-export const getAll = async (req = request, res = response) => {
-    try {
-        const filters = req.query || {};
-        const prestamos = await getPrestamos(filters);
-        return res.json({ 
-            success: true, 
-            data: prestamos,
-            count: prestamos.length 
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error al obtener préstamos",
-            error: error.message
-        });
-    }
-};
+export const getById = catchAsync(
+    async (req) => await getPrestamoById(req.params.id),
+    { errorStatus: 404 }
+);
 
-export const getById = async (req = request, res = response) => {
-    try {
-        const prestamo = await getPrestamoById(req.params.id);
-        return res.json({ 
-            success: true, 
-            data: prestamo 
-        });
-    } catch (error) {
-        return res.status(404).json({
-            success: false,
-            message: "Préstamo no encontrado",
-            error: error.message
-        });
-    }
-};
+export const getByCliente = catchAsync(
+    async (req) => await getPrestamosByCliente(req.params.clienteId),
+    { errorStatus: 500 }
+);
 
-export const getByCliente = async (req = request, res = response) => {
-    try {
-        const { clienteId } = req.params;
-        const prestamos = await getPrestamosByCliente(clienteId);
-        return res.json({ 
-            success: true, 
-            data: prestamos,
-            count: prestamos.length 
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-};
+export const getByEstado = catchAsync(
+    async (req) => await getPrestamosByEstado(req.params.estado),
+    { errorStatus: 500 }
+);
 
-export const getByEstado = async (req = request, res = response) => {
-    try {
-        const { estado } = req.params;
-        const prestamos = await getPrestamosByEstado(estado);
-        return res.json({ 
-            success: true, 
-            data: prestamos,
-            count: prestamos.length 
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-};
+export const getByEmpleado = catchAsync(
+    async (req) => await getPrestamosByEmpleado(req.params.empleadoId),
+    { errorStatus: 500 }
+);
 
-export const getByEmpleado = async (req = request, res = response) => {
-    try {
-        const { empleadoId } = req.params;
-        const prestamos = await getPrestamosByEmpleado(empleadoId);
-        return res.json({ 
-            success: true, 
-            data: prestamos,
-            count: prestamos.length 
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-};
+export const update = catchAsync(
+    async (req) => await updatePrestamo(req.params.id, req.body),
+    { errorStatus: 400, successMessage: "Préstamo actualizado correctamente" }
+);
 
-export const update = async (req = request, res = response) => {
-    try {
-        const prestamo = await updatePrestamo(req.params.id, req.body);
-        return res.json({
-            success: true,
-            message: "Préstamo actualizado correctamente",
-            data: prestamo
-        });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "No se pudo actualizar el préstamo",
-            error: error.message
-        });
-    }
-};
-
-export const pagar = async (req = request, res = response) => {
-    try {
+export const pagar = catchAsync(
+    async (req) => {
         const { id } = req.params;
         const { monto } = req.body;
-        const prestamo = await pagarCuota(id, monto);
-        return res.json({
-            success: true,
-            message: "Pago de cuota realizado correctamente",
-            data: prestamo
-        });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "No se pudo realizar el pago",
-            error: error.message
-        });
-    }
-};
+        return await pagarCuota(id, monto);
+    },
+    { errorStatus: 400, successMessage: "Pago de cuota realizado correctamente" }
+);
 
-export const cancelar = async (req = request, res = response) => {
-    try {
-        const prestamo = await cancelarPrestamo(req.params.id);
-        return res.json({
-            success: true,
-            message: "Préstamo cancelado correctamente",
-            data: prestamo
-        });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "No se pudo cancelar el préstamo",
-            error: error.message
-        });
-    }
-};
+export const cancelar = catchAsync(
+    async (req) => await cancelarPrestamo(req.params.id),
+    { errorStatus: 400, successMessage: "Préstamo cancelado correctamente" }
+);
 
-export const remove = async (req = request, res = response) => {
-    try {
-        const prestamo = await deletePrestamo(req.params.id);
-        return res.json({
-            success: true,
-            message: "Préstamo eliminado correctamente",
-            data: prestamo
-        });
-    } catch (error) {
-        return res.status(404).json({
-            success: false,
-            message: "No se pudo eliminar el préstamo",
-            error: error.message
-        });
-    }
-};
+export const remove = catchAsync(
+    async (req) => await deletePrestamo(req.params.id),
+    { errorStatus: 404, successMessage: "Préstamo eliminado correctamente" }
+);
 
-export const cambiarEstado = async (req = request, res = response) => {
-    try {
+export const cambiarEstado = catchAsync(
+    async (req) => {
         const { id } = req.params;
         const { estado } = req.body;
-        const prestamo = await cambiarEstadoPrestamo(id, estado);
-        return res.json({
-            success: true,
-            message: "Estado de préstamo actualizado correctamente",
-            data: prestamo
-        });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: "No se pudo actualizar el estado del préstamo",
-            error: error.message
-        });
-    }
-};
+        return await cambiarEstadoPrestamo(id, estado);
+    },
+    { errorStatus: 400, successMessage: "Estado de préstamo actualizado correctamente" }
+);

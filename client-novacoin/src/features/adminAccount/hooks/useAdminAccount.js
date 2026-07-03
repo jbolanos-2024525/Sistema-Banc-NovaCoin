@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAdminAccountStore } from '../store/adminAccountStore';
+import { formatCurrency } from '../../../shared/utils/formatters';
 
 export const useAdminAccount = () => {
 
@@ -26,12 +27,6 @@ export const useAdminAccount = () => {
     const handleClearFilter = () => {
         setFilterUsuarioId('');
         store.fetchCuentas();
-    };
-
-    const formatCurrency = (amount, moneda = 'GTQ') => {
-        const locale   = moneda === 'USD' ? 'en-US' : 'es-GT';
-        const currency = moneda === 'USD' ? 'USD'   : 'GTQ';
-        return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount || 0);
     };
 
     return {

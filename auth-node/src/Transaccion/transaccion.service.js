@@ -1,184 +1,98 @@
 import { Transaccion } from './transaccion.model.js';
+import {
+    createRecord,
+    findById,
+    findAll,
+    updateRecord,
+    softDelete,
+    changeStatus
+} from '../../utils/serviceHelpers.js';
 
-export const createTransaccion = async (transaccionData) => {
-    try {
-        const transaccion = new Transaccion(transaccionData);
-        await transaccion.save();
-        return transaccion;
-    } catch (error) {
-        if (error.code === 11000) {
-            throw new Error('Ya existe una transacción con estos datos');
-        }
-        throw error;
-    }
-};
+const ENTITY = 'transacción';
+const POPULATE = ["Empleado", "Nombre Apellido Rol"];
+const SORT_FIELD = 'FechaTransaccion';
 
-export const getTransacciones = async (filters = {}) => {
-    const query = { Estado: true, ...filters };
-    return await Transaccion.find(query)
-        .populate("Empleado", "Nombre Apellido Rol")
-        .sort({ FechaTransaccion: -1 })
-        .lean();
-};
+export const createTransaccion = (data) => createRecord(Transaccion, data, ENTITY);
+
+export const getTransacciones = (filters = {}) =>
+    findAll(Transaccion, filters, { populateOpts: POPULATE, sortField: SORT_FIELD });
 
 export const getTransaccionById = async (id) => {
     if (!id) throw new Error('ID de transacción es requerido');
-    
+
     const transaccion = await Transaccion.findById(id)
         .populate("Empleado", "Nombre Apellido Rol");
-    
+
     if (!transaccion) throw new Error('Transacción no encontrada');
-    
+
     return transaccion;
 };
 
-export const getTransaccionesByUsuario = async (usuarioId) => {
+export const getTransaccionesByUsuario = (usuarioId) => {
     if (!usuarioId) throw new Error('ID de usuario es requerido');
-    
-    return await Transaccion.find({ 
-        Usuario: String(usuarioId), 
-        Estado: true 
-    })
-    .populate("Empleado", "Nombre Apellido Rol")
-    .sort({ FechaTransaccion: -1 })
-    .lean();
+    return findAll(Transaccion, { Usuario: String(usuarioId) }, { populateOpts: POPULATE, sortField: SORT_FIELD });
 };
 
 export const getTransaccionesByCuenta = async (cuentaId) => {
     if (!cuentaId) throw new Error('ID de cuenta es requerido');
-    
-    return await Transaccion.find({ 
+
+    return await Transaccion.find({
         $or: [
             { CuentaOrigen: cuentaId },
             { CuentaDestino: cuentaId }
         ],
-        Estado: true 
+        Estado: true
     })
     .populate("Empleado", "Nombre Apellido Rol")
     .sort({ FechaTransaccion: -1 })
     .lean();
 };
 
-export const getTransaccionesByTipo = async (tipo) => {
+export const getTransaccionesByTipo = (tipo) => {
     if (!tipo) throw new Error('Tipo de transacción es requerido');
-    
-    return await Transaccion.find({ 
-        TipoTransaccion: tipo, 
-        Estado: true 
-    })
-    .populate("Empleado", "Nombre Apellido Rol")
-    .sort({ FechaTransaccion: -1 })
-    .lean();
+    return findAll(Transaccion, { TipoTransaccion: tipo }, { populateOpts: POPULATE, sortField: SORT_FIELD });
 };
 
-export const getTransaccionesByEstado = async (estado) => {
+export const getTransaccionesByEstado = (estado) => {
     if (!estado) throw new Error('Estado es requerido');
-    
-    return await Transaccion.find({ 
-        EstadoTransaccion: estado, 
-        Estado: true 
-    })
-    .populate("Empleado", "Nombre Apellido Rol")
-    .sort({ FechaTransaccion: -1 })
-    .lean();
+    return findAll(Transaccion, { EstadoTransaccion: estado }, { populateOpts: POPULATE, sortField: SORT_FIELD });
 };
 
 export const getTransaccionesByFecha = async (fechaInicio, fechaFin) => {
     if (!fechaInicio || !fechaFin) {
         throw new Error('Fechas de inicio y fin son requeridas');
     }
-    
-    return await Transaccion.find({ 
+
+    return findAll(Transaccion, {
         FechaTransaccion: {
             $gte: new Date(fechaInicio),
             $lte: new Date(fechaFin)
-        },
-        Estado: true 
-    })
-    .populate("Empleado", "Nombre Apellido Rol")
-    .sort({ FechaTransaccion: -1 })
-    .lean();
-};
-
-export const getTransaccionesByPrestamo = async (prestamoId) => {
-    if (!prestamoId) throw new Error('ID de préstamo es requerido');
-    
-    return await Transaccion.find({ 
-        PrestamoId: prestamoId, 
-        Estado: true 
-    })
-    .populate("Empleado", "Nombre Apellido Rol")
-    .sort({ FechaTransaccion: -1 })
-    .lean();
-};
-
-export const updateTransaccion = async (id, updateData) => {
-    if (!id) throw new Error('ID de transacción es requerido');
-    
-    const allowedUpdates = ['Descripcion', 'Referencia', 'EstadoTransaccion'];
-    const updates = {};
-    
-    for (const key of allowedUpdates) {
-        if (updateData[key] !== undefined) {
-            updates[key] = updateData[key];
         }
-    }
-    
-    if (Object.keys(updates).length === 0) {
-        throw new Error('No hay campos válidos para actualizar');
-    }
-    
-    const transaccion = await Transaccion.findByIdAndUpdate(
-        id,
-        updates,
-        { new: true, runValidators: true }
-    );
-    
-    if (!transaccion) throw new Error('Transacción no encontrada');
-    
-    return transaccion;
+    }, { populateOpts: POPULATE, sortField: SORT_FIELD });
 };
 
-export const deleteTransaccion = async (id) => {
-    if (!id) throw new Error('ID de transacción es requerido');
-    
-    const transaccion = await Transaccion.findByIdAndUpdate(
-        id,
-        { Estado: false },
-        { new: true }
-    );
-    
-    if (!transaccion) throw new Error('Transacción no encontrada');
-    
-    return transaccion;
+export const getTransaccionesByPrestamo = (prestamoId) => {
+    if (!prestamoId) throw new Error('ID de préstamo es requerido');
+    return findAll(Transaccion, { PrestamoId: prestamoId }, { populateOpts: POPULATE, sortField: SORT_FIELD });
 };
 
-export const cambiarEstadoTransaccion = async (id, nuevoEstado) => {
-    if (!id) throw new Error('ID de transacción es requerido');
-    if (!['COMPLETADA', 'PENDIENTE', 'FALLIDA', 'CANCELADA'].includes(nuevoEstado)) {
-        throw new Error('Estado no válido');
-    }
-    
-    const transaccion = await Transaccion.findByIdAndUpdate(
-        id,
-        { EstadoTransaccion: nuevoEstado },
-        { new: true, runValidators: true }
-    );
-    
-    if (!transaccion) throw new Error('Transacción no encontrada');
-    
-    return transaccion;
-};
+export const updateTransaccion = (id, data) =>
+    updateRecord(Transaccion, id, data, ['Descripcion', 'Referencia', 'EstadoTransaccion'], ENTITY);
+
+export const deleteTransaccion = (id) => softDelete(Transaccion, id, ENTITY);
+
+export const cambiarEstadoTransaccion = (id, nuevoEstado) =>
+    changeStatus(Transaccion, id, nuevoEstado, ['COMPLETADA', 'PENDIENTE', 'FALLIDA', 'CANCELADA'], 'EstadoTransaccion', ENTITY);
 
 export const getResumenTransacciones = async (usuarioId) => {
     if (!usuarioId) throw new Error('ID de usuario es requerido');
-    
-    const transacciones = await Transaccion.find({ 
-        Usuario: String(usuarioId), 
+
+    const transacciones = await Transaccion.find({
+        Usuario: String(usuarioId),
         Estado: true,
         EstadoTransaccion: 'COMPLETADA'
     }).lean();
-    
+
     const resumen = {
         totalTransacciones: transacciones.length,
         depositos: 0,
@@ -192,7 +106,7 @@ export const getResumenTransacciones = async (usuarioId) => {
         montoTotalTransferenciasRecibidas: 0,
         montoTotalPagosPrestamo: 0
     };
-    
+
     transacciones.forEach(t => {
         switch(t.TipoTransaccion) {
             case 'DEPOSITO':
@@ -217,6 +131,6 @@ export const getResumenTransacciones = async (usuarioId) => {
                 break;
         }
     });
-    
+
     return resumen;
 };

@@ -1,4 +1,5 @@
-import { request, response } from "express";
+import { catchAsync } from "../../utils/catchAsync.js";
+import { extractUserId } from "../../utils/requestHelpers.js";
 
 import {
     createCuenta,
@@ -14,220 +15,84 @@ import {
     cambiarEstadoCuenta
 } from "./cuenta.service.js";
 
-export const create = async (req = request, res = response) => {
-    try {
-        const cuenta = await createCuenta(req.body);
-        return res.status(201).json({ 
-            success: true, 
-            message: "Cuenta creada correctamente", 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const create = catchAsync(
+    async (req) => await createCuenta(req.body),
+    { successStatus: 201, errorStatus: 400, successMessage: "Cuenta creada correctamente" }
+);
 
-export const getAll = async (req = request, res = response) => {
-    try {
-        const filters = req.query || {};
-        const cuentas = await getCuentas(filters);
-        return res.status(200).json({ 
-            success: true, 
-            data: cuentas,
-            count: cuentas.length 
-        });
-    } catch (error) {
-        return res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const getAll = catchAsync(
+    async (req) => await getCuentas(req.query || {}),
+    { errorStatus: 500 }
+);
 
-export const getById = async (req = request, res = response) => {
-    try {
-        const { id } = req.params;
-        const cuenta = await getCuentaById(id);
-        return res.status(200).json({ 
-            success: true, 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(404).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const getById = catchAsync(
+    async (req) => await getCuentaById(req.params.id),
+    { errorStatus: 404 }
+);
 
-export const getByNumero = async (req = request, res = response) => {
-    try {
-        const { numeroCuenta } = req.params;
-        const cuenta = await getCuentaByNumero(numeroCuenta);
-        return res.status(200).json({ 
-            success: true, 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(404).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const getByNumero = catchAsync(
+    async (req) => await getCuentaByNumero(req.params.numeroCuenta),
+    { errorStatus: 404 }
+);
 
-export const getByUsuario = async (req = request, res = response) => {
-    try {
-        const { usuarioId } = req.params;
-        const cuentas = await getCuentasByUsuario(usuarioId);
-        return res.status(200).json({ 
-            success: true, 
-            data: cuentas,
-            count: cuentas.length 
-        });
-    } catch (error) {
-        return res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const getByUsuario = catchAsync(
+    async (req) => await getCuentasByUsuario(req.params.usuarioId),
+    { errorStatus: 500 }
+);
 
-export const getMisCuentas = async (req = request, res = response) => {
-    try {
-        const userId = req.user?.uid || 
-                       req.user?.id || 
-                       req.usuario?.uid || 
-                       req.usuario?.id || 
-                       req.cliente?.id || 
-                       req.cliente?.Id;
-
+export const getMisCuentas = catchAsync(
+    async (req, res) => {
+        const userId = extractUserId(req);
         if (!userId) {
-            return res.status(401).json({ 
-                success: false, 
-                message: "No se pudo identificar al usuario desde el token de autenticación." 
+            return res.status(401).json({
+                success: false,
+                message: "No se pudo identificar al usuario desde el token de autenticación."
             });
         }
+        return await getCuentasByUsuario(userId);
+    },
+    { errorStatus: 500 }
+);
 
-        const cuentas = await getCuentasByUsuario(userId);
-        
-        return res.status(200).json({ 
-            success: true, 
-            data: cuentas,
-            count: cuentas.length 
-        });
-    } catch (error) {
-        return res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const update = catchAsync(
+    async (req) => await updateCuenta(req.params.id, req.body),
+    { errorStatus: 400, successMessage: "Cuenta actualizada correctamente" }
+);
 
-export const update = async (req = request, res = response) => {
-    try {
-        const { id } = req.params;
-        const cuenta = await updateCuenta(id, req.body);
-        return res.status(200).json({ 
-            success: true, 
-            message: "Cuenta actualizada correctamente", 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+export const remove = catchAsync(
+    async (req) => await deleteCuenta(req.params.id),
+    { errorStatus: 500, successMessage: "Cuenta eliminada correctamente" }
+);
 
-export const remove = async (req = request, res = response) => {
-    try {
-        const { id } = req.params;
-        const cuenta = await deleteCuenta(id);
-        return res.status(200).json({ 
-            success: true, 
-            message: "Cuenta eliminada correctamente",
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
-
-export const deposit = async (req = request, res = response) => {
-    try {
-        const { cuentaId } = req.params;
+export const deposit = catchAsync(
+    async (req) => {
         const { monto, descripcion } = req.body;
-        const cuenta = await depositar(cuentaId, monto, descripcion);
-        return res.status(200).json({ 
-            success: true, 
-            message: "Depósito realizado correctamente", 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+        return await depositar(req.params.cuentaId, monto, descripcion);
+    },
+    { errorStatus: 400, successMessage: "Depósito realizado correctamente" }
+);
 
-export const withdraw = async (req = request, res = response) => {
-    try {
-        const { cuentaId } = req.params;
+export const withdraw = catchAsync(
+    async (req) => {
         const { monto, descripcion } = req.body;
-        const cuenta = await retirar(cuentaId, monto, descripcion);
-        return res.status(200).json({ 
-            success: true, 
-            message: "Retiro realizado correctamente", 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+        return await retirar(req.params.cuentaId, monto, descripcion);
+    },
+    { errorStatus: 400, successMessage: "Retiro realizado correctamente" }
+);
 
-export const transfer = async (req = request, res = response) => {
-    try {
+export const transfer = catchAsync(
+    async (req) => {
         const { cuentaOrigenId, cuentaDestinoId, monto, descripcion } = req.body;
-        const resultado = await transferir(cuentaOrigenId, cuentaDestinoId, monto, descripcion);
-        return res.status(200).json({ 
-            success: true, 
-            message: "Transferencia realizada correctamente", 
-            data: resultado 
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+        return await transferir(cuentaOrigenId, cuentaDestinoId, monto, descripcion);
+    },
+    { errorStatus: 400, successMessage: "Transferencia realizada correctamente" }
+);
 
-export const cambiarEstado = async (req = request, res = response) => {
-    try {
+export const cambiarEstado = catchAsync(
+    async (req) => {
         const { id } = req.params;
         const { estado } = req.body;
-        const cuenta = await cambiarEstadoCuenta(id, estado);
-        return res.status(200).json({ 
-            success: true, 
-            message: "Estado de cuenta actualizado correctamente", 
-            data: cuenta 
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-};
+        return await cambiarEstadoCuenta(id, estado);
+    },
+    { errorStatus: 400, successMessage: "Estado de cuenta actualizado correctamente" }
+);
