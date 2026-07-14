@@ -8,6 +8,7 @@ export const EmployeePage = () => {
     const { employees, loading, isModalOpen, selectedEmployee, fetchEmployees, openCreateModal, openEditModal, closeModal, handleSave, handleDelete } = useEmployee();
 
     const [confirmConfig, setConfirmConfig] = useState(null);
+    const [pendingEmployeeData, setPendingEmployeeData] = useState(null);
 
     useEffect(() => { fetchEmployees(); }, []);
 
@@ -20,8 +21,46 @@ export const EmployeePage = () => {
             onConfirm: async () => {
                 await handleDelete(id);
                 setConfirmConfig(null);
-            }
+            },
+            onClose: () => setConfirmConfig(null)
         });
+    };
+
+    const handleSaveConfirm = async (data) => {
+        setPendingEmployeeData(data);
+        if (selectedEmployee) {
+            setConfirmConfig({
+                title: 'Confirmar Actualización de Empleado',
+                message: `¿Estás seguro de actualizar los datos del empleado ${data.Nombre} ${data.Apellido}?`,
+                confirmText: 'Sí, Actualizar',
+                confirmColor: '#f59e0b',
+                onConfirm: async () => {
+                    const result = await handleSave(data);
+                    if (result) {
+                        fetchEmployees();
+                        setConfirmConfig(null);
+                        setPendingEmployeeData(null);
+                    }
+                },
+                onClose: () => setConfirmConfig(null)
+            });
+        } else {
+            setConfirmConfig({
+                title: 'Confirmar Registro de Empleado',
+                message: `¿Estás seguro de registrar al empleado ${data.Nombre} ${data.Apellido} como ${data.Puesto}?`,
+                confirmText: 'Sí, Registrar',
+                confirmColor: '#00f2fe',
+                onConfirm: async () => {
+                    const result = await handleSave(data);
+                    if (result) {
+                        fetchEmployees();
+                        setConfirmConfig(null);
+                        setPendingEmployeeData(null);
+                    }
+                },
+                onClose: () => setConfirmConfig(null)
+            });
+        }
     };
 
     return (
@@ -94,27 +133,6 @@ export const EmployeePage = () => {
                                                 Editar
                                             </button>
 
-                                            {/* Cancelar (deshabilitar) */}
-                                            <button
-                                                onClick={() => setConfirmConfig({
-                                                    title: 'Cancelar empleado',
-                                                    message: '¿Estás seguro de que deseas desactivar a este empleado del sistema?',
-                                                    confirmText: 'Sí, cancelar',
-                                                    confirmColor: '#ef4444',
-                                                    onConfirm: () => setConfirmConfig(null)
-                                                })}
-                                                style={{
-                                                    padding: '6px 14px',
-                                                    backgroundColor: 'transparent',
-                                                    border: '1px solid #ef4444',
-                                                    borderRadius: '6px',
-                                                    color: '#ef4444',
-                                                    cursor: 'pointer',
-                                                    fontSize: '12px',
-                                                }}
-                                            >
-                                                Cancelar
-                                            </button>
 
                                             {/* Eliminar */}
                                             <button
@@ -144,7 +162,7 @@ export const EmployeePage = () => {
             <EmployeeModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                onSave={handleSave}
+                onSave={handleSaveConfirm}
                 loading={loading}
                 employee={selectedEmployee}
             />

@@ -2,23 +2,109 @@ import React, { useEffect, useState } from 'react';
 import { useTransactionsStore } from '../store/transactionsStore';
 import { TransactionsList }     from '../components/transactions';
 import { TransactionsModal }    from '../components/transactionsModal';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
+import { useAuthStore } from '../../auth/store/authStore';
 
 export const TransactionsPage = () => {
 
-    const { transactions, loading, error, fetchTransactions, executeTransaction } = useTransactionsStore();
+    const { transactions, loading, error, fetchTransactions, executeTransaction, updateTransaction, deleteTransaction, cancelTransaction } = useTransactionsStore();
+    const { user } = useAuthStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState(null);
+    const [pendingTransactionData, setPendingTransactionData] = useState(null);
+    const [transactionToEdit, setTransactionToEdit] = useState(null);
+
+    const isAdmin = user?.role === 'ADMIN_ROLE';
 
     useEffect(() => {
         fetchTransactions();
     }, [fetchTransactions]);
 
     const handleCreateTransaction = async (transactionDto) => {
-        if (!executeTransaction) return;
-        const result = await executeTransaction(transactionDto);
-        if (result.success) {
-            setIsModalOpen(false);
-            fetchTransactions();
-        }
+        setPendingTransactionData(transactionDto);
+        setConfirmConfig({
+            title: 'Confirmar Transacción',
+            message: `¿Estás seguro de realizar una transacción de ${transactionDto.TipoTransaccion} por ${transactionDto.Monto}?`,
+            confirmText: 'Sí, Realizar',
+            confirmColor: '#00f2fe',
+            onConfirm: async () => {
+                if (!executeTransaction) return;
+                const result = await executeTransaction(transactionDto);
+                if (result.success) {
+                    setIsModalOpen(false);
+                    fetchTransactions();
+                }
+                setConfirmConfig(null);
+                setPendingTransactionData(null);
+            },
+            onClose: () => setConfirmConfig(null)
+        });
+    };
+
+    const handleUpdateTransaction = async (transactionDto) => {
+        setPendingTransactionData(transactionDto);
+        setConfirmConfig({
+            title: 'Confirmar Actualización',
+            message: `¿Estás seguro de actualizar esta transacción?`,
+            confirmText: 'Sí, Actualizar',
+            confirmColor: '#f59e0b',
+            onConfirm: async () => {
+                const id = transactionToEdit._id || transactionToEdit.id;
+                const result = await updateTransaction(id, transactionDto);
+                if (result.success) {
+                    setIsModalOpen(false);
+                    setTransactionToEdit(null);
+                    fetchTransactions();
+                }
+                setConfirmConfig(null);
+                setPendingTransactionData(null);
+            },
+            onClose: () => setConfirmConfig(null)
+        });
+    };
+
+    const handleDeleteTransaction = (id) => {
+        setConfirmConfig({
+            title: 'Eliminar Transacción',
+            message: 'Esta acción es permanente e irreversible. ¿Estás seguro de eliminar esta transacción?',
+            confirmText: 'Sí, Eliminar',
+            confirmColor: '#dc2626',
+            onConfirm: async () => {
+                const result = await deleteTransaction(id);
+                if (result.success) {
+                    fetchTransactions();
+                }
+                setConfirmConfig(null);
+            },
+            onClose: () => setConfirmConfig(null)
+        });
+    };
+
+    const handleCancelTransaction = (id) => {
+        setConfirmConfig({
+            title: 'Cancelar Transacción',
+            message: '¿Estás seguro de cancelar esta transacción? Esta acción no se puede deshacer.',
+            confirmText: 'Sí, Cancelar',
+            confirmColor: '#ef4444',
+            onConfirm: async () => {
+                const result = await cancelTransaction(id);
+                if (result.success) {
+                    fetchTransactions();
+                }
+                setConfirmConfig(null);
+            },
+            onClose: () => setConfirmConfig(null)
+        });
+    };
+
+    const handleOpenEdit = (transaction) => {
+        setTransactionToEdit(transaction);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setTransactionToEdit(null);
     };
 
     return (
@@ -57,15 +143,36 @@ export const TransactionsPage = () => {
                     <p>Cargando movimientos financieros...</p>
                 </div>
             ) : (
-                <TransactionsList transactions={transactions} />
+                <TransactionsList 
+                    transactions={transactions} 
+                    isAdmin={isAdmin}
+                    onEdit={handleOpenEdit}
+                    onDelete={handleDeleteTransaction}
+                    onCancel={handleCancelTransaction}
+                />
             )}
 
             {/* Modal */}
             {isModalOpen && (
                 <TransactionsModal
                     isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onConfirm={handleCreateTransaction}
+                    onClose={handleCloseModal}
+                    onConfirm={transactionToEdit ? handleUpdateTransaction : handleCreateTransaction}
+                    isAdmin={isAdmin}
+                    transaction={transactionToEdit}
+                />
+            )}
+
+            {/* Modal confirmación */}
+            {confirmConfig && (
+                <ConfirmModal
+                    isOpen={true}
+                    title={confirmConfig.title}
+                    message={confirmConfig.message}
+                    confirmText={confirmConfig.confirmText}
+                    confirmColor={confirmConfig.confirmColor}
+                    onConfirm={confirmConfig.onConfirm}
+                    onClose={confirmConfig.onClose}
                 />
             )}
         </div>

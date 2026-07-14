@@ -23,10 +23,13 @@ import { validateCreateTransaccion } from "../../middlewares/transaccion-validat
 // ── ROUTER USUARIO  →  /NovaCoin/v1/transaccion ──────────────────────────────────
 export const userTransaccionRouter = Router();
 
+userTransaccionRouter.post("/", validateJWT, validateCreateTransaccion, create);
 userTransaccionRouter.get("/mis-transacciones", validateJWT, getMisTransacciones);
 userTransaccionRouter.get("/resumen", validateJWT, getResumen);
 userTransaccionRouter.get("/:id", validateJWT, getById);
 userTransaccionRouter.get("/cuenta/:cuentaId", validateJWT, getByCuenta);
+userTransaccionRouter.put("/:id", validateJWT, update);
+userTransaccionRouter.patch("/estado/:id", validateJWT, cambiarEstado);
 
 // ── ROUTER ADMIN  →  /NovaCoin/Admin/v1/transaccion ──────────────────────────────
 export const adminTransaccionRouter = Router();

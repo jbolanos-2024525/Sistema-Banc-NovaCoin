@@ -17,15 +17,17 @@ export const useEmployees = () => {
       const data = response.data.data || response.data;
       
       const mappedEmployees = data.map((employee) => ({
-        id: employee.id,
-        name: employee.name,
-        surname: employee.surname,
-        email: employee.email,
-        phone: employee.phone,
-        position: employee.position,
-        department: employee.department,
-        hireDate: employee.hireDate,
-        status: employee.status,
+        id: employee._id || employee.id,
+        name: employee.Nombre,
+        surname: employee.Apellido,
+        email: employee.Correo,
+        phone: employee.Telefono,
+        position: employee.Puesto,
+        department: employee.Rol,
+        hireDate: employee.FechaContratacion,
+        status: employee.Estado,
+        salary: employee.Salario,
+        dpi: employee.DPI,
       }));
       
       setEmployees(mappedEmployees);
@@ -48,16 +50,17 @@ export const useEmployees = () => {
       const data = response.data.data || response.data;
       
       const mappedEmployee = {
-        id: data.id,
-        name: data.name,
-        surname: data.surname,
-        email: data.email,
-        phone: data.phone,
-        position: data.position,
-        department: data.department,
-        hireDate: data.hireDate,
-        status: data.status,
-        stats: data.stats || {},
+        id: data._id || data.id,
+        name: data.Nombre,
+        surname: data.Apellido,
+        email: data.Correo,
+        phone: data.Telefono,
+        position: data.Puesto,
+        department: data.Rol,
+        hireDate: data.FechaContratacion,
+        status: data.Estado,
+        salary: data.Salario,
+        dpi: data.DPI,
       };
       
       return mappedEmployee;
@@ -127,23 +130,6 @@ export const useEmployees = () => {
     }
   }, [fetchEmployees]);
 
-  const getEmployeeStats = useCallback(async (employeeId) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await employeeService.getEmployeeStats(employeeId);
-      const data = response.data.data || response.data;
-      
-      return data;
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Error al cargar estadísticas';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   return {
     employees,
@@ -154,7 +140,6 @@ export const useEmployees = () => {
     createEmployee,
     updateEmployee,
     deleteEmployee,
-    getEmployeeStats,
   };
 };
 

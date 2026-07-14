@@ -1,7 +1,7 @@
 import { create } from 'zustand';
+import { axiosBank } from '../../../shared/apis/index.js';
 
-// URL exacta acoplada con el prefijo de tu app.js de Node
-const API_URL = 'http://localhost:3020/NovaCoin/Admin/v1/empleados';
+const BASE = '/NovaCoin/Admin/v1/empleados';
 
 export const useEmployeeStore = create((set, get) => ({
   employees: [],
@@ -11,108 +11,50 @@ export const useEmployeeStore = create((set, get) => ({
   fetchEmployees: async () => {
     set({ loading: true, error: null });
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(API_URL, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
-          'x-token': token || ''
-        }
-      });
-      
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}: No se pudo obtener la lista de empleados`);
-      }
-
-      const json = await res.json();
-      if (json.success) {
-        const dataArray = json.data || [];
-        // Filtra para mostrar solo los empleados que sigan activos
-        const activos = dataArray.filter(emp => emp.isActive !== false);
-        set({ employees: activos, loading: false });
-      } else {
-        set({ error: json.message || 'Error desconocido', loading: false });
-      }
+      const { data } = await axiosBank.get(BASE);
+      const dataArray = data.data || data;
+      const activos = dataArray.filter(emp => emp.isActive !== false && emp.Estado !== false);
+      set({ employees: activos, loading: false });
     } catch (err) {
-      set({ error: err.message, loading: false });
+      set({ error: err.response?.data?.message || err.message, loading: false });
     }
   },
 
-  createEmployee: async (data) => {
+  createEmployee: async (formData) => {
     set({ loading: true, error: null });
     try {
-      const token = localStorage.getItem('token');
-      
-      // 🔥 LIMPIEZA PREVENTIVA: Elimina la propiedad Password si viaja vacía desde el formulario
-      const cleanData = { ...data };
+      const cleanData = { ...formData };
       if (cleanData.hasOwnProperty('Password')) {
         delete cleanData.Password;
       }
 
-      const res = await fetch(API_URL, { 
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
-          'x-token': token || ''
-        },
-        body: JSON.stringify(cleanData),
-      });
-
-      // 🔥 MANEJO DE ERROR OPTIMIZADO (Línea 46): Lee el cuerpo del error 400 de forma segura
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => ({}));
-        throw new Error(errJson.error || errJson.message || `Error ${res.status} al crear empleado`);
-      }
-
-      const json = await res.json();
-      if (json.success) {
-        await get().fetchEmployees(); 
-        return { success: true };
-      }
-      return { success: false, error: json.message };
+      const { data } = await axiosBank.post(BASE, cleanData);
+      await get().fetchEmployees(); 
+      return { success: true };
     } catch (err) {
-      // Retorna el error real del backend para que lo pinte la UI o la consola
-      return { success: false, error: err.message };
+      const msg = err.response?.data?.message || err.message;
+      set({ error: msg, loading: false });
+      return { success: false, error: msg };
     } finally {
       set({ loading: false });
     }
   },
 
-  updateEmployee: async (id, data) => {
+  updateEmployee: async (id, formData) => {
     set({ loading: true, error: null });
     try {
-      const token = localStorage.getItem('token');
-      
-      const cleanData = { ...data };
+      const cleanData = { ...formData };
       if (cleanData.hasOwnProperty('Password')) {
         delete cleanData.Password;
       }
 
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
-          'x-token': token || ''
-        },
-        body: JSON.stringify(cleanData),
-      });
-
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => ({}));
-        throw new Error(errJson.error || `Error ${res.status} al actualizar`);
-      }
-
-      const json = await res.json();
-      if (json.success) {
-        await get().fetchEmployees();
-        return { success: true };
-      }
-      return { success: false, error: json.message };
+      const { data } = await axiosBank.put(`${BASE}/${id}`, cleanData);
+      await get().fetchEmployees();
+      return { success: true };
     } catch (err) {
-      return { success: false, error: err.message };
+      const msg = err.response?.data?.message || err.message;
+      set({ error: msg, loading: false });
+      return { success: false, error: msg };
     } finally {
       set({ loading: false });
     }
@@ -121,28 +63,28 @@ export const useEmployeeStore = create((set, get) => ({
   deleteEmployeeSoft: async (id) => {
     set({ loading: true, error: null });
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT', 
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
-          'x-token': token || ''
-        },
-        body: JSON.stringify({ isActive: false }), 
-      });
-
-      if (!res.ok) throw new Error(`Error ${res.status} al eliminar`);
-
-      const json = await res.json();
-      if (json.success) {
-        // Al ponerse en isActive: false, fetchEmployees lo filtrará automáticamente de la tabla
-        await get().fetchEmployees();
-        return { success: true };
-      }
-      return { success: false, error: json.message };
+      await axiosBank.delete(`${BASE}/${id}`);
+      await get().fetchEmployees();
+      return { success: true };
     } catch (err) {
-      return { success: false, error: err.message };
+      const msg = err.response?.data?.message || err.message;
+      set({ error: msg, loading: false });
+      return { success: false, error: msg };
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  cancelEmployee: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      await axiosBank.patch(`${BASE}/estado/${id}`, { estado: 'INACTIVO' });
+      await get().fetchEmployees();
+      return { success: true };
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      set({ error: msg, loading: false });
+      return { success: false, error: msg };
     } finally {
       set({ loading: false });
     }

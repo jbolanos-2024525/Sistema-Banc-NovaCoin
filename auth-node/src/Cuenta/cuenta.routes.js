@@ -23,7 +23,7 @@ userCuentaRouter.post("/transfer", validateJWT, transfer);
 // ── ROUTER ADMIN  →  /NovaCoin/Admin/v1/cuenta ──────────────────────────────
 export const adminCuentaRouter = Router();
 
-adminCuentaRouter.post("/", validateCreateCuenta, isAdmin, create);
+adminCuentaRouter.post("/", validateJWT, validateCreateCuenta, isAdmin, create);
 adminCuentaRouter.get("/", validateJWT, isAdmin, getAll);
 adminCuentaRouter.get("/usuario/:usuarioId", validateJWT, isAdmin, validateUsuarioId, getByUsuario);
 adminCuentaRouter.get("/:id", validateJWT, isAdmin, validateCuentaId, getById);

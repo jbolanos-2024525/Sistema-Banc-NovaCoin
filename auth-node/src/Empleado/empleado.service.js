@@ -61,7 +61,7 @@ export const getEmpleadosByRol = async (rol) => {
 export const updateEmpleadoRecord = async (id, updateData) => {
     if (!id) throw new Error('ID de empleado es requerido');
     
-    const allowedUpdates = ['Nombre', 'Apellido', 'Telefono', 'Puesto', 'Salario', 'Rol', 'Estado'];
+    const allowedUpdates = ['Nombre', 'Apellido', 'DPI', 'Correo', 'Telefono', 'Puesto', 'Salario', 'Rol', 'Estado'];
     const updates = {};
     
     for (const key of allowedUpdates) {
@@ -77,7 +77,7 @@ export const updateEmpleadoRecord = async (id, updateData) => {
     const empleado = await Empleado.findByIdAndUpdate(
         id,
         updates,
-        { new: true, runValidators: true }
+        { new: true, runValidators: true, context: 'query' }
     );
     
     if (!empleado) throw new Error('Empleado no encontrado');

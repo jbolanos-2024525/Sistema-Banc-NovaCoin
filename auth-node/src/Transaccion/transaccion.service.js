@@ -1,8 +1,31 @@
 import { Transaccion } from './transaccion.model.js';
+import { Cuenta } from '../Cuenta/cuenta.model.js';
 
 export const createTransaccion = async (transaccionData) => {
     try {
         const transaccion = new Transaccion(transaccionData);
+        
+        // Actualizar saldo de la cuenta según el tipo de transacción
+        if (transaccionData.CuentaOrigen) {
+            const cuentaOrigen = await Cuenta.findOne({ NumeroCuenta: transaccionData.CuentaOrigen });
+            if (cuentaOrigen) {
+                if (transaccionData.TipoTransaccion === 'RETIRO' || transaccionData.TipoTransaccion === 'TRANSFERENCIA') {
+                    cuentaOrigen.Saldo -= transaccionData.Monto;
+                    await cuentaOrigen.save();
+                }
+            }
+        }
+        
+        if (transaccionData.CuentaDestino) {
+            const cuentaDestino = await Cuenta.findOne({ NumeroCuenta: transaccionData.CuentaDestino });
+            if (cuentaDestino) {
+                if (transaccionData.TipoTransaccion === 'DEPOSITO' || transaccionData.TipoTransaccion === 'TRANSFERENCIA') {
+                    cuentaDestino.Saldo += transaccionData.Monto;
+                    await cuentaDestino.save();
+                }
+            }
+        }
+        
         await transaccion.save();
         return transaccion;
     } catch (error) {
@@ -115,7 +138,7 @@ export const getTransaccionesByPrestamo = async (prestamoId) => {
 export const updateTransaccion = async (id, updateData) => {
     if (!id) throw new Error('ID de transacción es requerido');
     
-    const allowedUpdates = ['Descripcion', 'Referencia', 'EstadoTransaccion'];
+    const allowedUpdates = ['Descripcion', 'Referencia', 'EstadoTransaccion', 'Monto', 'Moneda', 'TipoTransaccion', 'CuentaDestino', 'CuentaOrigen', 'UsuarioId'];
     const updates = {};
     
     for (const key of allowedUpdates) {

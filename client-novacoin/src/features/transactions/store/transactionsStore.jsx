@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { 
     getAllTransactionsRequest, 
-    createTransactionRequest 
+    createTransactionRequest,
+    updateTransactionRequest,
+    deleteTransactionRequest,
+    cancelTransactionRequest
 } from '../../../shared/apis/transactionsService';
 
 export const useTransactionsStore = create((set, get) => ({
@@ -28,8 +31,6 @@ export const useTransactionsStore = create((set, get) => ({
             set({ loading: true, error: null });
             const response = await createTransactionRequest(transactionData);
 
-        console.log('Respuesta del backend:', response);
-
             // Si la transacción fue exitosa, la agregamos de inmediato a la lista del estado
             if (response.success) {
                 set((state) => ({
@@ -40,6 +41,54 @@ export const useTransactionsStore = create((set, get) => ({
             return { success: true };
         } catch (err) {
             const message = err.response?.data?.message || 'Error al procesar la transacción';
+            set({ error: message, loading: false });
+            return { success: false, error: message };
+        }
+    },
+
+    updateTransaction: async (id, data) => {
+        try {
+            set({ loading: true, error: null });
+            const response = await updateTransactionRequest(id, data);
+            set((state) => ({
+                transactions: state.transactions.map(t => (t._id || t.id) === id ? response.data : t),
+                loading: false
+            }));
+            return { success: true };
+        } catch (err) {
+            const message = err.response?.data?.message || 'Error al actualizar la transacción';
+            set({ error: message, loading: false });
+            return { success: false, error: message };
+        }
+    },
+
+    deleteTransaction: async (id) => {
+        try {
+            set({ loading: true, error: null });
+            await deleteTransactionRequest(id);
+            set((state) => ({
+                transactions: state.transactions.filter(t => (t._id || t.id) !== id),
+                loading: false
+            }));
+            return { success: true };
+        } catch (err) {
+            const message = err.response?.data?.message || 'Error al eliminar la transacción';
+            set({ error: message, loading: false });
+            return { success: false, error: message };
+        }
+    },
+
+    cancelTransaction: async (id) => {
+        try {
+            set({ loading: true, error: null });
+            const response = await cancelTransactionRequest(id);
+            set((state) => ({
+                transactions: state.transactions.map(t => (t._id || t.id) === id ? response.data || { ...t, EstadoTransaccion: 'CANCELADA' } : t),
+                loading: false
+            }));
+            return { success: true };
+        } catch (err) {
+            const message = err.response?.data?.message || 'Error al cancelar la transacción';
             set({ error: message, loading: false });
             return { success: false, error: message };
         }

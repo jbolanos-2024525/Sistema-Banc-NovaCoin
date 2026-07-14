@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const TransactionsList = ({ transactions }) => {
+export const TransactionsList = ({ transactions, isAdmin = false, onEdit, onDelete, onCancel }) => {
   
   // Función para dar formato de moneda local de Guatemala (Q0.00)
   const formatCurrency = (amount, currency = 'GTQ') => {
@@ -62,17 +62,31 @@ export const TransactionsList = ({ transactions }) => {
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Descripción</th>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Moneda</th>
               <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px', textAlign: 'right' }}>Monto</th>
+              <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Estado</th>
+              {isAdmin && <th style={{ padding: '14px 16px', color: '#9ca3af', fontWeight: '600', fontSize: '14px' }}>Acciones</th>}
             </tr>
           </thead>
           <tbody>
             {transactions.map((tx, index) => {
-              const isTransferencia = tx.tipoTransaccion === 'TRANSFERENCIA';
-              const isRetiro = tx.tipoTransaccion === 'RETIRO';
+              // Extracción flexible de propiedades (PascalCase y minúsculas)
+              const tipoTransaccion = tx.TipoTransaccion || tx.tipoTransaccion;
+              const isTransferencia = tipoTransaccion === 'TRANSFERENCIA';
+              const isRetiro = tipoTransaccion === 'RETIRO';
               
-              // Extracción flexible de la propiedad fecha del JSON de .NET
               const realDate = tx.fecha || tx.Fecha || tx.fechaCreacion || tx.FechaCreacion || tx.createdAt || tx.CreatedAt;
-
-              const numeroCuenta = tx.cuentaDestino || tx.CuentaDestino || tx.cuentaOrigen || tx.CuentaOrigen || tx.numeroCuenta || null;
+              const numeroCuenta = tx.CuentaDestino || tx.cuentaDestino || tx.CuentaOrigen || tx.cuentaOrigen || tx.NumeroCuenta || tx.numeroCuenta || null;
+              const descripcion = tx.Descripcion || tx.descripcion || 'Sin descripción';
+              const moneda = tx.Moneda || tx.moneda || 'GTQ';
+              const monto = tx.Monto || tx.monto;
+              const estado = tx.EstadoTransaccion || tx.estadoTransaccion || 'COMPLETADA';
+              
+              const estadoStyle = {
+                COMPLETADA: { bg: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: 'rgba(16, 185, 129, 0.3)' },
+                PENDIENTE: { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: 'rgba(245, 158, 11, 0.3)' },
+                FALLIDA: { bg: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: 'rgba(239, 68, 68, 0.3)' },
+                CANCELADA: { bg: 'rgba(107, 114, 128, 0.15)', color: '#9ca3af', border: 'rgba(107, 114, 128, 0.3)' }
+              };
+              const s = estadoStyle[estado] || estadoStyle.COMPLETADA;
 
               return (
                 <tr 
@@ -99,7 +113,7 @@ export const TransactionsList = ({ transactions }) => {
                       color: isTransferencia ? '#60a5fa' : isRetiro ? '#f87171' : '#34d399',
                       border: isTransferencia ? '1px solid rgba(59, 130, 246, 0.3)' : isRetiro ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)'
                     }}>
-                      {tx.tipoTransaccion}
+                      {tipoTransaccion}
                     </span>
                   </td>
                   <td style={{ padding: '16px', fontSize: '13px', fontFamily: 'monospace', color: '#a5b4fc', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -114,10 +128,10 @@ export const TransactionsList = ({ transactions }) => {
                     }
                   </td>
                   <td style={{ padding: '16px', fontSize: '14px', color: '#9ca3af', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {tx.descripcion || 'Sin descripción'}
+                    {descripcion}
                   </td>
                   <td style={{ padding: '16px', fontSize: '14px', color: '#9ca3af' }}>
-                    {tx.moneda || 'GTQ'}
+                    {moneda}
                   </td>
                   <td style={{ 
                     padding: '16px', 
@@ -127,8 +141,70 @@ export const TransactionsList = ({ transactions }) => {
                     color: (isTransferencia || isRetiro) ? '#f87171' : '#34d399'
                   }}>
                     {(isTransferencia || isRetiro) ? '- ' : '+ '}
-                    {formatCurrency(tx.monto, tx.moneda)}
+                    {formatCurrency(monto, moneda)}
                   </td>
+                  <td style={{ padding: '16px' }}>
+                    <span style={{ 
+                      display: 'inline-block', 
+                      padding: '4px 10px', 
+                      borderRadius: '9999px', 
+                      fontSize: '12px', 
+                      fontWeight: '600', 
+                      backgroundColor: s.bg, 
+                      color: s.color, 
+                      border: `1px solid ${s.border}` 
+                    }}>
+                      {estado}
+                    </span>
+                  </td>
+                  {isAdmin && (
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => onEdit && onEdit(tx)}
+                          style={{
+                            padding: '6px 14px',
+                            backgroundColor: 'transparent',
+                            border: '1px solid #f59e0b',
+                            borderRadius: '6px',
+                            color: '#f59e0b',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                          }}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => onCancel && onCancel(tx._id || tx.id)}
+                          style={{
+                            padding: '6px 14px',
+                            backgroundColor: 'transparent',
+                            border: '1px solid #ef4444',
+                            borderRadius: '6px',
+                            color: '#ef4444',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                          }}
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          onClick={() => onDelete && onDelete(tx._id || tx.id)}
+                          style={{
+                            padding: '6px 14px',
+                            backgroundColor: 'transparent',
+                            border: '1px solid #6b7280',
+                            borderRadius: '6px',
+                            color: '#6b7280',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               );
             })}

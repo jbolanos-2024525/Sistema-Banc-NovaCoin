@@ -1,13 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-// Agregamos variantes comunes de props en la destructuración para que no falle jamás
-export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit }) => {
+const inputStyle = {
+  backgroundColor: '#1f2937',
+  border: '1px solid #374151',
+  borderRadius: '6px',
+  padding: '10px',
+  color: '#fff',
+  fontSize: '14px',
+  outline: 'none',
+  width: '100%',
+  boxSizing: 'border-box',
+};
+
+const labelStyle = { fontSize: '13px', color: '#9ca3af', fontWeight: '500' };
+
+export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit, isAdmin = false, transaction = null }) => {
+  const isEditing = !!transaction;
   const [tipoTransaccion, setTipoTransaccion] = useState('TRANSFERENCIA');
   const [cuentaDestino, setCuentaDestino] = useState('');
   const [monto, setMonto] = useState('');
   const [moneda, setMoneda] = useState('GTQ');
   const [descripcion, setDescripcion] = useState('');
+  const [usuarioId, setUsuarioId] = useState('');
   const [localError, setLocalError] = useState('');
+
+  useEffect(() => {
+    if (isOpen && transaction) {
+      setTipoTransaccion(transaction.TipoTransaccion || transaction.tipoTransaccion || 'TRANSFERENCIA');
+      setCuentaDestino(transaction.CuentaDestino || transaction.cuentaDestino || '');
+      setMonto(transaction.Monto || transaction.monto || '');
+      setMoneda(transaction.Moneda || transaction.moneda || 'GTQ');
+      setDescripcion(transaction.Descripcion || transaction.descripcion || '');
+      setUsuarioId(transaction.UsuarioId || transaction.usuarioId || '');
+    } else if (isOpen && !transaction) {
+      setTipoTransaccion('TRANSFERENCIA');
+      setCuentaDestino('');
+      setMonto('');
+      setMoneda('GTQ');
+      setDescripcion('');
+      setUsuarioId('');
+    }
+  }, [isOpen, transaction]);
 
   if (!isOpen) return null;
 
@@ -36,6 +69,10 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
       CuentaOrigen: null
     };
 
+    if (isAdmin && usuarioId.trim()) {
+      dto.UsuarioId = usuarioId.trim();
+    }
+
     // 💡 Detector inteligente de funciones pasadas por el componente padre
     const handleSaveAction = onConfirm || onSave || onSubmit;
 
@@ -63,7 +100,7 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
     }}>
       <div style={{
         backgroundColor: '#111827',
-        border: '1px solid #10b981',
+        border: `1px solid ${isEditing ? '#f59e0b' : '#10b981'}`,
         borderRadius: '12px',
         width: '100%',
         maxWidth: '480px',
@@ -91,7 +128,7 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
         </button>
 
         <h3 style={{ margin: '0 0 20px 0', color: '#fff', fontSize: '20px', fontWeight: '600' }}>
-          Nueva Operación
+          {isEditing ? 'Editar Transacción' : 'Nueva Operación'}
         </h3>
 
         {localError && (
@@ -203,23 +240,29 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
 
           {/* Descripción */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '13px', color: '#9ca3af', fontWeight: '500' }}>Descripción / Concepto</label>
+            <label style={labelStyle}>Descripción / Concepto</label>
             <input 
               type="text" 
               placeholder="Ej. Pago de servicios locales"
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
-              style={{
-                backgroundColor: '#1f2937',
-                border: '1px solid #374151',
-                borderRadius: '6px',
-                padding: '10px',
-                color: '#fff',
-                fontSize: '14px',
-                outline: 'none'
-              }}
+              style={inputStyle}
             />
           </div>
+
+          {/* ID de Usuario - Solo para admin */}
+          {isAdmin && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={labelStyle}>ID del Usuario</label>
+              <input 
+                type="text" 
+                placeholder="ID del usuario cliente"
+                value={usuarioId}
+                onChange={(e) => setUsuarioId(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+          )}
 
           {/* Botones de Acción */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '10px' }}>
@@ -242,7 +285,7 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
             <button 
               type="submit" 
               style={{
-                backgroundColor: '#10b981',
+                backgroundColor: isEditing ? '#f59e0b' : '#10b981',
                 border: 'none',
                 borderRadius: '6px',
                 padding: '10px 20px',
@@ -252,7 +295,7 @@ export const TransactionsModal = ({ isOpen, onClose, onConfirm, onSave, onSubmit
                 cursor: 'pointer'
               }}
             >
-              Confirmar
+              {isEditing ? 'Actualizar' : 'Confirmar'}
             </button>
           </div>
 

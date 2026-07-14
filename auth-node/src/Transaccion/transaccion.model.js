@@ -15,7 +15,7 @@ const transaccionSchema = new Schema({
     Monto: {
         type: Number,
         required: [true, "El monto es obligatorio"],
-        min: [0.01, "El monto debe ser mayor a 0"],
+        min: 0.01,
         validate: {
             validator: Number.isFinite,
             message: "El monto debe ser un número válido"

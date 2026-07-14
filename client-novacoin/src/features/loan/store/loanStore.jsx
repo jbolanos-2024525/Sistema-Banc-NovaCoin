@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 import {
     getAllLoansRequest,
+    getMyLoansRequest,
     createLoanRequest,
     updateLoanRequest,
     cancelLoanRequest,
     deleteLoanRequest,
+    approveLoanRequest,
+    rejectLoanRequest,
 } from '../../../shared/apis/loanService';
+import { useAuthStore } from '../../auth/store/authStore.js';
 
 export const useLoanStore = create((set) => ({
     loans: [],
@@ -15,7 +19,10 @@ export const useLoanStore = create((set) => ({
     fetchLoans: async () => {
         try {
             set({ loading: true, error: null });
-            const data = await getAllLoansRequest();
+            const user = useAuthStore.getState().user;
+            const isAdmin = user?.role === 'ADMIN_ROLE' || user?.roles?.includes('ADMIN_ROLE');
+            
+            const data = isAdmin ? await getAllLoansRequest() : await getMyLoansRequest();
             set({ loans: Array.isArray(data) ? data : data.data ?? [], loading: false });
         } catch (err) {
             set({ error: err.response?.data?.message || 'Error al cargar préstamos', loading: false });
@@ -90,4 +97,38 @@ export const useLoanStore = create((set) => ({
     },
 
     clearError: () => set({ error: null }),
+
+    approveLoan: async (id) => {
+        try {
+            set({ loading: true, error: null });
+            const data = await approveLoanRequest(id);
+            const updated = data.data ?? data;
+            set((state) => ({
+                loans: state.loans.map((l) => (l._id || l.id) === id ? updated : l),
+                loading: false,
+            }));
+            return { success: true };
+        } catch (err) {
+            const message = err.response?.data?.message || 'Error al aprobar el préstamo';
+            set({ error: message, loading: false });
+            return { success: false, error: message };
+        }
+    },
+
+    rejectLoan: async (id) => {
+        try {
+            set({ loading: true, error: null });
+            const data = await rejectLoanRequest(id);
+            const updated = data.data ?? data;
+            set((state) => ({
+                loans: state.loans.map((l) => (l._id || l.id) === id ? updated : l),
+                loading: false,
+            }));
+            return { success: true };
+        } catch (err) {
+            const message = err.response?.data?.message || 'Error al rechazar el préstamo';
+            set({ error: message, loading: false });
+            return { success: false, error: message };
+        }
+    },
 }));

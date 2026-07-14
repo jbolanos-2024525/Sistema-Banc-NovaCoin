@@ -1,7 +1,7 @@
 // src/features/loans/screens/CreateLoanRequest.jsx
 
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
@@ -12,33 +12,18 @@ import { useLoans } from '../hooks/useLoans';
 
 const CreateLoanRequest = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors }, watch } = useForm();
-  const { applyForLoan, loading, error, calculateLoanQuote } = useLoans();
-  const [quote, setQuote] = useState(null);
-
-  const amount = watch('amount');
-  const term = watch('term');
-
-  const handleCalculateQuote = async () => {
-    if (amount && term) {
-      try {
-        const quoteData = await calculateLoanQuote({
-          amount: parseFloat(amount),
-          term: parseInt(term),
-        });
-        setQuote(quoteData);
-      } catch (err) {
-        console.error('Error al calcular cotización:', err);
-      }
-    }
-  };
+  const { applyForLoan, loading, error } = useLoans();
+  const [tipoPrestamo, setTipoPrestamo] = useState('PERSONAL');
+  const [clienteId, setClienteId] = useState('');
 
   const onSubmit = async (data) => {
     try {
       const loanData = {
-        amount: parseFloat(data.amount),
-        term: parseInt(data.term),
-        purpose: data.purpose,
-        description: data.description,
+        tipoPrestamo: tipoPrestamo,
+        monto: parseFloat(data.amount),
+        plazoMeses: parseInt(data.term),
+        proposito: data.purpose,
+        cliente: clienteId,
       };
 
       const result = await applyForLoan(loanData);
@@ -94,51 +79,40 @@ const CreateLoanRequest = ({ navigation }) => {
             error={errors.term?.message}
           />
 
+          <Text style={styles.label}>Tipo de Préstamo</Text>
+          <View style={styles.typeButtons}>
+            {['PERSONAL', 'HIPOTECARIO', 'VEHICULAR'].map((tipo) => (
+              <TouchableOpacity
+                key={tipo}
+                style={[styles.typeButton, tipoPrestamo === tipo && styles.typeButtonActive]}
+                onPress={() => setTipoPrestamo(tipo)}
+              >
+                <Text style={[styles.typeButtonText, tipoPrestamo === tipo && styles.typeButtonTextActive]}>
+                  {tipo}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Input
+            label="ID del Cliente (UUID) *"
+            name="clienteId"
+            control={control}
+            rules={{ required: 'Este campo es requerido' }}
+            placeholder="ID del cliente"
+            icon="person"
+            onChangeText={(text) => setClienteId(text)}
+            error={errors.clienteId?.message}
+          />
+
           <Input
             label="Propósito del Préstamo"
             name="purpose"
             control={control}
-            rules={{ required: 'Este campo es requerido' }}
             placeholder="Ej: Educación, Vivienda, Negocio"
             icon="flag"
             error={errors.purpose?.message}
           />
-
-          <Input
-            label="Descripción (Opcional)"
-            name="description"
-            control={control}
-            placeholder="Detalles adicionales sobre el préstamo"
-            icon="description"
-            multiline
-            numberOfLines={3}
-          />
-
-          <Button
-            title="Calcular Cuota"
-            onPress={handleCalculateQuote}
-            variant="outline"
-            icon={<MaterialIcons name="calculate" size={20} color={theme.colors.primary.main} />}
-            style={styles.quoteButton}
-          />
-
-          {quote && (
-            <Card elevation="sm" style={styles.quoteCard}>
-              <Text style={styles.quoteTitle}>Cotización Estimada</Text>
-              <View style={styles.quoteRow}>
-                <Text style={styles.quoteLabel}>Tasa de Interés</Text>
-                <Text style={styles.quoteValue}>{quote.interestRate}%</Text>
-              </View>
-              <View style={styles.quoteRow}>
-                <Text style={styles.quoteLabel}>Cuota Mensual</Text>
-                <Text style={styles.quoteValue}>Q {quote.monthlyPayment.toFixed(2)}</Text>
-              </View>
-              <View style={styles.quoteRow}>
-                <Text style={styles.quoteLabel}>Total a Pagar</Text>
-                <Text style={styles.quoteValue}>Q {quote.totalPayment.toFixed(2)}</Text>
-              </View>
-            </Card>
-          )}
 
           <Button
             title="Enviar Solicitud"
@@ -191,6 +165,39 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.sm,
     marginLeft: theme.spacing.sm,
     flex: 1,
+  },
+  label: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
+    fontWeight: theme.typography.fontWeight.semibold,
+    marginBottom: theme.spacing.sm,
+    marginTop: theme.spacing.md,
+  },
+  typeButtons: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+  },
+  typeButton: {
+    flex: 1,
+    backgroundColor: theme.colors.background.secondary,
+    borderWidth: 1,
+    borderColor: theme.colors.border.light,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.sm,
+    alignItems: 'center',
+  },
+  typeButtonActive: {
+    backgroundColor: theme.colors.primary.main,
+    borderColor: theme.colors.primary.main,
+  },
+  typeButtonText: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
+    fontWeight: theme.typography.fontWeight.medium,
+  },
+  typeButtonTextActive: {
+    color: theme.colors.white,
   },
   quoteButton: {
     marginTop: theme.spacing.md,

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useUserManagementStore } from '../store/useUserManagementStore';
 import { useAdminStore }          from '../store/adminStore';
 import { CreateuserModal }        from './CreateuserModal';
+import { ConfirmModal }           from '../../../shared/components/ConfirmModal';
 import toast from 'react-hot-toast';
 
 export const Users = () => {
@@ -9,25 +10,38 @@ export const Users = () => {
     const { users, loading: loadingUsers, fetchUsers } = useUserManagementStore();
     const { loading: loadingCreate, error, createUser } = useAdminStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState(null);
+    const [pendingUserData, setPendingUserData] = useState(null);
 
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
 
     const handleCreate = async (formData) => {
-        const result = await createUser(formData);
-        if (result.success) {
-            if (result.emailVerificationRequired) {
-                toast.success('Usuario creado. Se envió un correo de verificación.');
-            } else {
-                toast.success('Usuario creado exitosamente.');
-            }
-            fetchUsers();
-            return true;
-        } else {
-            toast.error(result.error || 'Error al crear usuario');
-            return false;
-        }
+        setPendingUserData(formData);
+        setConfirmConfig({
+            title: 'Confirmar Registro de Usuario',
+            message: `¿Estás seguro de registrar al usuario ${formData.name} ${formData.surname} con email ${formData.email}?`,
+            confirmText: 'Sí, Registrar',
+            confirmColor: '#00f2fe',
+            onConfirm: async () => {
+                const result = await createUser(formData);
+                if (result.success) {
+                    if (result.emailVerificationRequired) {
+                        toast.success('Usuario creado. Se envió un correo de verificación.');
+                    } else {
+                        toast.success('Usuario creado exitosamente.');
+                    }
+                    fetchUsers();
+                    setIsModalOpen(false);
+                } else {
+                    toast.error(result.error || 'Error al crear usuario');
+                }
+                setConfirmConfig(null);
+                setPendingUserData(null);
+            },
+            onClose: () => setConfirmConfig(null)
+        });
     };
 
     return (
@@ -95,6 +109,19 @@ export const Users = () => {
                 loading={loadingCreate}
                 error={error}
             />
+
+            {/* Modal confirmación */}
+            {confirmConfig && (
+                <ConfirmModal
+                    isOpen={true}
+                    title={confirmConfig.title}
+                    message={confirmConfig.message}
+                    confirmText={confirmConfig.confirmText}
+                    confirmColor={confirmConfig.confirmColor}
+                    onConfirm={confirmConfig.onConfirm}
+                    onClose={confirmConfig.onClose}
+                />
+            )}
         </div>
     );
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAdminAccount }   from '../hooks/useAdminAccount';
 import { AdminAccounts }     from '../components/AdminAccounts';
 import { AdminAccountModal } from '../components/AdminAccountModal';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
 
 export const AdminAccountPage = () => {
 
@@ -18,6 +19,7 @@ export const AdminAccountPage = () => {
 
     const [confirm, setConfirm] = useState(null); // Estado para confirmación: { id, numeroCuenta }
     const [successMsg, setSuccessMsg] = useState(null);
+    const [pendingAccountData, setPendingAccountData] = useState(null);
 
     const showSuccess = (msg) => {
         setSuccessMsg(msg);
@@ -25,29 +27,61 @@ export const AdminAccountPage = () => {
     };
 
     const handleSubmit = async (formData) => {
-        const result = selected
-            ? await updateCuenta(selected._id, formData)
-            : await createCuenta(formData);
-        if (result.success) {
-            closeModal();
-            showSuccess(selected ? 'Cuenta actualizada correctamente' : 'Cuenta creada correctamente');
+        setPendingAccountData(formData);
+        if (selected) {
+            setConfirm({
+                title: 'Confirmar Actualización de Cuenta',
+                message: '¿Estás seguro de actualizar los datos de esta cuenta?',
+                confirmText: 'Sí, Actualizar',
+                confirmColor: '#f59e0b',
+                onConfirm: async () => {
+                    const result = await updateCuenta(selected._id, formData);
+                    if (result.success) {
+                        closeModal();
+                        showSuccess('Cuenta actualizada correctamente');
+                    }
+                    setConfirm(null);
+                    setPendingAccountData(null);
+                },
+                onClose: () => setConfirm(null)
+            });
+        } else {
+            setConfirm({
+                title: 'Confirmar Creación de Cuenta',
+                message: `¿Estás seguro de crear una cuenta ${formData.TipoCuenta} con saldo inicial de ${formData.Saldo}?`,
+                confirmText: 'Sí, Crear',
+                confirmColor: '#00f2fe',
+                onConfirm: async () => {
+                    const result = await createCuenta(formData);
+                    if (result.success) {
+                        closeModal();
+                        showSuccess('Cuenta creada correctamente');
+                    }
+                    setConfirm(null);
+                    setPendingAccountData(null);
+                },
+                onClose: () => setConfirm(null)
+            });
         }
     };
 
     // CORREGIDO: Recibe el objeto completo y extrae las propiedades de forma segura
     const handleDeleteClick = (cuenta) => {
         if (cuenta && cuenta._id) {
-            setConfirm({ id: cuenta._id, numeroCuenta: cuenta.NumeroCuenta });
+            setConfirm({
+                title: 'Eliminar Cuenta',
+                message: `¿Estás seguro de eliminar la cuenta ${cuenta.NumeroCuenta}? Esta acción es permanente e irreversible.`,
+                confirmText: 'Sí, Eliminar',
+                confirmColor: '#dc2626',
+                onConfirm: async () => {
+                    await deleteCuenta(cuenta._id);
+                    setConfirm(null);
+                    showSuccess('Cuenta eliminada correctamente');
+                },
+                onClose: () => setConfirm(null)
+            });
         } else {
             console.error("No se pudo obtener el ID de la cuenta para eliminar.");
-        }
-    };
-
-    const handleConfirmDelete = async () => {
-        if (confirm && confirm.id) {
-            await deleteCuenta(confirm.id);
-            setConfirm(null);
-            showSuccess('Cuenta eliminada correctamente');
         }
     };
 
@@ -75,27 +109,17 @@ export const AdminAccountPage = () => {
                 </div>
             )}
 
-            {/* Mensaje de confirmación de eliminación */}
+            {/* Modal confirmación */}
             {confirm && (
-                <div style={{ backgroundColor: '#1a0f0f', border: '1px solid #ef4444', borderRadius: '8px', padding: '16px 20px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ color: '#f3f4f6', fontSize: '14px' }}>
-                        ¿Deseas eliminar la cuenta <strong style={{ color: '#ef4444' }}>{confirm.numeroCuenta}</strong>? Esta acción no se puede deshacer.
-                    </span>
-                    <div style={{ display: 'flex', gap: '8px', marginLeft: '16px' }}>
-                        <button
-                            onClick={() => setConfirm(null)}
-                            style={{ padding: '7px 16px', backgroundColor: 'transparent', border: '1px solid #374151', borderRadius: '6px', color: '#9ca3af', cursor: 'pointer', fontSize: '13px' }}
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            onClick={handleConfirmDelete}
-                            style={{ padding: '7px 16px', backgroundColor: '#ef4444', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}
-                        >
-                            Eliminar
-                        </button>
-                    </div>
-                </div>
+                <ConfirmModal
+                    isOpen={true}
+                    title={confirm.title}
+                    message={confirm.message}
+                    confirmText={confirm.confirmText}
+                    confirmColor={confirm.confirmColor}
+                    onConfirm={confirm.onConfirm}
+                    onClose={confirm.onClose}
+                />
             )}
 
             {/* Filtro por Usuario */}

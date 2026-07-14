@@ -14,7 +14,7 @@ export const useAdminAccountStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const { data } = await axiosBank.get(BASE);
-            set({ cuentas: data.cuentas || [], loading: false });
+            set({ cuentas: data.data || data, loading: false });
         } catch (error) {
             set({ error: error.response?.data?.message || 'Error al cargar las cuentas', loading: false });
         }
@@ -24,7 +24,7 @@ export const useAdminAccountStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const { data } = await axiosBank.get(`${BASE}/usuario/${usuarioId}`);
-            set({ cuentas: data.cuentas || [], loading: false });
+            set({ cuentas: data.data || data, loading: false });
         } catch (error) {
             set({ error: error.response?.data?.message || 'Error al cargar las cuentas', loading: false });
         }
@@ -34,7 +34,7 @@ export const useAdminAccountStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const { data } = await axiosBank.post(BASE, formData);
-            set((state) => ({ cuentas: [data.cuenta, ...state.cuentas], loading: false }));
+            set((state) => ({ cuentas: [data.data || data, ...state.cuentas], loading: false }));
             return { success: true };
         } catch (error) {
             const msg = error.response?.data?.message || 'Error al crear la cuenta';
@@ -48,7 +48,7 @@ export const useAdminAccountStore = create((set) => ({
         try {
             const { data } = await axiosBank.put(`${BASE}/${id}`, formData);
             set((state) => ({
-                cuentas: state.cuentas.map((c) => c._id === id ? data.cuenta : c),
+                cuentas: state.cuentas.map((c) => c._id === id ? (data.data || data) : c),
                 selected: null,
                 loading: false
             }));

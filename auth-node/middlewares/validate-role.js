@@ -1,12 +1,10 @@
 export const isAdmin = (req, res, next) => {
 
-    const role = req.cliente?.role || req.cliente?.Role;
+    const role = req.cliente?.role || req.cliente?.Role || req.empleado?.Rol;
 
-    if (role === 'ADMIN_ROLE') {
-        return next();
-    }
+    const adminRoles = ['ADMIN_ROLE', 'ADMIN', 'Administrador', 'admin', 'administrator'];
 
-    if (req.empleado && req.empleado.Rol === 'Administrador') {
+    if (adminRoles.includes(role)) {
         return next();
     }
 

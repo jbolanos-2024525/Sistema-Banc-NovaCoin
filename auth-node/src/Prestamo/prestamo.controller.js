@@ -15,14 +15,20 @@ import {
 
 export const create = async (req = request, res = response) => {
     try {
-        const clienteId = req.user?.uid || 
-                         req.user?.id || 
-                         req.usuario?.uid || 
-                         req.usuario?.id || 
-                         req.cliente?.id || 
-                         req.cliente?._id?.toString();
+        console.log("Datos recibidos:", req.body);
+        console.log("Cliente ID:", req.cliente?.id);
+        console.log("Empleado:", req.empleado?._id?.toString());
 
+        const clienteId = req.body?.cliente || req.cliente?.id || req.empleado?._id?.toString();
         const empleadoId = req.empleado?._id?.toString() ?? null;
+
+        if (!clienteId) {
+            return res.status(400).json({
+                success: false,
+                message: "No fue posible crear el préstamo",
+                error: "El ID del cliente es obligatorio"
+            });
+        }
 
         const prestamo = await createPrestamo({
             ...req.body,
@@ -36,6 +42,7 @@ export const create = async (req = request, res = response) => {
             data: prestamo
         });
     } catch (error) {
+        console.error("Error en create:", error);
         return res.status(400).json({
             success: false,
             message: "No fue posible crear el préstamo",
@@ -80,7 +87,25 @@ export const getById = async (req = request, res = response) => {
 
 export const getByCliente = async (req = request, res = response) => {
     try {
-        const { clienteId } = req.params;
+        let clienteId = req.params.clienteId;
+        
+        // Si no se proporciona clienteId en los parámetros, usar el del token
+        if (!clienteId) {
+            clienteId = req.cliente?.id || 
+                       req.cliente?.Id ||
+                       req.user?.uid || 
+                       req.user?.id || 
+                       req.usuario?.uid || 
+                       req.usuario?.id;
+
+            if (!clienteId) {
+                return res.status(401).json({ 
+                    success: false, 
+                    message: "No se pudo identificar al usuario desde el token de autenticación." 
+                });
+            }
+        }
+        
         const prestamos = await getPrestamosByCliente(clienteId);
         return res.json({ 
             success: true, 
@@ -131,13 +156,24 @@ export const getByEmpleado = async (req = request, res = response) => {
 
 export const update = async (req = request, res = response) => {
     try {
+        console.log("Update prestamo - ID:", req.params.id);
+        console.log("Update prestamo - Body:", req.body);
         const prestamo = await updatePrestamo(req.params.id, req.body);
+        console.log("Update prestamo - Resultado:", prestamo);
+        
+        // Convertir a objeto plano con _id como string
+        const prestamoPlain = prestamo.toObject ? prestamo.toObject() : prestamo;
+        if (prestamoPlain._id) {
+            prestamoPlain._id = prestamoPlain._id.toString();
+        }
+        
         return res.json({
             success: true,
             message: "Préstamo actualizado correctamente",
-            data: prestamo
+            data: prestamoPlain
         });
     } catch (error) {
+        console.error("Error en update:", error);
         return res.status(400).json({
             success: false,
             message: "No se pudo actualizar el préstamo",
