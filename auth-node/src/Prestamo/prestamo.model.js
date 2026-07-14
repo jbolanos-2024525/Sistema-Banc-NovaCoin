@@ -14,7 +14,7 @@ const prestamoSchema = new mongoose.Schema({
     monto: {
         type: Number,
         required: [true, "El monto es obligatorio"],
-        min: [1, "El monto debe ser mayor a 0"],
+        min: 1,
         validate: {
             validator: Number.isFinite,
             message: "El monto debe ser un número válido"
@@ -24,8 +24,8 @@ const prestamoSchema = new mongoose.Schema({
     tasaInteres: {
         type: Number,
         default: 12,
-        min: [0, "La tasa de interés no puede ser negativa"],
-        max: [100, "La tasa de interés no puede exceder 100%"],
+        min: 0,
+        max: 100,
         validate: {
             validator: Number.isFinite,
             message: "La tasa de interés debe ser un número válido"
@@ -35,8 +35,8 @@ const prestamoSchema = new mongoose.Schema({
     plazoMeses: {
         type: Number,
         required: [true, "El plazo en meses es obligatorio"],
-        min: [1, "El plazo debe ser al menos 1 mes"],
-        max: [360, "El plazo no puede exceder 360 meses (30 años)"],
+        min: 1,
+        max: 360,
         validate: {
             validator: Number.isFinite,
             message: "El plazo debe ser un número válido"
@@ -52,7 +52,7 @@ const prestamoSchema = new mongoose.Schema({
 
     cuotaMensual: {
         type: Number,
-        min: [0, "La cuota mensual no puede ser negativa"],
+        min: 0,
         validate: {
             validator: Number.isFinite,
             message: "La cuota mensual debe ser un número válido"
@@ -61,7 +61,7 @@ const prestamoSchema = new mongoose.Schema({
 
     montoPendiente: {
         type: Number,
-        min: [0, "El monto pendiente no puede ser negativo"],
+        min: 0,
         validate: {
             validator: Number.isFinite,
             message: "El monto pendiente debe ser un número válido"
@@ -71,7 +71,7 @@ const prestamoSchema = new mongoose.Schema({
     totalPagado: {
         type: Number,
         default: 0,
-        min: [0, "El total pagado no puede ser negativo"],
+        min: 0,
         validate: {
             validator: Number.isFinite,
             message: "El total pagado debe ser un número válido"
@@ -81,7 +81,7 @@ const prestamoSchema = new mongoose.Schema({
     numeroCuotasPagadas: {
         type: Number,
         default: 0,
-        min: [0, "El número de cuotas pagadas no puede ser negativo"],
+        min: 0,
         validate: {
             validator: Number.isInteger,
             message: "El número de cuotas pagadas debe ser un entero"
@@ -100,10 +100,10 @@ const prestamoSchema = new mongoose.Schema({
     estadoPrestamo: {
         type: String,
         enum: {
-            values: ["ACTIVO", "PAGADO", "VENCIDO", "CANCELADO", "RECHAZADO"],
+            values: ["PENDIENTE", "ACTIVO", "PAGADO", "VENCIDO", "CANCELADO", "RECHAZADO"],
             message: "Estado de préstamo no válido"
         },
-        default: "ACTIVO",
+        default: "PENDIENTE",
         uppercase: true,
         index: true
     },
@@ -142,13 +142,12 @@ prestamoSchema.index({ cliente: 1, Estado: 1 });
 prestamoSchema.index({ estadoPrestamo: 1, Estado: 1 });
 prestamoSchema.index({ empleado: 1, Estado: 1 });
 
-prestamoSchema.pre("save", function(next) {
+prestamoSchema.pre("save", async function() {
     if (this.fechaAprobacion && this.plazoMeses) {
         const fechaVencimiento = new Date(this.fechaAprobacion);
         fechaVencimiento.setMonth(fechaVencimiento.getMonth() + this.plazoMeses);
         this.fechaVencimiento = fechaVencimiento;
     }
-    next();
 });
 
 export default mongoose.model("Prestamo", prestamoSchema);

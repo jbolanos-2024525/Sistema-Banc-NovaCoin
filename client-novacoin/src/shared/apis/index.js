@@ -59,7 +59,7 @@ const createResponseInterceptor = (axiosInstance) => async (error) => {
             const refreshToken = useAuthStore.getState().refreshToken;
 
             const response = await axiosAuth.post('/auth/refresh', {
-                token: refreshToken,
+                refreshToken: refreshToken,
             });
 
             const { accessToken, refreshToken: newRefreshToken } = response.data;

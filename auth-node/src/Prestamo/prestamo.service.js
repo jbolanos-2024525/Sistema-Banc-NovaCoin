@@ -1,4 +1,5 @@
 import Prestamo from "./prestamo.model.js";
+import { Cuenta } from "../Cuenta/cuenta.model.js";
 
 const calcularCuota = (monto, interesAnual, plazoMeses) => {
     if (!monto || !interesAnual || !plazoMeses) {
@@ -106,12 +107,24 @@ export const updatePrestamo = async (id, data) => {
         throw new Error("No se puede editar un préstamo cancelado o pagado");
     }
 
-    const allowedUpdates = ['proposito', 'estadoPrestamo', 'cuentaId'];
+    const allowedUpdates = ['proposito', 'estadoPrestamo', 'cuentaId', 'tipoPrestamo', 'monto', 'plazoMeses', 'tasaInteres'];
     const updates = {};
 
     for (const key of allowedUpdates) {
         if (data[key] !== undefined) {
             updates[key] = data[key];
+        }
+    }
+
+    // Si se actualiza monto, plazo o tasa, recalcular cuota
+    if (updates.monto || updates.plazoMeses || updates.tasaInteres) {
+        const monto = updates.monto ?? prestamo.monto;
+        const plazo = updates.plazoMeses ?? prestamo.plazoMeses;
+        const tasa = updates.tasaInteres ?? prestamo.tasaInteres;
+        
+        if (monto && plazo && tasa) {
+            updates.cuotaMensual = calcularCuota(monto, tasa, plazo);
+            updates.montoPendiente = monto;
         }
     }
 
@@ -186,17 +199,26 @@ export const deletePrestamo = async (id) => {
 
 export const cambiarEstadoPrestamo = async (id, nuevoEstado) => {
     if (!id) throw new Error("ID de préstamo es requerido");
-    if (!['ACTIVO', 'PAGADO', 'VENCIDO', 'CANCELADO', 'RECHAZADO'].includes(nuevoEstado)) {
+    if (!['PENDIENTE', 'ACTIVO', 'PAGADO', 'VENCIDO', 'CANCELADO', 'RECHAZADO'].includes(nuevoEstado)) {
         throw new Error('Estado no válido');
     }
     
-    const prestamo = await Prestamo.findByIdAndUpdate(
-        id,
-        { estadoPrestamo: nuevoEstado },
-        { new: true, runValidators: true }
-    );
-    
+    const prestamo = await Prestamo.findById(id);
     if (!prestamo) throw new Error("Préstamo no encontrado");
+    
+    // Si el préstamo se aprueba (ACTIVO), recargar el monto a la cuenta del cliente
+    if (nuevoEstado === 'ACTIVO' && prestamo.estadoPrestamo !== 'ACTIVO') {
+        if (prestamo.cuentaId) {
+            const cuenta = await Cuenta.findOne({ NumeroCuenta: prestamo.cuentaId });
+            if (cuenta) {
+                cuenta.Saldo += prestamo.monto;
+                await cuenta.save();
+            }
+        }
+    }
+    
+    prestamo.estadoPrestamo = nuevoEstado;
+    await prestamo.save();
     
     return prestamo;
 };

@@ -115,36 +115,54 @@ const handleResponseError = async (error) => {
 
 axiosBank.interceptors.response.use((res) => res, handleResponseError);
 
-const BASE = '/NovaCoin/Admin/v1/cuenta';
+const BASE_ADMIN = '/NovaCoin/Admin/v1/cuenta';
+const BASE_USER = '/NovaCoin/v1/cuenta';
 
 export const accountService = {
+  // Admin endpoints
   getAccounts: async () => {
-    const response = await axiosBank.get(BASE);
+    const response = await axiosBank.get(BASE_ADMIN);
     return response.data;
   },
   
   getAccountById: async (accountId) => {
-    const response = await axiosBank.get(`${BASE}/${accountId}`);
+    const response = await axiosBank.get(`${BASE_ADMIN}/${accountId}`);
     return response.data;
   },
   
   createAccount: async (accountData) => {
-    const response = await axiosBank.post(BASE, accountData);
+    const response = await axiosBank.post(BASE_ADMIN, accountData);
     return response.data;
   },
   
   updateAccount: async (accountId, accountData) => {
-    const response = await axiosBank.put(`${BASE}/${accountId}`, accountData);
+    const response = await axiosBank.put(`${BASE_ADMIN}/${accountId}`, accountData);
     return response.data;
   },
   
   closeAccount: async (accountId) => {
-    const response = await axiosBank.delete(`${BASE}/${accountId}`);
+    const response = await axiosBank.delete(`${BASE_ADMIN}/${accountId}`);
     return response.data;
   },
   
-  getAccountBalance: async (accountId) => {
-    const response = await axiosBank.get(`${BASE}/${accountId}/balance`);
+  // User endpoints
+  getMyAccounts: async () => {
+    const response = await axiosBank.get(`${BASE_USER}/mis-cuentas`);
+    return response.data;
+  },
+  
+  deposit: async (cuentaId, amount) => {
+    const response = await axiosBank.patch(`${BASE_USER}/deposit/${cuentaId}`, { monto: amount });
+    return response.data;
+  },
+  
+  withdraw: async (cuentaId, amount) => {
+    const response = await axiosBank.patch(`${BASE_USER}/withdraw/${cuentaId}`, { monto: amount });
+    return response.data;
+  },
+  
+  transfer: async (transferData) => {
+    const response = await axiosBank.post(`${BASE_USER}/transfer`, transferData);
     return response.data;
   },
 };

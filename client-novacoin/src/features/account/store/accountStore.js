@@ -11,20 +11,15 @@ export const useAccountStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             // Hacemos la petición al endpoint usando tu instancia en el puerto 3020
-            const { data } = await axiosBank.get('/NovaCoin/v1/cuenta/mis-cuentas');
+            const response = await axiosBank.get('/NovaCoin/v1/cuenta/mis-cuentas');
             
-            console.log("Data recibida de /mis-cuentas:", data);
+            console.log("Response recibida de /mis-cuentas:", response.data);
 
             let listaCuentas = [];
             
-            // Evaluamos la estructura del documento que viene de Mongo
-            // Si viene el objeto directo de la cuenta (como se ve en Compass) sin la propiedad .cuentas
-            if (data && typeof data === 'object' && !Array.isArray(data) && !data.cuentas) {
-                listaCuentas = [data]; // Lo envolvemos en un array para que el .map() de React no rompa
-            } 
-            // Si tu backend lo devuelve envuelto en un objeto { cuentas: [...] } o { cuentas: {...} }
-            else if (data && data.cuentas) {
-                listaCuentas = Array.isArray(data.cuentas) ? data.cuentas : [data.cuentas];
+            // El backend devuelve { success: true, data: cuentas, count: n }
+            if (response.data && response.data.data) {
+                listaCuentas = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
             }
 
             set({ cuentas: listaCuentas, loading: false });

@@ -59,7 +59,7 @@ const empleadoSchema = new Schema(
     Salario: {
       type: Number,
       required: [true, 'El salario es obligatorio'],
-      min: [0, 'El salario no puede ser negativo'],
+      min: 0,
       validate: {
         validator: Number.isFinite,
         message: 'El salario debe ser un número válido'

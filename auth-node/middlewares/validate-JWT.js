@@ -21,6 +21,8 @@ export const validateJWT = async (req, res, next) => {
             process.env.JWT_SECRET
         );
 
+        console.log("Token decodificado completo:", JSON.stringify(decoded, null, 2));
+
         const userId = decoded.sub || decoded.id || decoded.Id;
 
         const isMongoId = /^[a-f\d]{24}$/i.test(userId);

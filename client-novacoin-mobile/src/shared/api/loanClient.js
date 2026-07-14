@@ -87,7 +87,7 @@ const handleResponseError = async (error) => {
       }
 
       const response = await axiosAuth.post(
-        '/auth/refresh',
+        '/api/v1/auth/refresh',
         { refreshToken: currentRefreshToken }
       );
 
@@ -139,7 +139,7 @@ export const loanService = {
   },
   
   cancelLoan: async (id) => {
-    const response = await axiosBank.patch(`${BASE}/${id}/cancelar`);
+    const response = await axiosBank.patch(`${BASE}/cancelar/${id}`);
     return response.data;
   },
   
@@ -148,33 +148,28 @@ export const loanService = {
     return response.data;
   },
   
-  getLoans: async (params = {}) => {
-    const response = await axiosBank.get('/', { params });
+  getLoansByCliente: async (clienteId) => {
+    const response = await axiosBank.get(`${BASE}/cliente/${clienteId}`);
     return response.data;
   },
   
-  applyForLoan: async (loanData) => {
-    const response = await axiosBank.post('/apply', loanData);
+  getLoansByEstado: async (estado) => {
+    const response = await axiosBank.get(`${BASE}/estado/${estado}`);
     return response.data;
   },
   
-  getLoanPayments: async (loanId) => {
-    const response = await axiosBank.get(`/${loanId}/payments`);
+  getLoansByEmpleado: async (empleadoId) => {
+    const response = await axiosBank.get(`${BASE}/empleado/${empleadoId}`);
     return response.data;
   },
   
-  makePayment: async (loanId, paymentData) => {
-    const response = await axiosBank.post(`/${loanId}/payment`, paymentData);
+  makePayment: async (id, paymentData) => {
+    const response = await axiosBank.patch(`${BASE}/pagar/${id}`, paymentData);
     return response.data;
   },
   
-  getLoanSchedule: async (loanId) => {
-    const response = await axiosBank.get(`/${loanId}/schedule`);
-    return response.data;
-  },
-  
-  calculateLoanQuote: async (loanData) => {
-    const response = await axiosBank.post('/calculate', loanData);
+  changeLoanStatus: async (id, estado) => {
+    const response = await axiosBank.patch(`${BASE}/estado/${id}`, { estado });
     return response.data;
   },
 };

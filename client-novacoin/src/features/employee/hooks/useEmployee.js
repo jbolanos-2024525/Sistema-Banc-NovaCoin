@@ -42,13 +42,20 @@ export const useEmployee = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar a este empleado?')) {
-      const result = await store.deleteEmployeeSoft(id);
-      if (result.success) {
-        toast.success('Empleado eliminado (Soft Delete) correctamente.');
-      } else {
-        toast.error(result.error || 'Error al eliminar empleado.');
-      }
+    const result = await store.deleteEmployeeSoft(id);
+    if (result.success) {
+      toast.success('Empleado eliminado (Soft Delete) correctamente.');
+    } else {
+      toast.error(result.error || 'Error al eliminar empleado.');
+    }
+  };
+
+  const handleCancel = async (id) => {
+    const result = await store.cancelEmployee(id);
+    if (result.success) {
+      toast.success('Empleado desactivado correctamente.');
+    } else {
+      toast.error(result.error || 'Error al desactivar empleado.');
     }
   };
 
@@ -61,5 +68,6 @@ export const useEmployee = () => {
     closeModal,
     handleSave,
     handleDelete,
+    handleCancel,
   };
 };

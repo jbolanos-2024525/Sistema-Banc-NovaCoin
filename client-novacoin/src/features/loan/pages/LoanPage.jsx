@@ -34,20 +34,36 @@ const tipoStyle = (tipo) => {
 };
 
 export const LoanPage = () => {
-    const { loans, loading, error, fetchLoans, requestLoan, updateLoan, cancelLoan, deleteLoan } = useLoanStore();
+    const { loans, loading, error, fetchLoans, requestLoan, updateLoan, cancelLoan, deleteLoan, approveLoan, rejectLoan } = useLoanStore();
     const { user } = useAuthStore();
 
     const [isModalOpen,   setIsModalOpen]   = useState(false);
     const [loanToEdit,    setLoanToEdit]    = useState(null);
     const [confirmConfig, setConfirmConfig] = useState(null);
+    const [pendingLoanData, setPendingLoanData] = useState(null);
 
     const isAdmin = user?.role === 'ADMIN_ROLE';
 
     useEffect(() => { fetchLoans(); }, [fetchLoans]);
 
     const handleRequestLoan = async (dto) => {
-        const result = await requestLoan(dto);
-        if (result.success) { setIsModalOpen(false); fetchLoans(); }
+        setPendingLoanData(dto);
+        setConfirmConfig({
+            title: 'Confirmar Solicitud de Préstamo',
+            message: `¿Estás seguro de solicitar un préstamo de ${formatCurrency(dto.monto)} con plazo de ${dto.plazoMeses} meses?`,
+            confirmText: 'Sí, Solicitar',
+            confirmColor: '#00f2fe',
+            onConfirm: async () => {
+                const result = await requestLoan(dto);
+                if (result.success) { 
+                    setIsModalOpen(false); 
+                    setLoanToEdit(null);
+                    fetchLoans(); 
+                }
+                setConfirmConfig(null);
+                setPendingLoanData(null);
+            }
+        });
     };
 
     const handleOpenEdit = (loan) => {
@@ -56,9 +72,28 @@ export const LoanPage = () => {
     };
 
     const handleUpdateLoan = async (dto) => {
-        const id = loanToEdit._id || loanToEdit.id;
-        const result = await updateLoan(id, dto);
-        if (result.success) { setIsModalOpen(false); setLoanToEdit(null); fetchLoans(); }
+        setPendingLoanData(dto);
+        const message = isAdmin 
+            ? `¿Estás seguro de actualizar el préstamo? Se modificarán los datos del préstamo.`
+            : `¿Estás seguro de actualizar el propósito del préstamo?`;
+        
+        setConfirmConfig({
+            title: 'Confirmar Actualización de Préstamo',
+            message: message,
+            confirmText: 'Sí, Actualizar',
+            confirmColor: '#f59e0b',
+            onConfirm: async () => {
+                const id = loanToEdit._id || loanToEdit.id;
+                const result = await updateLoan(id, dto);
+                if (result.success) { 
+                    setIsModalOpen(false); 
+                    setLoanToEdit(null);
+                    fetchLoans(); 
+                }
+                setConfirmConfig(null);
+                setPendingLoanData(null);
+            }
+        });
     };
 
     const handleCancel = (id) => {
@@ -70,7 +105,8 @@ export const LoanPage = () => {
             onConfirm: async () => {
                 await cancelLoan(id);
                 setConfirmConfig(null);
-            }
+            },
+            onClose: () => setConfirmConfig(null)
         });
     };
 
@@ -83,7 +119,36 @@ export const LoanPage = () => {
             onConfirm: async () => {
                 await deleteLoan(id);
                 setConfirmConfig(null);
-            }
+            },
+            onClose: () => setConfirmConfig(null)
+        });
+    };
+
+    const handleApprove = (id) => {
+        setConfirmConfig({
+            title: 'Aprobar Préstamo',
+            message: '¿Estás seguro de aprobar este préstamo? El monto será recargado a la cuenta del cliente.',
+            confirmText: 'Sí, Aprobar',
+            confirmColor: '#10b981',
+            onConfirm: async () => {
+                await approveLoan(id);
+                setConfirmConfig(null);
+            },
+            onClose: () => setConfirmConfig(null)
+        });
+    };
+
+    const handleReject = (id) => {
+        setConfirmConfig({
+            title: 'Rechazar Préstamo',
+            message: '¿Estás seguro de rechazar este préstamo? Esta acción no se puede deshacer.',
+            confirmText: 'Sí, Rechazar',
+            confirmColor: '#ef4444',
+            onConfirm: async () => {
+                await rejectLoan(id);
+                setConfirmConfig(null);
+            },
+            onClose: () => setConfirmConfig(null)
         });
     };
 
@@ -174,40 +239,67 @@ export const LoanPage = () => {
                                             {isAdmin && (
                                                 <td style={{ padding: '16px' }}>
                                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                                        <button
-                                                            onClick={() => handleOpenEdit(loan)}
-                                                            disabled={bloqueado}
-                                                            style={{
-                                                                padding: '6px 14px', backgroundColor: 'transparent',
-                                                                border: `1px solid ${bloqueado ? '#374151' : '#f59e0b'}`,
-                                                                borderRadius: '6px', color: bloqueado ? '#4b5563' : '#f59e0b',
-                                                                cursor: bloqueado ? 'not-allowed' : 'pointer', fontSize: '12px',
-                                                            }}
-                                                        >
-                                                            Editar
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleCancel(id)}
-                                                            disabled={bloqueado}
-                                                            style={{
-                                                                padding: '6px 14px', backgroundColor: 'transparent',
-                                                                border: `1px solid ${bloqueado ? '#374151' : '#ef4444'}`,
-                                                                borderRadius: '6px', color: bloqueado ? '#4b5563' : '#ef4444',
-                                                                cursor: bloqueado ? 'not-allowed' : 'pointer', fontSize: '12px',
-                                                            }}
-                                                        >
-                                                            Cancelar
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(id)}
-                                                            style={{
-                                                                padding: '6px 14px', backgroundColor: 'transparent',
-                                                                border: '1px solid #6b7280', borderRadius: '6px',
-                                                                color: '#6b7280', cursor: 'pointer', fontSize: '12px',
-                                                            }}
-                                                        >
-                                                            Eliminar
-                                                        </button>
+                                                        {estado === 'PENDIENTE' ? (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleApprove(id)}
+                                                                    style={{
+                                                                        padding: '6px 14px', backgroundColor: 'transparent',
+                                                                        border: '1px solid #10b981', borderRadius: '6px',
+                                                                        color: '#10b981', cursor: 'pointer', fontSize: '12px',
+                                                                    }}
+                                                                >
+                                                                    Aprobar
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleReject(id)}
+                                                                    style={{
+                                                                        padding: '6px 14px', backgroundColor: 'transparent',
+                                                                        border: '1px solid #ef4444', borderRadius: '6px',
+                                                                        color: '#ef4444', cursor: 'pointer', fontSize: '12px',
+                                                                    }}
+                                                                >
+                                                                    Rechazar
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleOpenEdit(loan)}
+                                                                    disabled={bloqueado}
+                                                                    style={{
+                                                                        padding: '6px 14px', backgroundColor: 'transparent',
+                                                                        border: `1px solid ${bloqueado ? '#374151' : '#f59e0b'}`,
+                                                                        borderRadius: '6px', color: bloqueado ? '#4b5563' : '#f59e0b',
+                                                                        cursor: bloqueado ? 'not-allowed' : 'pointer', fontSize: '12px',
+                                                                    }}
+                                                                >
+                                                                    Editar
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleCancel(id)}
+                                                                    disabled={bloqueado}
+                                                                    style={{
+                                                                        padding: '6px 14px', backgroundColor: 'transparent',
+                                                                        border: `1px solid ${bloqueado ? '#374151' : '#ef4444'}`,
+                                                                        borderRadius: '6px', color: bloqueado ? '#4b5563' : '#ef4444',
+                                                                        cursor: bloqueado ? 'not-allowed' : 'pointer', fontSize: '12px',
+                                                                    }}
+                                                                >
+                                                                    Cancelar
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDelete(id)}
+                                                                    style={{
+                                                                        padding: '6px 14px', backgroundColor: 'transparent',
+                                                                        border: '1px solid #6b7280', borderRadius: '6px',
+                                                                        color: '#6b7280', cursor: 'pointer', fontSize: '12px',
+                                                                    }}
+                                                                >
+                                                                    Eliminar
+                                                                </button>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </td>
                                             )}
@@ -227,6 +319,7 @@ export const LoanPage = () => {
                     onClose={handleCloseModal}
                     onConfirm={loanToEdit ? handleUpdateLoan : handleRequestLoan}
                     loanToEdit={loanToEdit}
+                    isAdmin={isAdmin}
                 />
             )}
 
@@ -239,7 +332,7 @@ export const LoanPage = () => {
                     confirmText={confirmConfig.confirmText}
                     confirmColor={confirmConfig.confirmColor}
                     onConfirm={confirmConfig.onConfirm}
-                    onClose={() => setConfirmConfig(null)}
+                    onClose={confirmConfig.onClose || (() => setConfirmConfig(null))}
                 />
             )}
         </div>

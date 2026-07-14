@@ -31,10 +31,7 @@ const CuentaSchema = new Schema({
     Saldo: {
         type: Number,
         default: 0,
-        min: {
-            value: 0,
-            message: "El saldo no puede ser negativo"
-        },
+        min: 0,
         validate: {
             validator: Number.isFinite,
             message: "El saldo debe ser un número válido"
@@ -44,10 +41,7 @@ const CuentaSchema = new Schema({
     LimiteRetiroDiario: {
         type: Number,
         default: 5000,
-        min: {
-            value: 0,
-            message: "El límite de retiro diario no puede ser negativo"
-        }
+        min: 0
     },
 
     EstadoCuenta: {
@@ -78,35 +72,28 @@ const CuentaSchema = new Schema({
     collection: 'cuentas'
 });
 
-CuentaSchema.pre("save", async function(next) {
+CuentaSchema.pre("save", async function() {
     if (!this.NumeroCuenta) {
-        try {
-            const hoy = new Date();
-            const fecha = `${hoy.getFullYear()}${String(hoy.getMonth() + 1).padStart(2, '0')}${String(hoy.getDate()).padStart(2, '0')}`;
+        const hoy = new Date();
+        const fecha = `${hoy.getFullYear()}${String(hoy.getMonth() + 1).padStart(2, '0')}${String(hoy.getDate()).padStart(2, '0')}`;
 
-            let numeroCuenta;
-            let existe = true;
-            let intentos = 0;
-            const maxIntentos = 10;
+        let numeroCuenta;
+        let existe = true;
+        let intentos = 0;
+        const maxIntentos = 10;
 
-            while (existe && intentos < maxIntentos) {
-                const aleatorio = Math.floor(100000 + Math.random() * 900000);
-                numeroCuenta = `NC-${fecha}-${aleatorio}`;
-                existe = await model("Cuenta").findOne({ NumeroCuenta: numeroCuenta });
-                intentos++;
-            }
-
-            if (existe) {
-                throw new Error("No se pudo generar un número de cuenta único después de varios intentos");
-            }
-
-            this.NumeroCuenta = numeroCuenta;
-            next();
-        } catch (error) {
-            next(error);
+        while (existe && intentos < maxIntentos) {
+            const aleatorio = Math.floor(100000 + Math.random() * 900000);
+            numeroCuenta = `NC-${fecha}-${aleatorio}`;
+            existe = await model("Cuenta").findOne({ NumeroCuenta: numeroCuenta });
+            intentos++;
         }
-    } else {
-        next();
+
+        if (existe) {
+            throw new Error("No se pudo generar un número de cuenta único después de varios intentos");
+        }
+
+        this.NumeroCuenta = numeroCuenta;
     }
 });
 

@@ -87,7 +87,7 @@ const handleResponseError = async (error) => {
       }
 
       const response = await axiosAuth.post(
-        '/auth/refresh',
+        '/api/v1/auth/refresh',
         { refreshToken: currentRefreshToken }
       );
 
@@ -143,8 +143,23 @@ export const employeeService = {
     return response.data;
   },
   
-  getEmployeeStats: async (employeeId) => {
-    const response = await axiosBank.get(`${BASE}/${employeeId}/stats`);
+  getEmployeeByDPI: async (dpi) => {
+    const response = await axiosBank.get(`${BASE}/dpi/${dpi}`);
+    return response.data;
+  },
+  
+  getEmployeeByCorreo: async (correo) => {
+    const response = await axiosBank.get(`${BASE}/correo/${correo}`);
+    return response.data;
+  },
+  
+  getEmployeesByRol: async (rol) => {
+    const response = await axiosBank.get(`${BASE}/rol/${rol}`);
+    return response.data;
+  },
+  
+  changeEmployeeStatus: async (employeeId, estado) => {
+    const response = await axiosBank.patch(`${BASE}/estado/${employeeId}`, { estado });
     return response.data;
   },
 };

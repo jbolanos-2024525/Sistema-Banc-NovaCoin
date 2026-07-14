@@ -13,19 +13,24 @@ export const useLoans = () => {
     setError(null);
     
     try {
-      const response = await loanService.getLoans(params);
+      const response = await loanService.getAllLoans();
       const data = response.data.data || response.data;
       
       const mappedLoans = data.map((loan) => ({
-        id: loan.id,
-        amount: loan.amount,
-        interestRate: loan.interestRate,
-        term: loan.term,
-        status: loan.status,
-        monthlyPayment: loan.monthlyPayment,
-        startDate: loan.startDate,
-        endDate: loan.endDate,
-        remainingBalance: loan.remainingBalance,
+        id: loan._id || loan.id,
+        amount: loan.monto,
+        interestRate: loan.tasaInteres,
+        term: loan.plazoMeses,
+        status: loan.estadoPrestamo,
+        monthlyPayment: loan.cuotaMensual,
+        startDate: loan.fechaAprobacion,
+        endDate: loan.fechaVencimiento,
+        remainingBalance: loan.montoPendiente,
+        totalPaid: loan.totalPagado,
+        paidInstallments: loan.numeroCuotasPagadas,
+        tipoPrestamo: loan.tipoPrestamo,
+        cliente: loan.cliente,
+        empleado: loan.empleado,
       }));
       
       setLoans(mappedLoans);
@@ -39,24 +44,29 @@ export const useLoans = () => {
     }
   }, []);
 
-  const fetchMyLoans = useCallback(async (params = {}) => {
+  const fetchMyLoans = useCallback(async (clienteId) => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await loanService.getLoans({ ...params, myLoans: true });
+      const response = await loanService.getLoansByCliente(clienteId);
       const data = response.data.data || response.data;
       
       const mappedLoans = data.map((loan) => ({
-        id: loan.id,
-        amount: loan.amount,
-        interestRate: loan.interestRate,
-        term: loan.term,
-        status: loan.status,
-        monthlyPayment: loan.monthlyPayment,
-        startDate: loan.startDate,
-        endDate: loan.endDate,
-        remainingBalance: loan.remainingBalance,
+        id: loan._id || loan.id,
+        amount: loan.monto,
+        interestRate: loan.tasaInteres,
+        term: loan.plazoMeses,
+        status: loan.estadoPrestamo,
+        monthlyPayment: loan.cuotaMensual,
+        startDate: loan.fechaAprobacion,
+        endDate: loan.fechaVencimiento,
+        remainingBalance: loan.montoPendiente,
+        totalPaid: loan.totalPagado,
+        paidInstallments: loan.numeroCuotasPagadas,
+        tipoPrestamo: loan.tipoPrestamo,
+        cliente: loan.cliente,
+        empleado: loan.empleado,
       }));
       
       setLoans(mappedLoans);
@@ -79,16 +89,21 @@ export const useLoans = () => {
       const data = response.data.data || response.data;
       
       const mappedLoan = {
-        id: data.id,
-        amount: data.amount,
-        interestRate: data.interestRate,
-        term: data.term,
-        status: data.status,
-        monthlyPayment: data.monthlyPayment,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        remainingBalance: data.remainingBalance,
-        payments: data.payments || [],
+        id: data._id || data.id,
+        amount: data.monto,
+        interestRate: data.tasaInteres,
+        term: data.plazoMeses,
+        status: data.estadoPrestamo,
+        monthlyPayment: data.cuotaMensual,
+        startDate: data.fechaAprobacion,
+        endDate: data.fechaVencimiento,
+        remainingBalance: data.montoPendiente,
+        totalPaid: data.totalPagado,
+        paidInstallments: data.numeroCuotasPagadas,
+        tipoPrestamo: data.tipoPrestamo,
+        cliente: data.cliente,
+        empleado: data.empleado,
+        proposito: data.proposito,
       };
       
       return mappedLoan;
@@ -106,10 +121,10 @@ export const useLoans = () => {
     setError(null);
     
     try {
-      const response = await loanService.applyForLoan(loanData);
+      const response = await loanService.createLoan(loanData);
       const data = response.data.data || response.data;
       
-      await fetchMyLoans();
+      await fetchLoans();
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Error al solicitar préstamo';
@@ -118,7 +133,7 @@ export const useLoans = () => {
     } finally {
       setLoading(false);
     }
-  }, [fetchMyLoans]);
+  }, [fetchLoans]);
 
   const makePayment = useCallback(async (loanId, paymentData) => {
     setLoading(true);
@@ -128,7 +143,7 @@ export const useLoans = () => {
       const response = await loanService.makePayment(loanId, paymentData);
       const data = response.data.data || response.data;
       
-      await fetchMyLoans();
+      await fetchLoans();
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Error al realizar pago';
@@ -137,43 +152,9 @@ export const useLoans = () => {
     } finally {
       setLoading(false);
     }
-  }, [fetchMyLoans]);
+  }, [fetchLoans]);
 
-  const getLoanSchedule = useCallback(async (loanId) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await loanService.getLoanSchedule(loanId);
-      const data = response.data.data || response.data;
-      
-      return data;
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Error al cargar cronograma de pagos';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  const calculateLoanQuote = useCallback(async (loanData) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await loanService.calculateLoanQuote(loanData);
-      const data = response.data.data || response.data;
-      
-      return data;
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Error al calcular cotización';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   return {
     loans,
@@ -184,8 +165,6 @@ export const useLoans = () => {
     getLoanById,
     applyForLoan,
     makePayment,
-    getLoanSchedule,
-    calculateLoanQuote,
   };
 };
 

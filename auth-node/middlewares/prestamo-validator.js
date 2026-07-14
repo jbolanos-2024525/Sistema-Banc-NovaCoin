@@ -21,8 +21,8 @@ export const validateCreatePrestamo = [
         .trim()
         .isLength({ max: 500 }).withMessage("El propósito no puede exceder 500 caracteres"),
 
-    body("cliente")
-        .trim().notEmpty().withMessage("El ID del cliente es requerido")
+    body("cliente").optional()
+        .trim()
         .isString().withMessage("El ID del cliente debe ser un texto válido"),
 
     body("cuentaId").optional()

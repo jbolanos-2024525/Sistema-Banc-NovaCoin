@@ -87,7 +87,7 @@ const handleResponseError = (axiosInstance) => async (error) => {
       }
 
       const response = await axiosAuth.post(
-        '/auth/refresh',
+        '/api/v1/auth/refresh',
         { refreshToken: currentRefreshToken }
       );
 
@@ -117,51 +117,80 @@ axiosTrans.interceptors.response.use((res) => res, handleResponseError(axiosTran
 axiosTransAdmin.interceptors.response.use((res) => res, handleResponseError(axiosTransAdmin));
 
 export const transactionService = {
-  // Obtener todas las transacciones (admin)
+  // Admin endpoints
   getAllTransactions: async () => {
     const response = await axiosTransAdmin.get('/transaccion');
     return response.data;
   },
   
-  // Obtener los detalles de una sola transacción por ID
-  getTransactionById: async (id) => {
-    const response = await axiosTrans.get(`/transaccion/${id}`);
-    return response.data;
-  },
-  
-  // Crear una nueva transacción (Transferencia, Depósito, Retiro)
   createTransaction: async (transactionData) => {
     const response = await axiosTransAdmin.post('/transaccion', transactionData);
     return response.data;
   },
   
-  getTransactions: async (params = {}) => {
-    const response = await axiosTrans.get('/', { params });
+  getTransactionByIdAdmin: async (id) => {
+    const response = await axiosTransAdmin.get(`/transaccion/${id}`);
     return response.data;
   },
   
-  getAccountTransactions: async (accountId, params = {}) => {
-    const response = await axiosTrans.get(`/account/${accountId}`, { params });
+  getTransactionsByUsuario: async (usuarioId) => {
+    const response = await axiosTransAdmin.get(`/transaccion/usuario/${usuarioId}`);
     return response.data;
   },
   
-  createTransfer: async (transferData) => {
-    const response = await axiosTrans.post('/transfer', transferData);
+  getTransactionsByTipo: async (tipo) => {
+    const response = await axiosTransAdmin.get(`/transaccion/tipo/${tipo}`);
     return response.data;
   },
   
-  createDeposit: async (depositData) => {
-    const response = await axiosTrans.post('/deposit', depositData);
+  getTransactionsByEstado: async (estado) => {
+    const response = await axiosTransAdmin.get(`/transaccion/estado/${estado}`);
     return response.data;
   },
   
-  createWithdrawal: async (withdrawalData) => {
-    const response = await axiosTrans.post('/withdrawal', withdrawalData);
+  getTransactionsByFecha: async (params) => {
+    const response = await axiosTransAdmin.get('/transaccion/fecha', { params });
     return response.data;
   },
   
-  cancelTransaction: async (transactionId) => {
-    const response = await axiosTrans.post(`/${transactionId}/cancel`);
+  getTransactionsByPrestamo: async (prestamoId) => {
+    const response = await axiosTransAdmin.get(`/transaccion/prestamo/${prestamoId}`);
+    return response.data;
+  },
+  
+  updateTransaction: async (id, transactionData) => {
+    const response = await axiosTransAdmin.put(`/transaccion/${id}`, transactionData);
+    return response.data;
+  },
+  
+  deleteTransaction: async (id) => {
+    const response = await axiosTransAdmin.delete(`/transaccion/${id}`);
+    return response.data;
+  },
+  
+  changeTransactionStatus: async (id, estado) => {
+    const response = await axiosTransAdmin.patch(`/transaccion/estado/${id}`, { estado });
+    return response.data;
+  },
+  
+  // User endpoints
+  getMyTransactions: async () => {
+    const response = await axiosTrans.get('/transaccion/mis-transacciones');
+    return response.data;
+  },
+  
+  getTransactionById: async (id) => {
+    const response = await axiosTrans.get(`/transaccion/${id}`);
+    return response.data;
+  },
+  
+  getTransactionsByCuenta: async (cuentaId) => {
+    const response = await axiosTrans.get(`/transaccion/cuenta/${cuentaId}`);
+    return response.data;
+  },
+  
+  getResumen: async () => {
+    const response = await axiosTrans.get('/transaccion/resumen');
     return response.data;
   },
 };

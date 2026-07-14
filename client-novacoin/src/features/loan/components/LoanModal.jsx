@@ -14,13 +14,14 @@ const inputStyle = {
 
 const labelStyle = { fontSize: '13px', color: '#9ca3af', fontWeight: '500' };
 
-export const LoanModal = ({ isOpen, onClose, onConfirm, loanToEdit = null }) => {
+export const LoanModal = ({ isOpen, onClose, onConfirm, loanToEdit = null, isAdmin = false }) => {
     const isEditing = !!loanToEdit;
 
     const [monto,        setMonto]        = useState('');
     const [plazo,        setPlazo]        = useState('12');
     const [proposito,    setProposito]    = useState('');
     const [tipoPrestamo, setTipoPrestamo] = useState('PERSONAL');
+    const [cliente,     setCliente]     = useState('');
     const [localError,   setLocalError]   = useState('');
 
     useEffect(() => {
@@ -29,8 +30,9 @@ export const LoanModal = ({ isOpen, onClose, onConfirm, loanToEdit = null }) => 
             setPlazo(loanToEdit.plazoMeses?.toString() || '12');
             setProposito(loanToEdit.proposito || '');
             setTipoPrestamo(loanToEdit.tipoPrestamo || 'PERSONAL');
+            setCliente(loanToEdit.cliente || '');
         } else {
-            setMonto(''); setPlazo('12'); setProposito(''); setTipoPrestamo('PERSONAL');
+            setMonto(''); setPlazo('12'); setProposito(''); setTipoPrestamo('PERSONAL'); setCliente('');
         }
     }, [loanToEdit]);
 
@@ -54,18 +56,43 @@ export const LoanModal = ({ isOpen, onClose, onConfirm, loanToEdit = null }) => 
             setLocalError('El propósito del préstamo es obligatorio.');
             return;
         }
+        if (isAdmin && !cliente.trim()) {
+            setLocalError('El ID del cliente es obligatorio para administradores.');
+            return;
+        }
 
-        const dto = {
-            tipoPrestamo,
-            monto:      parseFloat(monto),
-            plazoMeses: parseInt(plazo),
-            proposito:  proposito.trim(),
-        };
-
-        // Solo enviar tasaInteres al crear, no al editar
-        if (!isEditing) dto.tasaInteres = 15;
-
-        if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+        if (isEditing) {
+            // Al editar como admin, enviar todos los campos permitidos
+            if (isAdmin) {
+                const dto = {
+                    tipoPrestamo,
+                    monto: parseFloat(monto),
+                    plazoMeses: parseInt(plazo),
+                    proposito: proposito.trim(),
+                    tasaInteres: 15,
+                };
+                if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+            } else {
+                // Al editar como cliente normal, solo enviar propósito
+                const dto = {
+                    proposito: proposito.trim(),
+                };
+                if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+            }
+        } else {
+            // Al crear, enviar todos los campos
+            const dto = {
+                tipoPrestamo,
+                monto: parseFloat(monto),
+                plazoMeses: parseInt(plazo),
+                proposito: proposito.trim(),
+            };
+            if (isAdmin && cliente.trim()) {
+                dto.cliente = cliente.trim();
+            }
+            dto.tasaInteres = 15;
+            if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+        }
     };
 
     return (
@@ -107,30 +134,34 @@ export const LoanModal = ({ isOpen, onClose, onConfirm, loanToEdit = null }) => 
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <label style={labelStyle}>Tipo de Préstamo</label>
-                        <select value={tipoPrestamo} onChange={e => setTipoPrestamo(e.target.value)} style={inputStyle}>
-                            <option value="PERSONAL">Personal</option>
-                            <option value="HIPOTECARIO">Hipotecario</option>
-                            <option value="VEHICULAR">Vehicular</option>
-                        </select>
-                    </div>
+                    {!isEditing || isAdmin ? (
+                        <>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <label style={labelStyle}>Tipo de Préstamo</label>
+                                <select value={tipoPrestamo} onChange={e => setTipoPrestamo(e.target.value)} style={inputStyle}>
+                                    <option value="PERSONAL">Personal</option>
+                                    <option value="HIPOTECARIO">Hipotecario</option>
+                                    <option value="VEHICULAR">Vehicular</option>
+                                </select>
+                            </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <label style={labelStyle}>Monto (GTQ)</label>
-                        <input type="number" step="0.01" placeholder="0.00"
-                            value={monto} onChange={e => setMonto(e.target.value)}
-                            style={inputStyle} />
-                    </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <label style={labelStyle}>Monto (GTQ)</label>
+                                <input type="number" step="0.01" placeholder="0.00"
+                                    value={monto} onChange={e => setMonto(e.target.value)}
+                                    style={inputStyle} />
+                            </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <label style={labelStyle}>Plazo</label>
-                        <select value={plazo} onChange={e => setPlazo(e.target.value)} style={inputStyle}>
-                            {['6','12','24','36','48','60'].map(m => (
-                                <option key={m} value={m}>{m} meses</option>
-                            ))}
-                        </select>
-                    </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <label style={labelStyle}>Plazo</label>
+                                <select value={plazo} onChange={e => setPlazo(e.target.value)} style={inputStyle}>
+                                    {['6','12','24','36','48','60'].map(m => (
+                                        <option key={m} value={m}>{m} meses</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </>
+                    ) : null}
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                         <label style={labelStyle}>Propósito del Préstamo</label>
@@ -138,6 +169,15 @@ export const LoanModal = ({ isOpen, onClose, onConfirm, loanToEdit = null }) => 
                             value={proposito} onChange={e => setProposito(e.target.value)}
                             style={inputStyle} />
                     </div>
+
+                    {!isEditing && isAdmin && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <label style={labelStyle}>ID del Cliente</label>
+                            <input type="text" placeholder="ID del usuario cliente"
+                                value={cliente} onChange={e => setCliente(e.target.value)}
+                                style={inputStyle} />
+                        </div>
+                    )}
 
                     {monto && parseFloat(monto) > 0 && (
                         <div style={{
