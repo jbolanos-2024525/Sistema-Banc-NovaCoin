@@ -6,6 +6,7 @@ import { theme } from '../../../shared/constants/theme';
 import { useAuthStore } from '../../../shared/store/authStore';
 import DashboardHomeScreen from '../screens/DashboardHomeScreen';
 import UserDashboardHomeScreen from '../screens/UserDashboardHomeScreen';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,19 +17,12 @@ const DashboardStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.colors.primary.main,
-        },
-        headerTintColor: theme.colors.white,
-        headerTitleStyle: {
-          fontWeight: theme.typography.fontWeight.bold,
-        },
+        headerShown: false,
       }}
     >
       <Stack.Screen
         name="DashboardHome"
         component={isAdmin ? DashboardHomeScreen : UserDashboardHomeScreen}
-        options={{ title: isAdmin ? 'Dashboard Admin' : 'Mi Dashboard', headerShown: true }}
       />
     </Stack.Navigator>
   );

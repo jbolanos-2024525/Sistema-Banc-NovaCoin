@@ -21,10 +21,10 @@ const UserTabs = () => {
 
           switch (route.name) {
             case 'Dashboard':
-              iconName = 'dashboard';
+              iconName = 'home';
               break;
             case 'Account':
-              iconName = 'account-balance-wallet';
+              iconName = 'account-balance';
               break;
             case 'Loans':
               iconName = 'request-page';
@@ -41,22 +41,38 @@ const UserTabs = () => {
 
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: theme.colors.primary.main,
-        tabBarInactiveTintColor: theme.colors.secondary.main,
+        tabBarActiveTintColor: '#00f2ea',
+        tabBarInactiveTintColor: '#9ca3af',
         tabBarStyle: {
-          backgroundColor: theme.colors.surface.elevated,
+          backgroundColor: '#001233',
         },
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardStack} />
-      <Tab.Screen name="Account" component={AccountStack} />
-      <Tab.Screen name="Loans" component={LoansStack} />
-      <Tab.Screen name="Transactions" component={TransactionsStack} />
+      <Tab.Screen 
+        name="Dashboard" 
+        component={DashboardStack}
+        options={{ tabBarLabel: 'Inicio' }}
+      />
+      <Tab.Screen 
+        name="Account" 
+        component={AccountStack}
+        options={{ tabBarLabel: 'Cuenta' }}
+      />
+      <Tab.Screen 
+        name="Loans" 
+        component={LoansStack}
+        options={{ tabBarLabel: 'Préstamos' }}
+      />
+      <Tab.Screen 
+        name="Transactions" 
+        component={TransactionsStack}
+        options={{ tabBarLabel: 'Transacciones' }}
+      />
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false, tabBarLabel: 'Perfil' }}
       />
     </Tab.Navigator>
   );

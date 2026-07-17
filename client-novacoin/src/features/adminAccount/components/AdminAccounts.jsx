@@ -47,9 +47,52 @@ export const AdminAccounts = ({ cuentas, loading, onEdit, onDelete, formatCurren
                                 </td>
                                 <td style={{ padding: '14px 16px' }}>
                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                        <button onClick={() => onEdit(cuenta)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #374151', borderRadius: '6px', color: '#e5e7eb', cursor: 'pointer', fontSize: '12px' }}>Editar</button>
-                                        {/* SE CORRIGIÓ: Ahora pasamos el objeto 'cuenta' completo */}
-                                        <button onClick={() => onDelete(cuenta)} style={{ padding: '6px 14px', backgroundColor: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>Eliminar</button>
+                                        <button 
+                                            onClick={() => onEdit(cuenta)} 
+                                            style={{ 
+                                                padding: '6px 14px', 
+                                                backgroundColor: 'transparent', 
+                                                border: '1px solid #f59e0b', 
+                                                borderRadius: '6px', 
+                                                color: '#f59e0b', 
+                                                cursor: 'pointer', 
+                                                fontSize: '12px',
+                                                transition: 'all 0.2s'
+                                            }}
+                                            onMouseEnter={e => {
+                                                e.target.style.backgroundColor = 'rgba(245,158,11,0.1)';
+                                                e.target.style.color = '#fbbf24';
+                                            }}
+                                            onMouseLeave={e => {
+                                                e.target.style.backgroundColor = 'transparent';
+                                                e.target.style.color = '#f59e0b';
+                                            }}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button 
+                                            onClick={() => onDelete(cuenta)} 
+                                            style={{ 
+                                                padding: '6px 14px', 
+                                                backgroundColor: 'transparent', 
+                                                border: '1px solid #dc2626', 
+                                                borderRadius: '6px', 
+                                                color: '#dc2626', 
+                                                cursor: 'pointer', 
+                                                fontSize: '12px',
+                                                transition: 'all 0.2s'
+                                            }}
+                                            onMouseEnter={e => {
+                                                e.target.style.backgroundColor = 'rgba(220,38,38,0.1)';
+                                                e.target.style.color = '#f87171';
+                                            }}
+                                            onMouseLeave={e => {
+                                                e.target.style.backgroundColor = 'transparent';
+                                                e.target.style.color = '#dc2626';
+                                            }}
+                                        >
+                                            Eliminar
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

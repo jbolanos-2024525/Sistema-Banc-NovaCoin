@@ -1,18 +1,43 @@
 // src/features/employees/screens/EmployeesList.jsx
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { View, StyleSheet, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { Container, Card, Loading, EmptyState } from '../../../shared/components/common/Common';
 import { useEmployees } from '../hooks/useEmployees';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
+import Toast from '../../../shared/components/Toast';
+import { useToast } from '../../../shared/hooks/useToast';
 
 const EmployeesList = ({ navigation }) => {
   const { employees, loading, error, fetchEmployees } = useEmployees();
+  const [confirmConfig, setConfirmConfig] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
+
+  const handleEdit = (employee) => {
+    navigation.navigate('EmployeeDetail', { employeeId: employee.id, mode: 'edit' });
+  };
+
+  const handleDelete = (employee) => {
+    setConfirmConfig({
+      title: 'Eliminar Empleado',
+      message: `¿Estás seguro de eliminar al empleado ${employee.name} ${employee.surname}? Esta acción es permanente e irreversible.`,
+      confirmText: 'Sí, Eliminar',
+      confirmColor: '#dc2626',
+      onConfirm: async () => {
+        // Aquí iría la lógica de eliminación
+        console.log('Eliminar empleado:', employee.id);
+        setConfirmConfig(null);
+        showToast('Empleado eliminado correctamente', 'success');
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
 
   const onRefresh = useCallback(async () => {
     await fetchEmployees();
@@ -45,11 +70,11 @@ const EmployeesList = ({ navigation }) => {
   };
 
   const renderEmployeeCard = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('EmployeeDetail', { employeeId: item.id })}
-      activeOpacity={0.7}
-    >
-      <Card elevation="md" style={styles.employeeCard}>
+    <Card elevation="md" style={styles.employeeCard}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('EmployeeDetail', { employeeId: item.id })}
+        activeOpacity={0.7}
+      >
         <View style={styles.employeeHeader}>
           <View style={[styles.avatarContainer, { backgroundColor: theme.colors.primary.main + '10' }]}>
             <MaterialIcons name="person" size={32} color={theme.colors.primary.main} />
@@ -75,9 +100,18 @@ const EmployeesList = ({ navigation }) => {
             <Text style={styles.contactText}>{item.phone}</Text>
           </View>
         </View>
-        <MaterialIcons name="chevron-right" size={24} color={theme.colors.gray[400]} style={styles.chevron} />
-      </Card>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <View style={styles.actionButtons}>
+        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
+          <MaterialIcons name="edit" size={16} color="#f59e0b" />
+          <Text style={styles.editButtonText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item)}>
+          <MaterialIcons name="delete" size={16} color="#dc2626" />
+          <Text style={styles.deleteButtonText}>Eliminar</Text>
+        </TouchableOpacity>
+      </View>
+    </Card>
   );
 
   const renderEmptyState = () => (
@@ -118,6 +152,26 @@ const EmployeesList = ({ navigation }) => {
           />
         }
         showsVerticalScrollIndicator={false}
+      />
+
+      {/* Modal de confirmación */}
+      {confirmConfig && (
+        <ConfirmModal
+          isOpen={true}
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          confirmText={confirmConfig.confirmText}
+          confirmColor={confirmConfig.confirmColor}
+          onConfirm={confirmConfig.onConfirm}
+          onClose={confirmConfig.onClose}
+        />
+      )}
+
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        visible={toast?.visible}
+        onHide={hideToast}
       />
     </Container>
   );
@@ -206,6 +260,48 @@ const styles = StyleSheet.create({
   },
   emptyList: {
     flex: 1,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.gray[700],
+  },
+  editButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#f59e0b',
+    borderRadius: 6,
+    paddingVertical: 8,
+  },
+  editButtonText: {
+    color: '#f59e0b',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  deleteButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#dc2626',
+    borderRadius: 6,
+    paddingVertical: 8,
+  },
+  deleteButtonText: {
+    color: '#dc2626',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
 

@@ -11,7 +11,9 @@ export const ConfirmModal = ({
   title, 
   message, 
   confirmText = 'Confirmar', 
-  confirmColor = '#ef4444' 
+  confirmColor = '#ef4444',
+  icon = 'warning',
+  showCancelButton = true
 }) => {
   return (
     <Modal
@@ -24,16 +26,18 @@ export const ConfirmModal = ({
         <View style={styles.modal}>
           {/* Icono */}
           <View style={[styles.iconContainer, { borderColor: confirmColor, backgroundColor: `${confirmColor}20` }]}>
-            <MaterialIcons name="warning" size={28} color={confirmColor} />
+            <MaterialIcons name={icon} size={28} color={confirmColor} />
           </View>
 
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.message}>{message}</Text>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
-            </TouchableOpacity>
+            {showCancelButton && (
+              <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity 
               style={[styles.confirmButton, { backgroundColor: confirmColor }]} 
               onPress={onConfirm}

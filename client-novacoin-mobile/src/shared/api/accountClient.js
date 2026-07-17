@@ -61,11 +61,16 @@ const processQueue = (error, token = null) => {
 const handleResponseError = async (error) => {
   const originalRequest = error.config;
 
+  console.log('Error en respuesta:', error.response?.status, error.config?.url);
+  console.log('Error completo:', error);
+
   if (
     error.response?.status === 401 &&
     !originalRequest._retry
   ) {
+    console.log('Intentando refresh token...');
     if (isRefreshing) {
+      console.log('Ya está refrescando, agregando a cola');
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
       })
@@ -81,6 +86,7 @@ const handleResponseError = async (error) => {
 
     try {
       const currentRefreshToken = useAuthStore.getState().refreshToken;
+      console.log('Refresh token disponible:', !!currentRefreshToken);
 
       if (!currentRefreshToken) {
         throw new Error('No refresh token available');
@@ -91,6 +97,7 @@ const handleResponseError = async (error) => {
         { refreshToken: currentRefreshToken }
       );
 
+      console.log('Refresh token exitoso:', response.data);
       const { accessToken, refreshToken: newRefreshToken } = response.data;
 
       useAuthStore.getState().updateToken(accessToken);
@@ -102,7 +109,9 @@ const handleResponseError = async (error) => {
 
       return axiosBank(originalRequest);
     } catch (refreshError) {
+      console.error('Error al refresh token:', refreshError);
       processQueue(refreshError, null);
+      console.log('Haciendo logout debido a error de refresh');
       useAuthStore.getState().logout();
       return Promise.reject(refreshError);
     } finally {

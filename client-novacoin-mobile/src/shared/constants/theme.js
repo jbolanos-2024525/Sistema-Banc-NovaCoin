@@ -2,27 +2,27 @@
 
 export const theme = {
   colors: {
-    // Colores basados en la web (index.css)
+    // Colores basados en la web (auth.css)
     primary: {
-      main: '#c084fc',
-      dark: '#a855f7',
-      light: '#d8b4fe',
-      cyan: '#00f2fe',
+      main: '#001847',
+      dark: '#020817',
+      light: '#001847',
+      cyan: '#52ffd8',
     },
     
     secondary: {
-      main: '#b8860b',
-      dark: '#8B6914',
-      light: '#d4a817',
+      main: '#3b82f6',
+      dark: '#2563eb',
+      light: '#60a5fa',
     },
     
-    // Colores de fondo oscuro (basado en web dark mode)
+    // Colores de fondo (basado en web)
     background: {
-      primary: '#16171d',
-      secondary: '#1f2028',
-      tertiary: '#0d1117',
-      light: '#f4f3ec',
-      card: '#111827',
+      primary: '#020817',
+      secondary: '#001847',
+      tertiary: '#020b1f',
+      light: '#f8fbff',
+      card: '#ffffff',
     },
     
     // Colores de estado
@@ -35,38 +35,38 @@ export const theme = {
     white: '#ffffff',
     black: '#000000',
     gray: {
-      50: '#f4f3ec',
-      100: '#e5e4e7',
-      200: '#d4d4d8',
-      300: '#a1a1aa',
-      400: '#71717a',
-      500: '#52525b',
-      600: '#3f3f46',
-      700: '#27272a',
-      800: '#18181b',
-      900: '#09090b',
+      50: '#f8fbff',
+      100: '#eef4ff',
+      200: '#dbe3ee',
+      300: '#94a3b8',
+      400: '#64748b',
+      500: '#475569',
+      600: '#334155',
+      700: '#1e293b',
+      800: '#0f172a',
+      900: '#020617',
     },
     
-    // Colores de texto (basado en web dark mode)
+    // Colores de texto (basado en web)
     text: {
-      primary: '#f3f4f6',
-      secondary: '#9ca3af',
-      tertiary: '#6b7280',
-      inverse: '#08060d',
-      light: '#d1d5db',
+      primary: '#0f172a',
+      secondary: '#64748b',
+      tertiary: '#94a3b8',
+      inverse: '#ffffff',
+      light: '#d7e2f0',
     },
     
-    // Colores de borde (basado en web dark mode)
+    // Colores de borde (basado en web)
     border: {
-      light: '#2e303a',
-      medium: '#374151',
-      dark: '#1f2937',
+      light: '#dbe3ee',
+      medium: '#e2e8f0',
+      dark: '#cbd5e1',
     },
     
     // Colores de superficie
     surface: {
-      elevated: '#111827',
-      pressed: '#1f2937',
+      elevated: '#ffffff',
+      pressed: '#f1f5f9',
     },
   },
   

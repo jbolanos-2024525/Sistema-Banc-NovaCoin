@@ -1,12 +1,16 @@
 // src/features/loan/screens/LoanScreen.jsx
 
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useLoanStore } from '../store/loanStore';
 import { useAuthStore } from '../../../shared/store/authStore';
 import CreateLoanModal from '../../loans/screens/CreateLoanModal';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
+import Toast from '../../../shared/components/Toast';
+import { useToast } from '../../../shared/hooks/useToast';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'GTQ' }).format(amount ?? 0);
@@ -38,25 +42,128 @@ const tipoStyle = (tipo) => {
 };
 
 const LoanScreen = () => {
-  const { loans, loading, error, fetchLoans } = useLoanStore();
+  const { loans, loading, error, fetchLoans, fetchMyLoans } = useLoanStore();
   const { user } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loanToEdit, setLoanToEdit] = useState(null);
+  const [confirmConfig, setConfirmConfig] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   const isAdmin = user?.role === 'ADMIN_ROLE';
 
+  useEffect(() => {
+    if (isAdmin) {
+      fetchLoans();
+    } else {
+      fetchMyLoans();
+    }
+  }, [isAdmin, fetchLoans, fetchMyLoans]);
+
   const handleCreateLoan = async (dto) => {
-    const result = await useLoanStore.getState().requestLoan(dto);
+    const result = isAdmin 
+      ? await useLoanStore.getState().requestLoan(dto)
+      : await useLoanStore.getState().requestMyLoan(dto);
+    
     if (result.success) {
+      showToast('Préstamo solicitado correctamente.', 'success');
       setIsModalOpen(false);
       setLoanToEdit(null);
-      await fetchLoans();
+      if (isAdmin) {
+        await fetchLoans();
+      } else {
+        await fetchMyLoans();
+      }
+    } else {
+      showToast(result.error || 'No se pudo solicitar el préstamo.', 'error');
     }
   };
 
-  useEffect(() => {
-    fetchLoans();
-  }, [fetchLoans]);
+  const handleEditLoan = (loan) => {
+    setConfirmConfig({
+      title: 'Editar Préstamo',
+      message: '¿Estás seguro de que deseas editar este préstamo?',
+      confirmText: 'Sí, Editar',
+      confirmColor: '#f59e0b',
+      onConfirm: () => {
+        setLoanToEdit(loan);
+        setIsModalOpen(true);
+        setConfirmConfig(null);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
+
+  const handleCancelLoan = async (loanId) => {
+    setConfirmConfig({
+      title: 'Cancelar Préstamo',
+      message: '¿Estás seguro de que deseas cancelar este préstamo?',
+      confirmText: 'Sí, Cancelar',
+      confirmColor: '#ef4444',
+      onConfirm: async () => {
+        const result = await useLoanStore.getState().cancelLoan(loanId);
+        if (result.success) {
+          showToast('Préstamo cancelado correctamente.', 'success');
+          if (isAdmin) {
+            await fetchLoans();
+          } else {
+            await fetchMyLoans();
+          }
+        } else {
+          showToast(result.error || 'No se pudo cancelar el préstamo', 'error');
+        }
+        setConfirmConfig(null);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
+
+  const handleDeleteLoan = async (loanId) => {
+    setConfirmConfig({
+      title: 'Eliminar Préstamo',
+      message: '¿Estás seguro de que deseas eliminar este préstamo? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, Eliminar',
+      confirmColor: '#ef4444',
+      onConfirm: async () => {
+        const result = await useLoanStore.getState().deleteLoan(loanId);
+        if (result.success) {
+          showToast('Préstamo eliminado correctamente.', 'success');
+          if (isAdmin) {
+            await fetchLoans();
+          } else {
+            await fetchMyLoans();
+          }
+        } else {
+          showToast(result.error || 'No se pudo eliminar el préstamo', 'error');
+        }
+        setConfirmConfig(null);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
+
+  const handleApproveLoan = async (loanId) => {
+    setConfirmConfig({
+      title: 'Aprobar Préstamo',
+      message: '¿Estás seguro de que deseas aprobar este préstamo?',
+      confirmText: 'Sí, Aprobar',
+      confirmColor: '#10b981',
+      onConfirm: async () => {
+        const result = await useLoanStore.getState().approveLoan(loanId);
+        if (result.success) {
+          showToast('Préstamo aprobado correctamente.', 'success');
+          if (isAdmin) {
+            await fetchLoans();
+          } else {
+            await fetchMyLoans();
+          }
+        } else {
+          showToast(result.error || 'No se pudo aprobar el préstamo', 'error');
+        }
+        setConfirmConfig(null);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
 
   const renderLoan = ({ item }) => {
     const estado = item.estadoPrestamo || item.estado || 'PENDIENTE';
@@ -86,18 +193,44 @@ const LoanScreen = () => {
             <Text style={styles.detailValue}>{formatCurrency(item.cuotaMensual)}</Text>
           </View>
           <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Propósito:</Text>
+            <Text style={styles.detailValue}>{item.proposito || '---'}</Text>
+          </View>
+          <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Fecha:</Text>
             <Text style={styles.detailValue}>{formatDate(item.fechaSolicitud || item.createdAt)}</Text>
           </View>
         </View>
         {isAdmin && (
           <View style={styles.loanActions}>
-            <TouchableOpacity style={[styles.actionButton, styles.editButton]} disabled={bloqueado}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.editButton]} 
+              disabled={bloqueado}
+              onPress={() => handleEditLoan(item)}
+            >
               <Text style={[styles.actionButtonText, bloqueado && styles.actionButtonTextDisabled]}>Editar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, styles.cancelButton]} disabled={bloqueado}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.cancelButton]} 
+              disabled={bloqueado}
+              onPress={() => handleCancelLoan(item._id || item.id)}
+            >
               <Text style={[styles.actionButtonText, bloqueado && styles.actionButtonTextDisabled]}>Cancelar</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.deleteButton]} 
+              onPress={() => handleDeleteLoan(item._id || item.id)}
+            >
+              <Text style={styles.actionButtonText}>Eliminar</Text>
+            </TouchableOpacity>
+            {estado === 'PENDIENTE' && (
+              <TouchableOpacity 
+                style={[styles.actionButton, styles.approveButton]} 
+                onPress={() => handleApproveLoan(item._id || item.id)}
+              >
+                <Text style={styles.actionButtonText}>Aprobar</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -105,7 +238,9 @@ const LoanScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View style={styles.container}>
+      <CustomHeader title="Préstamos" showMenu={false} />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View>
@@ -156,8 +291,29 @@ const LoanScreen = () => {
         }}
         onConfirm={handleCreateLoan}
         loanToEdit={loanToEdit}
+        isAdmin={isAdmin}
       />
-    </ScrollView>
+
+      {confirmConfig && (
+        <ConfirmModal
+          isOpen={true}
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          confirmText={confirmConfig.confirmText}
+          confirmColor={confirmConfig.confirmColor}
+          onConfirm={confirmConfig.onConfirm}
+          onClose={confirmConfig.onClose}
+        />
+      )}
+      
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        visible={toast?.visible}
+        onHide={hideToast}
+      />
+      </ScrollView>
+    </View>
   );
 };
 
@@ -301,6 +457,14 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     borderColor: '#ef4444',
+    backgroundColor: 'transparent',
+  },
+  deleteButton: {
+    borderColor: '#6b7280',
+    backgroundColor: 'transparent',
+  },
+  approveButton: {
+    borderColor: '#10b981',
     backgroundColor: 'transparent',
   },
   actionButtonText: {

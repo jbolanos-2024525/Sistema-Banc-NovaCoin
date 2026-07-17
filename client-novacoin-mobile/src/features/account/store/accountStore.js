@@ -11,7 +11,7 @@ export const useAccountStore = create((set, get) => ({
   fetchMisCuentas: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await accountService.getAccounts();
+      const response = await accountService.getMyAccounts();
       set({ cuentas: response.data || response, loading: false });
     } catch (error) {
       console.error('Error al obtener cuentas:', error);

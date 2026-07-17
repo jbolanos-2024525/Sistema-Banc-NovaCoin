@@ -5,6 +5,7 @@ import { View, StyleSheet, Text, ScrollView, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useTransactionsStore } from '../../transactions/store/transactionsStore';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
 
 const aqua = '#00f2fe';
 
@@ -57,19 +58,39 @@ const TransactionItem = ({ tx }) => (
   <View style={styles.transactionItem}>
     <View style={styles.transactionInfo}>
       <Text style={styles.transactionTitle}>
-        {tx.descripcion || tx.tipo || tx.tipoTransaccion || 'Transacción'}
+        {tx.Descripcion || tx.descripcion || tx.TipoTransaccion || tx.tipoTransaccion || 'Transacción'}
       </Text>
       <Text style={styles.transactionSubtitle}>
-        {tx.cuentaOrigen || tx.numeroCuenta || '—'} •{' '}
-        <Text style={styles.transactionAmount}>
-          {tx.monto ? `Q${Number(tx.monto).toLocaleString('es-GT')}` : '—'}
+        Usuario: {tx.Usuario || tx.usuario || '—'}
+      </Text>
+      {(tx.CuentaOrigen || tx.CuentaDestino) && (
+        <Text style={styles.transactionDetails}>
+          {tx.CuentaOrigen ? `Origen: ${tx.CuentaOrigen}` : ''}
+          {tx.CuentaOrigen && tx.CuentaDestino ? ' • ' : ''}
+          {tx.CuentaDestino ? `Destino: ${tx.CuentaDestino}` : ''}
         </Text>
+      )}
+      <Text style={styles.transactionDate}>
+        {tx.FechaTransaccion || tx.fechaCreacion || tx.createdAt 
+          ? new Date(tx.FechaTransaccion || tx.fechaCreacion || tx.createdAt).toLocaleDateString('es-GT', { 
+              day: '2-digit', 
+              month: 'short', 
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          : '—'}
       </Text>
     </View>
-    <View style={[styles.statusBadge, statusStyle(tx.estado || tx.estadoTransaccion || 'PENDIENTE')]}>
-      <Text style={[styles.statusText, { color: statusStyle(tx.estado || tx.estadoTransaccion || 'PENDIENTE').color }]}>
-        {tx.estado || tx.estadoTransaccion || 'PENDIENTE'}
+    <View style={styles.transactionRight}>
+      <Text style={styles.transactionAmount}>
+        {tx.Monto || tx.monto ? `Q${Number(tx.Monto || tx.monto).toLocaleString('es-GT')}` : '—'}
       </Text>
+      <View style={[styles.statusBadge, statusStyle(tx.EstadoTransaccion || tx.estadoTransaccion || tx.estado || 'PENDIENTE')]}>
+        <Text style={[styles.statusText, { color: statusStyle(tx.EstadoTransaccion || tx.estadoTransaccion || tx.estado || 'PENDIENTE').color }]}>
+          {tx.EstadoTransaccion || tx.estadoTransaccion || tx.estado || 'PENDIENTE'}
+        </Text>
+      </View>
     </View>
   </View>
 );
@@ -106,6 +127,13 @@ const DashboardHomeScreen = () => {
     };
 
     loadData();
+
+    // Actualizar transacciones cada 10 segundos para tiempo real
+    const interval = setInterval(() => {
+      fetchTransactions();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [fetchTransactions]);
 
   const { totalUsuarios, totalCuentas, totalEmpleados, carteraTotal } = stats;
@@ -115,7 +143,9 @@ const DashboardHomeScreen = () => {
     .slice(0, 5);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View style={styles.container}>
+      <CustomHeader title="Inicio" showMenu={false} />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View>
@@ -208,14 +238,15 @@ const DashboardHomeScreen = () => {
           </Text>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#0f172a',
   },
   contentContainer: {
     padding: 16,
@@ -320,7 +351,7 @@ const styles = StyleSheet.create({
   transactionItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 12,
     borderRadius: 12,
     backgroundColor: '#f8fafc',
@@ -339,11 +370,27 @@ const styles = StyleSheet.create({
   },
   transactionSubtitle: {
     fontSize: 12,
+    color: '#64748b',
+  },
+  transactionDetails: {
+    fontSize: 11,
     color: '#94a3b8',
+    marginTop: 2,
+  },
+  transactionDate: {
+    fontSize: 10,
+    color: '#94a3b8',
+    marginTop: 4,
+  },
+  transactionRight: {
+    alignItems: 'flex-end',
+    marginLeft: 12,
   },
   transactionAmount: {
-    color: '#475569',
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0f172a',
+    marginBottom: 4,
   },
   statusBadge: {
     paddingHorizontal: 10,

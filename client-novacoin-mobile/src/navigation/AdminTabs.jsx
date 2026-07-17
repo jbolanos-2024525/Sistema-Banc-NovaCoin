@@ -23,7 +23,7 @@ const AdminTabs = () => {
 
           switch (route.name) {
             case 'Dashboard':
-              iconName = 'dashboard';
+              iconName = 'home';
               break;
             case 'Accounts':
               iconName = 'account-balance';
@@ -37,8 +37,8 @@ const AdminTabs = () => {
             case 'Transactions':
               iconName = 'swap-horiz';
               break;
-            case 'Users':
-              iconName = 'people';
+            case 'UsersStack':
+              iconName = 'group';
               break;
             case 'Profile':
               iconName = 'person';
@@ -49,24 +49,24 @@ const AdminTabs = () => {
 
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: theme.colors.primary.main,
-        tabBarInactiveTintColor: theme.colors.secondary.main,
+        tabBarActiveTintColor: '#00f2ea',
+        tabBarInactiveTintColor: '#9ca3af',
         tabBarStyle: {
-          backgroundColor: theme.colors.surface.elevated,
+          backgroundColor: '#001233',
         },
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardStack} />
-      <Tab.Screen name="Accounts" component={AccountsStack} />
-      <Tab.Screen name="Employees" component={EmployeesStack} />
-      <Tab.Screen name="Loans" component={LoansStack} />
-      <Tab.Screen name="Transactions" component={TransactionsStack} />
-      <Tab.Screen name="UsersStack" component={UsersStack} />
+      <Tab.Screen name="Dashboard" component={DashboardStack} options={{ tabBarLabel: 'Inicio' }} />
+      <Tab.Screen name="Accounts" component={AccountsStack} options={{ tabBarLabel: 'Cuentas' }} />
+      <Tab.Screen name="Loans" component={LoansStack} options={{ tabBarLabel: 'Préstamos' }} />
+      <Tab.Screen name="Transactions" component={TransactionsStack} options={{ tabBarLabel: 'Transacciones' }} />
+      <Tab.Screen name="Employees" component={EmployeesStack} options={{ tabBarLabel: 'Empleados' }} />
+      <Tab.Screen name="UsersStack" component={UsersStack} options={{ tabBarLabel: 'Usuarios' }} />
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false, tabBarLabel: 'Perfil' }}
       />
     </Tab.Navigator>
   );

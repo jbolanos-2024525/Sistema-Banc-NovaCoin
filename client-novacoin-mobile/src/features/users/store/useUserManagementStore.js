@@ -45,6 +45,19 @@ export const useUserManagementStore = create((set, get) => ({
     }
   },
 
+  updateUserRole: async (userId, roleName) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authService.updateUserRole(userId, { roleName });
+      await get().fetchUsers();
+      return { success: true };
+    } catch (error) {
+      console.error('Error al actualizar rol:', error);
+      set({ error: error.message, loading: false });
+      return { success: false, error: error.message };
+    }
+  },
+
   deleteUser: async (id) => {
     set({ loading: true, error: null });
     try {

@@ -247,6 +247,15 @@ export const LoanPage = () => {
                                                                         padding: '6px 14px', backgroundColor: 'transparent',
                                                                         border: '1px solid #10b981', borderRadius: '6px',
                                                                         color: '#10b981', cursor: 'pointer', fontSize: '12px',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    onMouseEnter={e => {
+                                                                        e.target.style.backgroundColor = 'rgba(16,185,129,0.1)';
+                                                                        e.target.style.color = '#34d399';
+                                                                    }}
+                                                                    onMouseLeave={e => {
+                                                                        e.target.style.backgroundColor = 'transparent';
+                                                                        e.target.style.color = '#10b981';
                                                                     }}
                                                                 >
                                                                     Aprobar
@@ -257,6 +266,15 @@ export const LoanPage = () => {
                                                                         padding: '6px 14px', backgroundColor: 'transparent',
                                                                         border: '1px solid #ef4444', borderRadius: '6px',
                                                                         color: '#ef4444', cursor: 'pointer', fontSize: '12px',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    onMouseEnter={e => {
+                                                                        e.target.style.backgroundColor = 'rgba(239,68,68,0.1)';
+                                                                        e.target.style.color = '#f87171';
+                                                                    }}
+                                                                    onMouseLeave={e => {
+                                                                        e.target.style.backgroundColor = 'transparent';
+                                                                        e.target.style.color = '#ef4444';
                                                                     }}
                                                                 >
                                                                     Rechazar
@@ -272,6 +290,19 @@ export const LoanPage = () => {
                                                                         border: `1px solid ${bloqueado ? '#374151' : '#f59e0b'}`,
                                                                         borderRadius: '6px', color: bloqueado ? '#4b5563' : '#f59e0b',
                                                                         cursor: bloqueado ? 'not-allowed' : 'pointer', fontSize: '12px',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    onMouseEnter={e => {
+                                                                        if (!bloqueado) {
+                                                                            e.target.style.backgroundColor = 'rgba(245,158,11,0.1)';
+                                                                            e.target.style.color = '#fbbf24';
+                                                                        }
+                                                                    }}
+                                                                    onMouseLeave={e => {
+                                                                        if (!bloqueado) {
+                                                                            e.target.style.backgroundColor = 'transparent';
+                                                                            e.target.style.color = '#f59e0b';
+                                                                        }
                                                                     }}
                                                                 >
                                                                     Editar
@@ -284,6 +315,19 @@ export const LoanPage = () => {
                                                                         border: `1px solid ${bloqueado ? '#374151' : '#ef4444'}`,
                                                                         borderRadius: '6px', color: bloqueado ? '#4b5563' : '#ef4444',
                                                                         cursor: bloqueado ? 'not-allowed' : 'pointer', fontSize: '12px',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    onMouseEnter={e => {
+                                                                        if (!bloqueado) {
+                                                                            e.target.style.backgroundColor = 'rgba(239,68,68,0.1)';
+                                                                            e.target.style.color = '#f87171';
+                                                                        }
+                                                                    }}
+                                                                    onMouseLeave={e => {
+                                                                        if (!bloqueado) {
+                                                                            e.target.style.backgroundColor = 'transparent';
+                                                                            e.target.style.color = '#ef4444';
+                                                                        }
                                                                     }}
                                                                 >
                                                                     Cancelar
@@ -292,8 +336,17 @@ export const LoanPage = () => {
                                                                     onClick={() => handleDelete(id)}
                                                                     style={{
                                                                         padding: '6px 14px', backgroundColor: 'transparent',
-                                                                        border: '1px solid #6b7280', borderRadius: '6px',
-                                                                        color: '#6b7280', cursor: 'pointer', fontSize: '12px',
+                                                                        border: '1px solid #dc2626', borderRadius: '6px',
+                                                                        color: '#dc2626', cursor: 'pointer', fontSize: '12px',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    onMouseEnter={e => {
+                                                                        e.target.style.backgroundColor = 'rgba(220,38,38,0.1)';
+                                                                        e.target.style.color = '#f87171';
+                                                                    }}
+                                                                    onMouseLeave={e => {
+                                                                        e.target.style.backgroundColor = 'transparent';
+                                                                        e.target.style.color = '#dc2626';
                                                                     }}
                                                                 >
                                                                     Eliminar

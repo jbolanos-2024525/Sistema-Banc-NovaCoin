@@ -1,70 +1,37 @@
 // src/features/profile/screens/ProfileScreen.jsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert, Text } from 'react-native';
-import { useForm } from 'react-hook-form';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { Container, Card, Loading, Header } from '../../../shared/components/common/Common';
 import Button from '../../../shared/components/common/Button';
-import Input from '../../../shared/components/common/Input';
 import { useProfile } from '../hooks/useProfile';
 import { useAuthStore } from '../../../shared/store/authStore';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
 
 const ProfileScreen = () => {
-  const { control, handleSubmit, formState: { errors }, reset } = useForm();
-  const { profile, loading, error, fetchProfile, updateProfile } = useProfile();
+  const { profile, loading, error, fetchProfile } = useProfile();
   const { logout } = useAuthStore();
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
 
-  useEffect(() => {
-    if (profile) {
-      reset({
-        displayName: profile.displayName || '',
-        phone: profile.phone || '',
-        email: profile.email || '',
-      });
-    }
-  }, [profile, reset]);
-
-  const handleEditToggle = () => {
-    setIsEditMode(!isEditMode);
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      await updateProfile(data);
-      setIsEditMode(false);
-    } catch (err) {
-      console.error('Error al actualizar perfil:', err);
-    }
-  };
-
   const handleLogout = () => {
-    Alert.alert(
-      'Cerrar Sesión',
-      '¿Está seguro de que desea cerrar sesión?',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Cerrar Sesión',
-          style: 'destructive',
-          onPress: () => logout(),
-        },
-      ]
-    );
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    setShowLogoutModal(false);
   };
 
   const avatarDefault = (
-    <View style={[styles.avatar, { backgroundColor: theme.colors.primary.main + '10' }]}>
-      <MaterialIcons name="person" size={64} color={theme.colors.primary.main} />
+    <View style={[styles.avatar, { backgroundColor: 'rgba(59,130,246,0.2)' }]}>
+      <MaterialIcons name="person" size={64} color="#3b82f6" />
     </View>
   );
 
@@ -73,7 +40,9 @@ const ProfileScreen = () => {
   }
 
   return (
-    <ScrollView>
+    <View style={styles.container}>
+      <CustomHeader title="Perfil" showMenu={false} />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       <Container padding="md">
         <Header
           title="Mi Perfil"
@@ -99,67 +68,31 @@ const ProfileScreen = () => {
         </Card>
 
         <Card elevation="md" style={styles.formCard}>
-          <View style={styles.formHeader}>
-            <Text style={styles.formTitle}>Información Personal</Text>
-            <Button
-              title={isEditMode ? 'Cancelar' : 'Editar'}
-              onPress={handleEditToggle}
-              variant="outline"
-              size="small"
-              icon={<MaterialIcons name={isEditMode ? 'close' : 'edit'} size={20} color={theme.colors.primary.main} />}
-            />
+          <Text style={styles.formTitle}>Información Personal</Text>
+
+          <View style={styles.infoRow}>
+            <MaterialIcons name="person" size={20} color="#3b82f6" />
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Nombre de Visualización</Text>
+              <Text style={styles.infoValue}>{profile?.displayName || profile?.name || '—'}</Text>
+            </View>
           </View>
 
-          <Input
-            label="Nombre de Visualización"
-            name="displayName"
-            control={control}
-            rules={{ required: 'Este campo es requerido' }}
-            placeholder="Tu nombre de visualización"
-            icon="person"
-            disabled={!isEditMode}
-            error={errors.displayName?.message}
-          />
+          <View style={styles.infoRow}>
+            <MaterialIcons name="phone" size={20} color="#3b82f6" />
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Teléfono</Text>
+              <Text style={styles.infoValue}>{profile?.phone || '—'}</Text>
+            </View>
+          </View>
 
-          <Input
-            label="Teléfono"
-            name="phone"
-            control={control}
-            rules={{ 
-              pattern: { value: /^\+?\d{8,15}$/, message: 'Número de teléfono inválido' }
-            }}
-            placeholder="+502 1234 5678"
-            icon="phone"
-            keyboardType="phone-pad"
-            disabled={!isEditMode}
-            error={errors.phone?.message}
-          />
-
-          <Input
-            label="Correo Electrónico"
-            name="email"
-            control={control}
-            rules={{ 
-              required: 'Este campo es requerido',
-              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Correo electrónico inválido' }
-            }}
-            placeholder="tu@ejemplo.com"
-            icon="email"
-            keyboardType="email-address"
-            disabled={!isEditMode}
-            error={errors.email?.message}
-          />
-
-          {isEditMode && (
-            <Button
-              title="Guardar Cambios"
-              onPress={handleSubmit(onSubmit)}
-              loading={loading}
-              size="large"
-              icon={<MaterialIcons name="save" size={20} color={theme.colors.white} />}
-              style={styles.saveButton}
-            />
-          )}
+          <View style={styles.infoRow}>
+            <MaterialIcons name="email" size={20} color="#3b82f6" />
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Correo Electrónico</Text>
+              <Text style={styles.infoValue}>{profile?.email || '—'}</Text>
+            </View>
+          </View>
         </Card>
 
         <Card elevation="md" style={styles.actionsCard}>
@@ -174,11 +107,29 @@ const ProfileScreen = () => {
           />
         </Card>
       </Container>
-    </ScrollView>
+      </ScrollView>
+
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+        title="Cerrar Sesión"
+        message="¿Estás seguro de que deseas cerrar sesión? Tendrás que volver a iniciar sesión para acceder a tu cuenta."
+        confirmText="Cerrar Sesión"
+        confirmColor="#ef4444"
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+  },
+  contentContainer: {
+    padding: 24,
+  },
   errorCard: {
     backgroundColor: theme.colors.error + '10',
     marginBottom: theme.spacing.md,
@@ -189,8 +140,9 @@ const styles = StyleSheet.create({
   },
   profileCard: {
     alignItems: 'center',
-    padding: theme.spacing.xl,
+    padding: theme.spacing.md,
     marginBottom: theme.spacing.lg,
+    backgroundColor: '#1e293b',
   },
   avatarContainer: {
     marginBottom: theme.spacing.lg,
@@ -205,39 +157,52 @@ const styles = StyleSheet.create({
   displayName: {
     fontSize: theme.typography.fontSize.xxl,
     fontWeight: theme.typography.fontWeight.bold,
-    color: theme.colors.text.primary,
+    color: '#ffffff',
     textAlign: 'center',
   },
   username: {
     fontSize: theme.typography.fontSize.base,
-    color: theme.colors.text.secondary,
+    color: '#9ca3af',
     textAlign: 'center',
     marginTop: theme.spacing.xs,
   },
   formCard: {
     marginBottom: theme.spacing.lg,
-  },
-  formHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: theme.spacing.lg,
+    backgroundColor: '#1e293b',
   },
   formTitle: {
     fontSize: theme.typography.fontSize.lg,
     fontWeight: theme.typography.fontWeight.bold,
-    color: theme.colors.text.primary,
+    color: '#ffffff',
+    marginBottom: theme.spacing.lg,
   },
-  saveButton: {
-    marginTop: theme.spacing.lg,
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  infoContent: {
+    marginLeft: theme.spacing.md,
+    flex: 1,
+  },
+  infoLabel: {
+    fontSize: theme.typography.fontSize.sm,
+    color: '#9ca3af',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: theme.typography.fontSize.base,
+    color: '#ffffff',
+    fontWeight: '500',
   },
   actionsCard: {
     marginBottom: theme.spacing.lg,
+    backgroundColor: '#1e293b',
   },
   actionsTitle: {
     fontSize: theme.typography.fontSize.lg,
     fontWeight: theme.typography.fontWeight.bold,
-    color: theme.colors.text.primary,
+    color: '#ffffff',
     marginBottom: theme.spacing.md,
   },
   logoutButton: {

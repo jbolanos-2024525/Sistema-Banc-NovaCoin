@@ -115,61 +115,74 @@ const handleResponseError = async (error) => {
 
 axiosBank.interceptors.response.use((res) => res, handleResponseError);
 
-const BASE = '/NovaCoin/Admin/v1/prestamo';
+const BASE_ADMIN = '/NovaCoin/Admin/v1/prestamo';
+const BASE_USER = '/NovaCoin/v1/prestamo';
 
 export const loanService = {
+  // Admin endpoints
   getAllLoans: async () => {
-    const response = await axiosBank.get(BASE);
+    const response = await axiosBank.get(BASE_ADMIN);
     return response.data;
   },
   
   getLoanById: async (id) => {
-    const response = await axiosBank.get(`${BASE}/${id}`);
+    const response = await axiosBank.get(`${BASE_ADMIN}/${id}`);
     return response.data;
   },
   
   createLoan: async (loanData) => {
-    const response = await axiosBank.post(BASE, loanData);
+    const response = await axiosBank.post(BASE_ADMIN, loanData);
     return response.data;
   },
   
   updateLoan: async (id, loanData) => {
-    const response = await axiosBank.put(`${BASE}/${id}`, loanData);
+    const response = await axiosBank.put(`${BASE_ADMIN}/${id}`, loanData);
     return response.data;
   },
   
   cancelLoan: async (id) => {
-    const response = await axiosBank.patch(`${BASE}/cancelar/${id}`);
+    const response = await axiosBank.patch(`${BASE_ADMIN}/cancelar/${id}`);
     return response.data;
   },
   
   deleteLoan: async (id) => {
-    const response = await axiosBank.delete(`${BASE}/${id}`);
+    const response = await axiosBank.delete(`${BASE_ADMIN}/${id}`);
     return response.data;
   },
   
   getLoansByCliente: async (clienteId) => {
-    const response = await axiosBank.get(`${BASE}/cliente/${clienteId}`);
+    const response = await axiosBank.get(`${BASE_ADMIN}/cliente/${clienteId}`);
     return response.data;
   },
   
   getLoansByEstado: async (estado) => {
-    const response = await axiosBank.get(`${BASE}/estado/${estado}`);
+    const response = await axiosBank.get(`${BASE_ADMIN}/estado/${estado}`);
     return response.data;
   },
   
   getLoansByEmpleado: async (empleadoId) => {
-    const response = await axiosBank.get(`${BASE}/empleado/${empleadoId}`);
+    const response = await axiosBank.get(`${BASE_ADMIN}/empleado/${empleadoId}`);
     return response.data;
   },
   
   makePayment: async (id, paymentData) => {
-    const response = await axiosBank.patch(`${BASE}/pagar/${id}`, paymentData);
+    const response = await axiosBank.patch(`${BASE_ADMIN}/pagar/${id}`, paymentData);
     return response.data;
   },
   
   changeLoanStatus: async (id, estado) => {
-    const response = await axiosBank.patch(`${BASE}/estado/${id}`, { estado });
+    const response = await axiosBank.patch(`${BASE_ADMIN}/estado/${id}`, { estado });
+    return response.data;
+  },
+
+  // User endpoints
+  getMyLoans: async () => {
+    const response = await axiosBank.get(`${BASE_USER}/mis-prestamos`);
+    return response.data;
+  },
+
+  createMyLoan: async (loanData) => {
+    const response = await axiosBank.post(`${BASE_USER}/`, loanData);
     return response.data;
   },
 };

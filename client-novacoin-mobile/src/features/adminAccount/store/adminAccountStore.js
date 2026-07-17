@@ -25,7 +25,17 @@ export const useAdminAccountStore = create((set, get) => ({
       console.log('Creating account with DTO:', dto);
       const response = await accountService.createAccount(dto);
       console.log('Account creation response:', response);
-      await get().fetchCuentas();
+      
+      // Si la cuenta fue creada exitosamente, la agregamos de inmediato a la lista del estado
+      if (response.success || response.data) {
+        const newAccount = response.data || response;
+        set((state) => ({
+          cuentas: [newAccount, ...state.cuentas],
+          loading: false
+        }));
+      } else {
+        await get().fetchCuentas();
+      }
       return { success: true };
     } catch (error) {
       console.error('Error al crear cuenta:', error);
@@ -39,11 +49,19 @@ export const useAdminAccountStore = create((set, get) => ({
   updateCuenta: async (id, dto) => {
     set({ loading: true, error: null });
     try {
+      console.log('Actualizando cuenta con ID:', id);
+      console.log('Datos a actualizar:', dto);
       const response = await accountService.updateAccount(id, dto);
-      await get().fetchCuentas();
+      console.log('Respuesta del servidor:', response);
+      set((state) => ({
+        cuentas: state.cuentas.map(c => (c._id || c.id) === id ? (response.data || response) : c),
+        loading: false
+      }));
+      console.log('Cuentas actualizadas en estado');
       return { success: true };
     } catch (error) {
       console.error('Error al actualizar cuenta:', error);
+      console.error('Error response:', error.response?.data);
       set({ error: error.message, loading: false });
       return { success: false, error: error.message };
     }
@@ -53,7 +71,10 @@ export const useAdminAccountStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await accountService.closeAccount(id);
-      await get().fetchCuentas();
+      set((state) => ({
+        cuentas: state.cuentas.filter(c => (c._id || c.id) !== id),
+        loading: false
+      }));
       return { success: true };
     } catch (error) {
       console.error('Error al eliminar cuenta:', error);

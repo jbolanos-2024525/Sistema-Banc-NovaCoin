@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { theme } from '../../../shared/constants/theme';
 import { useAuthStore } from '../../../shared/store/authStore';
 import LoanScreen from '../../loan/screens/LoanScreen';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,19 +16,12 @@ const LoansStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.colors.primary.main,
-        },
-        headerTintColor: theme.colors.white,
-        headerTitleStyle: {
-          fontWeight: theme.typography.fontWeight.bold,
-        },
+        headerShown: false,
       }}
     >
       <Stack.Screen
         name="LoansList"
         component={LoanScreen}
-        options={{ title: isAdmin ? 'Préstamos' : 'Mis Préstamos' }}
       />
     </Stack.Navigator>
   );

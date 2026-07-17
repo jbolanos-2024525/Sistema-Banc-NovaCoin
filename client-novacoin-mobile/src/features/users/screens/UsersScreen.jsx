@@ -5,14 +5,37 @@ import { View, StyleSheet, Text, ScrollView, TouchableOpacity, FlatList } from '
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useUserManagementStore } from '../store/useUserManagementStore';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
+import Toast from '../../../shared/components/Toast';
+import { useToast } from '../../../shared/hooks/useToast';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
+import CreateUser from './CreateUser';
 
 const UsersScreen = ({ navigation }) => {
   const { users, loading, fetchUsers } = useUserManagementStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [employeeToEdit, setEmployeeToEdit] = useState(null);
+  const [confirmConfig, setConfirmConfig] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleEdit = (user) => {
+    setConfirmConfig({
+      title: 'Actualizar Usuario',
+      message: `¿Estás seguro de actualizar al usuario ${user.name || user.username}? Esta acción modificará la información del usuario.`,
+      confirmText: 'Sí, Actualizar',
+      confirmColor: '#f59e0b',
+      onConfirm: () => {
+        setConfirmConfig(null);
+        setEmployeeToEdit(user);
+        setIsModalOpen(true);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
 
   const renderUser = ({ item }) => (
     <View style={styles.userRow}>
@@ -22,14 +45,22 @@ const UsersScreen = ({ navigation }) => {
         <Text style={styles.userEmail}>{item.email || '—'}</Text>
         <Text style={styles.userPhone}>{item.phone || '—'}</Text>
       </View>
-      <View style={[styles.roleBadge, { backgroundColor: 'rgba(192,132,252,0.1)' }]}>
-        <Text style={[styles.roleText, { color: '#c084fc' }]}>{item.role || 'USER'}</Text>
+      <View style={[styles.roleBadge, { backgroundColor: 'rgba(59,130,246,0.1)' }]}>
+        <Text style={[styles.roleText, { color: '#3b82f6' }]}>{item.role || 'USER'}</Text>
+      </View>
+      <View style={styles.actionButtons}>
+        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
+          <MaterialIcons name="edit" size={16} color="#f59e0b" />
+          <Text style={styles.editButtonText}>Actualizar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <CustomHeader title="Usuarios" showMenu={false} />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View>
@@ -39,8 +70,8 @@ const UsersScreen = ({ navigation }) => {
           </Text>
         </View>
         <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: '#c084fc' }]}
-          onPress={() => navigation.navigate('CreateUser')}
+          style={[styles.addButton, { backgroundColor: '#3b82f6' }]}
+          onPress={() => setIsModalOpen(true)}
         >
           <MaterialIcons name="add" size={20} color="#050c18" />
           <Text style={styles.addButtonText}>Nuevo Usuario</Text>
@@ -71,7 +102,45 @@ const UsersScreen = ({ navigation }) => {
           />
         )}
       </View>
-    </ScrollView>
+
+      {/* Modal de confirmación */}
+      {confirmConfig && (
+        <ConfirmModal
+          isOpen={true}
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          confirmText={confirmConfig.confirmText}
+          confirmColor={confirmConfig.confirmColor}
+          onConfirm={confirmConfig.onConfirm}
+          onClose={confirmConfig.onClose}
+        />
+      )}
+
+      {/* Modal de crear usuario */}
+      <CreateUser
+        isVisible={isModalOpen}
+        user={employeeToEdit}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEmployeeToEdit(null);
+        }}
+        onConfirm={() => {
+          setIsModalOpen(false);
+          setEmployeeToEdit(null);
+          fetchUsers();
+          showToast(employeeToEdit ? 'Rol actualizado correctamente' : 'Usuario creado correctamente', 'success');
+        }}
+      />
+
+      </ScrollView>
+
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        visible={toast?.visible}
+        onHide={hideToast}
+      />
+    </View>
   );
 };
 
@@ -79,6 +148,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0d1117',
+  },
+  contentContainer: {
+    padding: 24,
   },
   header: {
     padding: 24,
@@ -97,7 +169,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   addButton: {
-    backgroundColor: '#c084fc',
+    backgroundColor: '#00f2fe',
     color: '#050c18',
     padding: 10,
     borderRadius: 6,
@@ -106,7 +178,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
     marginTop: 16,
-    shadowColor: '#c084fc',
+    shadowColor: '#00f2fe',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
@@ -155,7 +227,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   userUsername: {
-    color: '#c084fc',
+    color: '#3b82f6',
     fontSize: 13,
     marginTop: 2,
   },
@@ -175,7 +247,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   roleText: {
-    color: '#c084fc',
+    color: '#3b82f6',
     fontSize: 11,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -186,6 +258,44 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: '#9ca3af',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#f59e0b',
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  editButtonText: {
+    color: '#f59e0b',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#dc2626',
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  deleteButtonText: {
+    color: '#dc2626',
+    fontSize: 11,
+    fontWeight: '600',
   },
 });
 
