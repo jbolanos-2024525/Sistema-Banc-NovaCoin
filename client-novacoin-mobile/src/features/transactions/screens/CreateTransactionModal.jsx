@@ -1,17 +1,37 @@
 // src/features/transactions/screens/CreateTransactionModal.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Modal, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 
-const CreateTransactionModal = ({ isVisible, onClose, onConfirm, onSave, onSubmit }) => {
+const CreateTransactionModal = ({ isVisible, onClose, onConfirm, onSave, onSubmit, isAdmin = false, transaction = null }) => {
+  const isEditing = !!transaction;
   const [tipoTransaccion, setTipoTransaccion] = useState('TRANSFERENCIA');
   const [cuentaDestino, setCuentaDestino] = useState('');
   const [monto, setMonto] = useState('');
   const [moneda, setMoneda] = useState('GTQ');
   const [descripcion, setDescripcion] = useState('');
+  const [usuarioId, setUsuarioId] = useState('');
   const [localError, setLocalError] = useState('');
+
+  useEffect(() => {
+    if (isVisible && transaction) {
+      setTipoTransaccion(transaction.TipoTransaccion || transaction.tipoTransaccion || 'TRANSFERENCIA');
+      setCuentaDestino(transaction.CuentaDestino || transaction.cuentaDestino || '');
+      setMonto(transaction.Monto?.toString() || transaction.monto?.toString() || '');
+      setMoneda(transaction.Moneda || transaction.moneda || 'GTQ');
+      setDescripcion(transaction.Descripcion || transaction.descripcion || '');
+      setUsuarioId(transaction.UsuarioId || transaction.usuarioId || '');
+    } else if (isVisible && !transaction) {
+      setTipoTransaccion('TRANSFERENCIA');
+      setCuentaDestino('');
+      setMonto('');
+      setMoneda('GTQ');
+      setDescripcion('');
+      setUsuarioId('');
+    }
+  }, [isVisible, transaction]);
 
   const handleSubmit = () => {
     setLocalError('');
@@ -35,6 +55,10 @@ const CreateTransactionModal = ({ isVisible, onClose, onConfirm, onSave, onSubmi
       CuentaOrigen: null
     };
 
+    if (isAdmin && usuarioId.trim()) {
+      dto.UsuarioId = usuarioId.trim();
+    }
+
     const handleSaveAction = onConfirm || onSave || onSubmit;
 
     if (handleSaveAction && typeof handleSaveAction === 'function') {
@@ -53,12 +77,12 @@ const CreateTransactionModal = ({ isVisible, onClose, onConfirm, onSave, onSubmi
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
+        <View style={[styles.modalContainer, { borderColor: isEditing ? '#f59e0b' : '#10b981' }]}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <MaterialIcons name="close" size={24} color="#9ca3af" />
           </TouchableOpacity>
 
-          <Text style={styles.modalTitle}>Nueva Operación</Text>
+          <Text style={styles.modalTitle}>{isEditing ? 'Editar Transacción' : 'Nueva Operación'}</Text>
 
           {localError ? (
             <View style={styles.errorContainer}>
@@ -140,6 +164,19 @@ const CreateTransactionModal = ({ isVisible, onClose, onConfirm, onSave, onSubmi
                   placeholderTextColor="#9ca3af"
                 />
               </View>
+
+              {isAdmin && (
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.label}>ID del Usuario</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="ID del usuario cliente"
+                    value={usuarioId}
+                    onChangeText={setUsuarioId}
+                    placeholderTextColor="#9ca3af"
+                  />
+                </View>
+              )}
             </View>
           </ScrollView>
 
@@ -147,8 +184,8 @@ const CreateTransactionModal = ({ isVisible, onClose, onConfirm, onSave, onSubmi
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
               <Text style={styles.cancelButtonText}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmButton} onPress={handleSubmit}>
-              <Text style={styles.confirmButtonText}>Confirmar</Text>
+            <TouchableOpacity style={[styles.confirmButton, isEditing && styles.confirmButtonEdit]} onPress={handleSubmit}>
+              <Text style={styles.confirmButtonText}>{isEditing ? 'Actualizar' : 'Confirmar'}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -179,6 +216,7 @@ const styles = StyleSheet.create({
     top: 16,
     right: 16,
     padding: 4,
+    zIndex: 1000,
   },
   modalTitle: {
     color: '#fff',
@@ -274,6 +312,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingVertical: 10,
     paddingHorizontal: 20,
+  },
+  confirmButtonEdit: {
+    backgroundColor: '#f59e0b',
   },
   confirmButtonText: {
     color: '#030712',

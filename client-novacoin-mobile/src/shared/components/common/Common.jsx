@@ -82,26 +82,27 @@ export const Separator = ({ style }) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background.primary,
+    backgroundColor: 'transparent',
   },
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: 'transparent',
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.md,
   },
   header: {
     marginBottom: theme.spacing.lg,
+    backgroundColor: 'transparent',
   },
   headerTitle: {
     fontSize: theme.typography.fontSize.xxl,
     fontWeight: theme.typography.fontWeight.bold,
-    color: theme.colors.text.primary,
+    color: '#ffffff',
     marginBottom: theme.spacing.xs,
   },
   headerSubtitle: {
     fontSize: theme.typography.fontSize.base,
-    color: theme.colors.text.secondary,
+    color: '#9ca3af',
   },
   loadingContainer: {
     flex: 1,

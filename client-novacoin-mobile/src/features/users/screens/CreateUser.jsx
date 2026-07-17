@@ -1,13 +1,14 @@
 // src/features/users/screens/CreateUser.jsx
 
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Modal, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useUserManagementStore } from '../store/useUserManagementStore';
 
-const CreateUser = ({ navigation }) => {
-  const { createUser, loading } = useUserManagementStore();
+const CreateUser = ({ isVisible, onClose, onConfirm, user }) => {
+  const { createUser, updateUserRole, loading } = useUserManagementStore();
+  const isEditing = !!user;
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -16,9 +17,44 @@ const CreateUser = ({ navigation }) => {
     phone: '',
     password: '',
     confirmPassword: '',
+    role: 'USER_ROLE',
   });
 
+  useEffect(() => {
+    if (isVisible) {
+      if (isEditing && user) {
+        setFormData({
+          role: user.role || 'USER_ROLE',
+        });
+      } else {
+        setFormData({
+          name: '',
+          surname: '',
+          username: '',
+          email: '',
+          phone: '',
+          password: '',
+          confirmPassword: '',
+          role: 'USER_ROLE',
+        });
+      }
+    }
+  }, [isVisible, isEditing, user]);
+
   const handleCreate = async () => {
+    if (isEditing) {
+      // Modo edición: solo actualizar rol
+      const result = await updateUserRole(user._id || user.id, formData.role);
+      if (result.success) {
+        onClose();
+        if (onConfirm) onConfirm();
+      } else {
+        Alert.alert('Error', result.error || 'No se pudo actualizar el rol');
+      }
+      return;
+    }
+
+    // Modo creación: validar todos los campos
     if (!formData.name || !formData.surname || !formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       Alert.alert('Error', 'Todos los campos son requeridos');
       return;
@@ -61,171 +97,194 @@ const CreateUser = ({ navigation }) => {
     });
 
     if (result.success) {
-      Alert.alert('Éxito', 'Usuario creado correctamente');
-      navigation.goBack();
+      onClose();
+      if (onConfirm) onConfirm();
     } else {
       Alert.alert('Error', result.error || 'No se pudo crear el usuario');
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeButton}>
-          <Text style={styles.closeButtonText}>✕</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nuevo Usuario</Text>
-      </View>
-
-      <View style={styles.subtitleContainer}>
-        <Text style={styles.subtitle}>Completa la información para registrar un nuevo usuario</Text>
-      </View>
-
-      <View style={styles.formContainer}>
-        <View style={styles.rowGroup}>
-          <View style={[styles.fieldGroup, { flex: 1 }]}>
-            <Text style={styles.label}>Nombre</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nombre"
-              value={formData.name}
-              onChangeText={(text) => setFormData({ ...formData, name: text })}
-              placeholderTextColor="#9ca3af"
-            />
-          </View>
-          <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
-            <Text style={styles.label}>Apellido</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Apellido"
-              value={formData.surname}
-              onChangeText={(text) => setFormData({ ...formData, surname: text })}
-              placeholderTextColor="#9ca3af"
-            />
-          </View>
-        </View>
-
-        <View style={styles.rowGroup}>
-          <View style={[styles.fieldGroup, { flex: 1 }]}>
-            <Text style={styles.label}>Nombre de Usuario</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Username"
-              value={formData.username}
-              onChangeText={(text) => setFormData({ ...formData, username: text })}
-              placeholderTextColor="#9ca3af"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
-            <Text style={styles.label}>Teléfono</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="8 dígitos"
-              value={formData.phone}
-              onChangeText={(text) => setFormData({ ...formData, phone: text })}
-              placeholderTextColor="#9ca3af"
-              keyboardType="numeric"
-              maxLength={8}
-            />
-          </View>
-        </View>
-
-        <View style={styles.fieldGroup}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="correo@ejemplo.com"
-            value={formData.email}
-            onChangeText={(text) => setFormData({ ...formData, email: text })}
-            placeholderTextColor="#9ca3af"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
-
-        <View style={styles.rowGroup}>
-          <View style={[styles.fieldGroup, { flex: 1 }]}>
-            <Text style={styles.label}>Contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Mínimo 8 caracteres"
-              value={formData.password}
-              onChangeText={(text) => setFormData({ ...formData, password: text })}
-              placeholderTextColor="#9ca3af"
-              secureTextEntry
-            />
-          </View>
-          <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
-            <Text style={styles.label}>Confirmar contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Confirma la contraseña"
-              value={formData.confirmPassword}
-              onChangeText={(text) => setFormData({ ...formData, confirmPassword: text })}
-              placeholderTextColor="#9ca3af"
-              secureTextEntry
-            />
-          </View>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.cancelButton]}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
+    <Modal
+      visible={isVisible}
+      animationType="fade"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <MaterialIcons name="close" size={24} color="#9ca3af" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.createButton, loading && styles.createButtonDisabled]}
-            onPress={handleCreate}
-            disabled={loading}
-          >
-            <Text style={styles.createButtonText}>
-              {loading ? 'Creando...' : 'Crear usuario'}
-            </Text>
-          </TouchableOpacity>
+
+          <Text style={styles.modalTitle}>{isEditing ? 'Actualizar Rol' : 'Nuevo Usuario'}</Text>
+
+          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+            <View style={styles.formContainer}>
+              {isEditing ? (
+                // Modo edición: solo mostrar campo de rol
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.label}>Rol del Usuario</Text>
+                  <View style={styles.roleButtons}>
+                    {['USER_ROLE', 'ADMIN_ROLE'].map((role) => (
+                      <TouchableOpacity
+                        key={role}
+                        style={[styles.roleButton, formData.role === role && styles.roleButtonActive]}
+                        onPress={() => setFormData({ ...formData, role })}
+                      >
+                        <Text style={[styles.roleButtonText, formData.role === role && styles.roleButtonTextActive]}>
+                          {role.replace('_ROLE', '')}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ) : (
+                // Modo creación: mostrar todos los campos
+                <>
+                <View style={styles.rowGroup}>
+                  <View style={[styles.fieldGroup, { flex: 1 }]}>
+                    <Text style={styles.label}>Nombre</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Nombre"
+                      value={formData.name}
+                      onChangeText={(text) => setFormData({ ...formData, name: text })}
+                      placeholderTextColor="#9ca3af"
+                    />
+                  </View>
+                  <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
+                    <Text style={styles.label}>Apellido</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Apellido"
+                      value={formData.surname}
+                      onChangeText={(text) => setFormData({ ...formData, surname: text })}
+                      placeholderTextColor="#9ca3af"
+                    />
+                  </View>
+                </View>
+
+                <View style={styles.rowGroup}>
+                  <View style={[styles.fieldGroup, { flex: 1 }]}>
+                    <Text style={styles.label}>Nombre de Usuario</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Username"
+                      value={formData.username}
+                      onChangeText={(text) => setFormData({ ...formData, username: text })}
+                      placeholderTextColor="#9ca3af"
+                      autoCapitalize="none"
+                    />
+                  </View>
+                  <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
+                    <Text style={styles.label}>Teléfono</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="8 dígitos"
+                      value={formData.phone}
+                      onChangeText={(text) => setFormData({ ...formData, phone: text })}
+                      placeholderTextColor="#9ca3af"
+                      keyboardType="numeric"
+                      maxLength={8}
+                    />
+                  </View>
+                </View>
+
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.label}>Email</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="correo@ejemplo.com"
+                    value={formData.email}
+                    onChangeText={(text) => setFormData({ ...formData, email: text })}
+                    placeholderTextColor="#9ca3af"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
+
+                <View style={styles.rowGroup}>
+                  <View style={[styles.fieldGroup, { flex: 1 }]}>
+                    <Text style={styles.label}>Contraseña</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Mínimo 8 caracteres"
+                      value={formData.password}
+                      onChangeText={(text) => setFormData({ ...formData, password: text })}
+                      placeholderTextColor="#9ca3af"
+                      secureTextEntry
+                    />
+                  </View>
+                  <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
+                    <Text style={styles.label}>Confirmar contraseña</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Confirma la contraseña"
+                      value={formData.confirmPassword}
+                      onChangeText={(text) => setFormData({ ...formData, confirmPassword: text })}
+                      placeholderTextColor="#9ca3af"
+                      secureTextEntry
+                    />
+                  </View>
+                </View>
+                </>
+              )}
+            </View>
+          </ScrollView>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.createButton, loading && styles.createButtonDisabled]}
+              onPress={handleCreate}
+              disabled={loading}
+            >
+              <Text style={styles.createButtonText}>
+                {loading ? (isEditing ? 'Actualizando...' : 'Creando...') : (isEditing ? 'Actualizar Rol' : 'Crear usuario')}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </ScrollView>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  modalOverlay: {
     flex: 1,
-    backgroundColor: '#16171d',
-  },
-  contentContainer: {
-    padding: 24,
-  },
-  header: {
-    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 4,
+  },
+  modalContainer: {
+    backgroundColor: '#111827',
+    borderWidth: 1,
+    borderColor: '#10b981',
+    borderRadius: 12,
+    width: '90%',
+    maxWidth: 480,
+    padding: 24,
     position: 'relative',
   },
   closeButton: {
     position: 'absolute',
-    right: 0,
+    top: 16,
+    right: 16,
     padding: 4,
+    zIndex: 1000,
   },
-  closeButtonText: {
-    color: '#9ca3af',
-    fontSize: 18,
-    lineHeight: 20,
-  },
-  headerTitle: {
+  modalTitle: {
+    color: '#fff',
     fontSize: 20,
     fontWeight: '600',
-    color: '#fff',
+    marginBottom: 20,
   },
-  subtitleContainer: {
-    marginBottom: 24,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#9ca3af',
+  scrollView: {
+    maxHeight: 400,
   },
   formContainer: {
     gap: 16,
@@ -289,6 +348,32 @@ const styles = StyleSheet.create({
     color: '#030712',
     fontSize: 14,
     fontWeight: '600',
+  },
+  roleButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  roleButton: {
+    backgroundColor: '#1f2937',
+    borderWidth: 1,
+    borderColor: '#374151',
+    borderRadius: 6,
+    padding: 12,
+    alignItems: 'center',
+    minWidth: 100,
+  },
+  roleButtonActive: {
+    backgroundColor: '#f59e0b',
+    borderColor: '#f59e0b',
+  },
+  roleButtonText: {
+    color: '#9ca3af',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  roleButtonTextActive: {
+    color: '#050c18',
   },
 });
 

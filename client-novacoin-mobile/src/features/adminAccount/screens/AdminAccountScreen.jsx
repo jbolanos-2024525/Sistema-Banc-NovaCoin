@@ -1,50 +1,165 @@
 // src/features/adminAccount/screens/AdminAccountScreen.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useAdminAccountStore } from '../store/adminAccountStore';
+import { useAuthStore } from '../../../shared/store/authStore';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal';
+import Toast from '../../../shared/components/Toast';
+import { useToast } from '../../../shared/hooks/useToast';
+import EditAccountModal from './EditAccountModal';
+import CreateAccount from '../../accounts/screens/CreateAccount';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
 
 const AdminAccountScreen = ({ navigation }) => {
-  const { cuentas, loading, fetchCuentas, formatCurrency } = useAdminAccountStore();
+  const { cuentas, loading, fetchCuentas, formatCurrency, createCuenta, updateCuenta, deleteCuenta } = useAdminAccountStore();
+  const { user } = useAuthStore();
   const [filterUsuarioId, setFilterUsuarioId] = useState('');
   const [successMsg, setSuccessMsg] = useState(null);
+  const [confirmConfig, setConfirmConfig] = useState(null);
+  const [accountToEdit, setAccountToEdit] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
+
+  const isAdmin = user?.role === 'ADMIN_ROLE';
+
+  useEffect(() => {
+    fetchCuentas();
+  }, [fetchCuentas]);
 
   const showSuccess = (msg) => {
     setSuccessMsg(msg);
     setTimeout(() => setSuccessMsg(null), 3000);
   };
 
-  const renderAccount = ({ item }) => (
-    <View style={styles.accountItem}>
-      <View style={styles.accountInfo}>
-        <Text style={styles.accountNumber}>{item.numeroCuenta || item.accountNumber || '—'}</Text>
-        <Text style={styles.accountType}>{item.tipoCuenta || item.type || '—'}</Text>
-        <Text style={styles.accountUser}>Usuario: {item.usuarioId || item.userId || '—'}</Text>
-      </View>
-      <View style={styles.accountBalance}>
-        <Text style={styles.balanceValue}>
-          {formatCurrency ? formatCurrency(item.saldo || item.balance || 0) : `Q${Number(item.saldo || item.balance || 0).toLocaleString('es-GT')}`}
-        </Text>
-        <View style={[styles.statusBadge, { backgroundColor: item.estadoCuenta?.toUpperCase() === 'ACTIVA' ? 'rgba(34,197,94,0.1)' : 'rgba(249,115,22,0.1)' }]}>
-          <Text style={[styles.statusText, { color: item.estadoCuenta?.toUpperCase() === 'ACTIVA' ? '#22c55e' : '#f97316' }]}>
-            {item.estadoCuenta || item.estado || 'PENDIENTE'}
-          </Text>
+  const handleSearchByUserId = async () => {
+    if (!filterUsuarioId.trim()) {
+      await fetchCuentas();
+      return;
+    }
+    // Filtrar localmente por ID de usuario
+    const filtered = cuentas.filter(c => 
+      (c.IdUsuario || c.idUsuario || c.usuarioId || c.userId) === filterUsuarioId.trim()
+    );
+    // Si no se encuentra, mostrar mensaje
+    if (filtered.length === 0) {
+      showToast('No se encontraron cuentas para este usuario', 'error');
+    }
+  };
+
+  const handleClearFilter = async () => {
+    setFilterUsuarioId('');
+    await fetchCuentas();
+  };
+
+  const handleEditAccount = (account) => {
+    setConfirmConfig({
+      title: 'Editar Cuenta',
+      message: '¿Estás seguro de que deseas editar esta cuenta?',
+      confirmText: 'Sí, Editar',
+      confirmColor: '#f59e0b',
+      onConfirm: () => {
+        setAccountToEdit(account);
+        setIsModalOpen(true);
+        setConfirmConfig(null);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
+
+  const handleUpdateAccount = async (formData) => {
+    const result = await updateCuenta(accountToEdit._id || accountToEdit.id, formData);
+    if (result.success) {
+      showToast('Cuenta actualizada correctamente', 'success');
+      setIsModalOpen(false);
+      setAccountToEdit(null);
+      await fetchCuentas();
+    } else {
+      showToast(result.error || 'No se pudo actualizar la cuenta', 'error');
+    }
+  };
+
+  const handleDeleteAccount = async (accountId) => {
+    setConfirmConfig({
+      title: 'Eliminar Cuenta',
+      message: '¿Estás seguro de que deseas eliminar esta cuenta? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, Eliminar',
+      confirmColor: '#ef4444',
+      onConfirm: async () => {
+        const result = await deleteCuenta(accountId);
+        if (result.success) {
+          showToast('Cuenta eliminada correctamente', 'success');
+        } else {
+          showToast(result.error || 'No se pudo eliminar la cuenta', 'error');
+        }
+        setConfirmConfig(null);
+      },
+      onClose: () => setConfirmConfig(null)
+    });
+  };
+
+  const renderAccount = ({ item }) => {
+    // Extracción flexible de propiedades como en el web
+    const numeroCuenta = item.NumeroCuenta || item.numeroCuenta || item.accountNumber || '—';
+    const tipoCuenta = item.TipoCuenta || item.tipoCuenta || item.type || '—';
+    const moneda = item.Moneda || item.moneda || 'GTQ';
+    const saldo = item.Saldo || item.saldo || item.balance || 0;
+    const estadoCuenta = item.EstadoCuenta || item.estadoCuenta || item.estado || 'PENDIENTE';
+    const idUsuario = item.IdUsuario || item.idUsuario || item.usuarioId || item.userId || '—';
+    
+    const estadoColor = estadoCuenta?.toUpperCase() === 'ACTIVA' ? '#22c55e' : 
+                      estadoCuenta?.toUpperCase() === 'BLOQUEADA' ? '#f97316' : 
+                      estadoCuenta?.toUpperCase() === 'CANCELADA' ? '#ef4444' : '#9ca3af';
+    const estadoBg = estadoCuenta?.toUpperCase() === 'ACTIVA' ? 'rgba(34,197,94,0.1)' : 
+                    estadoCuenta?.toUpperCase() === 'BLOQUEADA' ? 'rgba(249,115,22,0.1)' : 
+                    estadoCuenta?.toUpperCase() === 'CANCELADA' ? 'rgba(239,68,68,0.1)' : 'rgba(156,163,175,0.1)';
+
+    return (
+      <View style={styles.accountItem}>
+        <View style={styles.accountInfo}>
+          <Text style={styles.accountNumber}>{numeroCuenta}</Text>
+          <Text style={styles.accountType}>{tipoCuenta}</Text>
+          <Text style={styles.accountUser}>Usuario: {idUsuario}</Text>
+          <Text style={styles.accountCurrency}>Moneda: {moneda}</Text>
         </View>
+        <View style={styles.accountBalance}>
+          <Text style={styles.balanceValue}>
+            {formatCurrency ? formatCurrency(saldo) : `Q${Number(saldo).toLocaleString('es-GT')}`}
+          </Text>
+          <View style={[styles.statusBadge, { backgroundColor: estadoBg }]}>
+            <Text style={[styles.statusText, { color: estadoColor }]}>
+              {estadoCuenta}
+            </Text>
+          </View>
+        </View>
+        {isAdmin && (
+          <View style={styles.accountActions}>
+            <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={() => handleEditAccount(item)}>
+              <Text style={styles.actionButtonText}>Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => handleDeleteAccount(item._id || item.id)}>
+              <Text style={styles.actionButtonText}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View style={styles.container}>
+      <CustomHeader title="Cuentas" showMenu={false} />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.headerTitle}>Gestión de Cuentas</Text>
           <Text style={styles.headerSubtitle}>Crear, editar y administrar cuentas bancarias de los usuarios.</Text>
         </View>
-        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CreateAccount')}>
+        <TouchableOpacity style={styles.addButton} onPress={() => setIsCreateModalOpen(true)}>
           <MaterialIcons name="add" size={20} color="#0d1117" />
           <Text style={styles.addButtonText}>Nueva Cuenta</Text>
         </TouchableOpacity>
@@ -68,10 +183,10 @@ const AdminAccountScreen = ({ navigation }) => {
           onChangeText={setFilterUsuarioId}
           placeholderTextColor="#6b7280"
         />
-        <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity style={styles.filterButton} onPress={handleSearchByUserId}>
           <Text style={styles.filterButtonText}>Buscar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.filterButton, styles.filterButtonSecondary]}>
+        <TouchableOpacity style={[styles.filterButton, styles.filterButtonSecondary]} onPress={handleClearFilter}>
           <Text style={styles.filterButtonTextSecondary}>Limpiar</Text>
         </TouchableOpacity>
       </View>
@@ -92,14 +207,57 @@ const AdminAccountScreen = ({ navigation }) => {
           </View>
         ) : (
           <FlatList
-            data={cuentas}
+            data={filterUsuarioId.trim() ? cuentas.filter(c => 
+              (c.IdUsuario || c.idUsuario || c.usuarioId || c.userId) === filterUsuarioId.trim()
+            ) : cuentas}
             renderItem={renderAccount}
             keyExtractor={(item) => item._id || item.id}
             scrollEnabled={false}
           />
         )}
       </View>
-    </ScrollView>
+      </ScrollView>
+
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        visible={toast?.visible}
+        onHide={hideToast}
+      />
+
+      {confirmConfig && (
+        <ConfirmModal
+          isOpen={true}
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          confirmText={confirmConfig.confirmText}
+          confirmColor={confirmConfig.confirmColor}
+          onConfirm={confirmConfig.onConfirm}
+          onClose={confirmConfig.onClose}
+        />
+      )}
+
+      <EditAccountModal
+        isVisible={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setAccountToEdit(null);
+        }}
+        selected={accountToEdit}
+        onSubmit={handleUpdateAccount}
+        loading={loading}
+      />
+
+      <CreateAccount
+        isVisible={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onConfirm={() => {
+          setIsCreateModalOpen(false);
+          fetchCuentas();
+          showToast('Cuenta creada correctamente', 'success');
+        }}
+      />
+    </View>
   );
 };
 
@@ -239,6 +397,10 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     fontSize: 11,
   },
+  accountCurrency: {
+    color: '#6b7280',
+    fontSize: 11,
+  },
   accountBalance: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,6 +419,31 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '700',
+  },
+  accountActions: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  editButton: {
+    borderColor: '#f59e0b',
+    backgroundColor: 'transparent',
+  },
+  deleteButton: {
+    borderColor: '#ef4444',
+    backgroundColor: 'transparent',
+  },
+  actionButtonText: {
+    fontSize: 12,
+    color: '#f59e0b',
   },
   loadingContainer: {
     padding: 48,

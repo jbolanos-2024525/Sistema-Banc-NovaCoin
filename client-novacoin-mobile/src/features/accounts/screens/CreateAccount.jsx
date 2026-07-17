@@ -1,12 +1,12 @@
 // src/features/accounts/screens/CreateAccount.jsx
 
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Modal, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useAdminAccountStore } from '../../adminAccount/store/adminAccountStore';
 
-const CreateAccount = ({ navigation }) => {
+const CreateAccount = ({ isVisible, onClose, onConfirm }) => {
   const { createCuenta, loading } = useAdminAccountStore();
   const [formData, setFormData] = useState({
     IdUsuario: '',
@@ -15,6 +15,18 @@ const CreateAccount = ({ navigation }) => {
     Saldo: '0',
     LimiteRetiroDiario: '5000',
   });
+
+  useEffect(() => {
+    if (isVisible) {
+      setFormData({
+        IdUsuario: '',
+        TipoCuenta: 'AHORRO',
+        Moneda: 'GTQ',
+        Saldo: '0',
+        LimiteRetiroDiario: '5000',
+      });
+    }
+  }, [isVisible]);
 
   const handleCreate = async () => {
     if (!formData.IdUsuario) {
@@ -31,23 +43,30 @@ const CreateAccount = ({ navigation }) => {
     });
 
     if (result.success) {
-      Alert.alert('Éxito', 'Cuenta creada correctamente');
-      navigation.goBack();
+      onClose();
+      if (onConfirm) onConfirm();
     } else {
       Alert.alert('Error', result.error || 'No se pudo crear la cuenta');
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nueva Cuenta Bancaria</Text>
-      </View>
+    <Modal
+      visible={isVisible}
+      animationType="fade"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <MaterialIcons name="close" size={24} color="#9ca3af" />
+          </TouchableOpacity>
 
-      <View style={styles.formContainer}>
+          <Text style={styles.modalTitle}>Nueva Cuenta Bancaria</Text>
+
+          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+            <View style={styles.formContainer}>
         <View style={styles.fieldGroup}>
           <Text style={styles.label}>ID DEL USUARIO (UUID) *</Text>
           <TextInput
@@ -117,51 +136,61 @@ const CreateAccount = ({ navigation }) => {
           />
         </View>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.cancelButton]}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.createButton, loading && styles.createButtonDisabled]}
-            onPress={handleCreate}
-            disabled={loading}
-          >
-            <Text style={styles.createButtonText}>
-              {loading ? 'Guardando...' : 'Crear Cuenta'}
-            </Text>
-          </TouchableOpacity>
+            </View>
+          </ScrollView>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.createButton, loading && styles.createButtonDisabled]}
+              onPress={handleCreate}
+              disabled={loading}
+            >
+              <Text style={styles.createButtonText}>
+                {loading ? 'Guardando...' : 'Crear Cuenta'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </ScrollView>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  modalOverlay: {
     flex: 1,
-    backgroundColor: '#16171d',
-  },
-  contentContainer: {
-    padding: 24,
-  },
-  header: {
-    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1f2937',
-    paddingBottom: 16,
   },
-  backButton: {
-    marginRight: 16,
+  modalContainer: {
+    backgroundColor: '#111827',
+    borderWidth: 1,
+    borderColor: '#c084fc',
+    borderRadius: 12,
+    width: '90%',
+    maxWidth: 480,
+    padding: 24,
+    position: 'relative',
   },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+  closeButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    padding: 4,
+    zIndex: 1000,
+  },
+  modalTitle: {
     color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 20,
+  },
+  scrollView: {
+    maxHeight: 400,
   },
   formContainer: {
     gap: 16,

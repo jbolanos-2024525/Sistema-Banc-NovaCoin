@@ -1,13 +1,16 @@
 // src/features/employee/screens/CreateEmployee.jsx
 
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 import { useEmployeeStore } from '../store/employeeStore';
+import Toast from '../../../shared/components/Toast';
+import { useToast } from '../../../shared/hooks/useToast';
 
 const CreateEmployee = ({ navigation }) => {
   const { createEmployee, loading } = useEmployeeStore();
+  const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     Nombre: '',
     Apellido: '',
@@ -18,19 +21,43 @@ const CreateEmployee = ({ navigation }) => {
     Salario: '',
   });
 
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.Nombre.trim()) newErrors.Nombre = 'El nombre es obligatorio';
+    if (!formData.Apellido.trim()) newErrors.Apellido = 'El apellido es obligatorio';
+    
+    if (!formData.DPI.trim()) {
+      newErrors.DPI = 'El DPI es obligatorio';
+    } else if (formData.DPI.length !== 13) {
+      newErrors.DPI = 'Debe tener 13 dígitos';
+    }
+    
+    if (!formData.Correo.trim()) {
+      newErrors.Correo = 'El correo es obligatorio';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.Correo)) {
+      newErrors.Correo = 'Formato de correo inválido';
+    }
+    
+    if (!formData.Telefono.trim()) {
+      newErrors.Telefono = 'El teléfono es obligatorio';
+    } else if (formData.Telefono.length !== 8) {
+      newErrors.Telefono = 'Debe tener 8 dígitos';
+    }
+    
+    if (!formData.Puesto) newErrors.Puesto = 'El puesto es obligatorio';
+    if (!formData.Salario || parseFloat(formData.Salario) <= 0) {
+      newErrors.Salario = 'El salario es obligatorio y debe ser mayor a cero';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleCreate = async () => {
-    if (!formData.Nombre || !formData.Apellido || !formData.DPI || !formData.Correo || !formData.Telefono || !formData.Puesto || !formData.Salario) {
-      Alert.alert('Error', 'Todos los campos son requeridos');
-      return;
-    }
-
-    if (formData.DPI.length !== 13) {
-      Alert.alert('Error', 'El DPI debe tener 13 dígitos');
-      return;
-    }
-
-    if (formData.Telefono.length !== 8) {
-      Alert.alert('Error', 'El teléfono debe tener 8 dígitos');
+    if (!validateForm()) {
       return;
     }
 
@@ -42,15 +69,21 @@ const CreateEmployee = ({ navigation }) => {
       Telefono: formData.Telefono,
       Puesto: formData.Puesto,
       Salario: parseFloat(formData.Salario) || 0,
+      Rol: formData.Puesto,
       isActive: true,
       isVerified: true,
     });
 
     if (result.success) {
-      Alert.alert('Éxito', 'Empleado creado correctamente');
-      navigation.goBack();
+      showToast('Empleado creado correctamente', 'success');
+      setTimeout(() => navigation.goBack(), 1500);
     } else {
-      Alert.alert('Error', result.error || 'No se pudo crear el empleado');
+      const errorMessage = result.error || 'No se pudo crear el empleado';
+      if (errorMessage.includes('Ya existe un empleado') || errorMessage.includes('DPI o correo')) {
+        showToast('Ya existe un empleado con ese DPI o correo', 'error');
+      } else {
+        showToast(errorMessage, 'error');
+      }
     }
   };
 
@@ -72,22 +105,30 @@ const CreateEmployee = ({ navigation }) => {
           <View style={[styles.fieldGroup, { flex: 1 }]}>
             <Text style={styles.label}>Nombre</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.Nombre && styles.inputError]}
               placeholder="Nombre"
               value={formData.Nombre}
-              onChangeText={(text) => setFormData({ ...formData, Nombre: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, Nombre: text });
+                if (errors.Nombre) setErrors({ ...errors, Nombre: null });
+              }}
               placeholderTextColor="#9ca3af"
             />
+            {errors.Nombre && <Text style={styles.errorText}>{errors.Nombre}</Text>}
           </View>
           <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
             <Text style={styles.label}>Apellido</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.Apellido && styles.inputError]}
               placeholder="Apellido"
               value={formData.Apellido}
-              onChangeText={(text) => setFormData({ ...formData, Apellido: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, Apellido: text });
+                if (errors.Apellido) setErrors({ ...errors, Apellido: null });
+              }}
               placeholderTextColor="#9ca3af"
             />
+            {errors.Apellido && <Text style={styles.errorText}>{errors.Apellido}</Text>}
           </View>
         </View>
 
@@ -95,26 +136,34 @@ const CreateEmployee = ({ navigation }) => {
           <View style={[styles.fieldGroup, { flex: 1 }]}>
             <Text style={styles.label}>DPI</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.DPI && styles.inputError]}
               placeholder="13 dígitos"
               value={formData.DPI}
-              onChangeText={(text) => setFormData({ ...formData, DPI: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, DPI: text });
+                if (errors.DPI) setErrors({ ...errors, DPI: null });
+              }}
               placeholderTextColor="#9ca3af"
               keyboardType="numeric"
               maxLength={13}
             />
+            {errors.DPI && <Text style={styles.errorText}>{errors.DPI}</Text>}
           </View>
           <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
             <Text style={styles.label}>Correo</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.Correo && styles.inputError]}
               placeholder="correo@ejemplo.com"
               value={formData.Correo}
-              onChangeText={(text) => setFormData({ ...formData, Correo: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, Correo: text });
+                if (errors.Correo) setErrors({ ...errors, Correo: null });
+              }}
               placeholderTextColor="#9ca3af"
               keyboardType="email-address"
               autoCapitalize="none"
             />
+            {errors.Correo && <Text style={styles.errorText}>{errors.Correo}</Text>}
           </View>
         </View>
 
@@ -122,25 +171,33 @@ const CreateEmployee = ({ navigation }) => {
           <View style={[styles.fieldGroup, { flex: 1 }]}>
             <Text style={styles.label}>Teléfono</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.Telefono && styles.inputError]}
               placeholder="8 dígitos"
               value={formData.Telefono}
-              onChangeText={(text) => setFormData({ ...formData, Telefono: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, Telefono: text });
+                if (errors.Telefono) setErrors({ ...errors, Telefono: null });
+              }}
               placeholderTextColor="#9ca3af"
               keyboardType="numeric"
               maxLength={8}
             />
+            {errors.Telefono && <Text style={styles.errorText}>{errors.Telefono}</Text>}
           </View>
           <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
             <Text style={styles.label}>Salario</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.Salario && styles.inputError]}
               placeholder="0.00"
               value={formData.Salario}
-              onChangeText={(text) => setFormData({ ...formData, Salario: text })}
+              onChangeText={(text) => {
+                setFormData({ ...formData, Salario: text });
+                if (errors.Salario) setErrors({ ...errors, Salario: null });
+              }}
               placeholderTextColor="#9ca3af"
               keyboardType="decimal-pad"
             />
+            {errors.Salario && <Text style={styles.errorText}>{errors.Salario}</Text>}
           </View>
         </View>
 
@@ -151,7 +208,10 @@ const CreateEmployee = ({ navigation }) => {
               <TouchableOpacity
                 key={puesto}
                 style={[styles.roleButton, formData.Puesto === puesto && styles.roleButtonActive]}
-                onPress={() => setFormData({ ...formData, Puesto: puesto })}
+                onPress={() => {
+                  setFormData({ ...formData, Puesto: puesto });
+                  if (errors.Puesto) setErrors({ ...errors, Puesto: null });
+                }}
               >
                 <Text style={[styles.roleButtonText, formData.Puesto === puesto && styles.roleButtonTextActive]}>
                   {puesto}
@@ -159,6 +219,7 @@ const CreateEmployee = ({ navigation }) => {
               </TouchableOpacity>
             ))}
           </View>
+          {errors.Puesto && <Text style={styles.errorText}>{errors.Puesto}</Text>}
         </View>
 
         <View style={styles.buttonContainer}>
@@ -179,6 +240,13 @@ const CreateEmployee = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        visible={toast?.visible}
+        onHide={hideToast}
+      />
     </ScrollView>
   );
 };
@@ -231,10 +299,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#1f2937',
     borderWidth: 1,
     borderColor: '#374151',
-    borderRadius: 8,
+    borderRadius: 6,
     color: '#fff',
     fontSize: 14,
     padding: 10,
+  },
+  inputError: {
+    borderColor: '#ef4444',
+  },
+  errorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginTop: 4,
   },
   roleButtons: {
     flexDirection: 'row',

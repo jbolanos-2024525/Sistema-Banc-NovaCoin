@@ -14,7 +14,12 @@ export const useProfile = () => {
     
     try {
       const response = await authService.getProfile();
+      console.log('Profile response:', response);
+      console.log('Profile data:', response.data);
+      console.log('Profile data keys:', Object.keys(response.data));
+      
       const data = response.data.data || response.data;
+      console.log('Mapped data:', data);
       
       const mappedProfile = {
         id: data.id,

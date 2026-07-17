@@ -172,6 +172,11 @@ export const transactionService = {
     const response = await axiosTransAdmin.patch(`/transaccion/estado/${id}`, { estado });
     return response.data;
   },
+
+  cancelTransaction: async (id) => {
+    const response = await axiosTransAdmin.patch(`/transaccion/estado/${id}`, { estado: 'CANCELADA' });
+    return response.data;
+  },
   
   // User endpoints
   getMyTransactions: async () => {

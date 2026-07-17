@@ -143,6 +143,12 @@ export const authService = {
     const response = await axiosAuth.get('/api/v1/auth/users');
     return response.data;
   },
+
+  // Actualizar rol de usuario (admin)
+  updateUserRole: async (userId, roleData) => {
+    const response = await axiosAuth.put(`/api/v1/users/${userId}/role`, roleData);
+    return response.data;
+  },
 };
 
 export default axiosAuth;

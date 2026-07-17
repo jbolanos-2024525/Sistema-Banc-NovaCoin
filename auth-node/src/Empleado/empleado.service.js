@@ -14,7 +14,7 @@ export const createEmpleadoRecord = async (empleadoData) => {
 };
 
 export const getEmpleadosRecord = async (filters = {}) => {
-    const query = { isActive: true, ...filters };
+    const query = { ...filters };
     return await Empleado.find(query)
         .sort({ createdAt: -1 })
         .lean();

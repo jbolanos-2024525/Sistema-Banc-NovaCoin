@@ -5,7 +5,7 @@ import { View, StyleSheet, Text, Modal, TouchableOpacity, TextInput, ScrollView,
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../../shared/constants/theme';
 
-const CreateLoanModal = ({ isVisible, onClose, onConfirm, loanToEdit = null }) => {
+const CreateLoanModal = ({ isVisible, onClose, onConfirm, loanToEdit = null, isAdmin = false }) => {
   const isEditing = !!loanToEdit;
 
   const [monto, setMonto] = useState('');
@@ -48,22 +48,43 @@ const CreateLoanModal = ({ isVisible, onClose, onConfirm, loanToEdit = null }) =
       setLocalError('El propósito del préstamo es obligatorio.');
       return;
     }
-    if (!cliente.trim()) {
-      setLocalError('El ID del cliente es obligatorio.');
+    if (isAdmin && !cliente.trim()) {
+      setLocalError('El ID del cliente es obligatorio para administradores.');
       return;
     }
 
-    const dto = {
-      tipoPrestamo,
-      monto: parseFloat(monto),
-      plazoMeses: parseInt(plazo),
-      proposito: proposito.trim(),
-      cliente: cliente.trim(),
-    };
-
-    if (!isEditing) dto.tasaInteres = 15;
-
-    if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+    if (isEditing) {
+      // Al editar como admin, enviar todos los campos permitidos
+      if (isAdmin) {
+        const dto = {
+          tipoPrestamo,
+          monto: parseFloat(monto),
+          plazoMeses: parseInt(plazo),
+          proposito: proposito.trim(),
+          tasaInteres: 15,
+        };
+        if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+      } else {
+        // Al editar como cliente normal, solo enviar propósito
+        const dto = {
+          proposito: proposito.trim(),
+        };
+        if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+      }
+    } else {
+      // Al crear, enviar todos los campos
+      const dto = {
+        tipoPrestamo,
+        monto: parseFloat(monto),
+        plazoMeses: parseInt(plazo),
+        proposito: proposito.trim(),
+      };
+      if (isAdmin && cliente.trim()) {
+        dto.cliente = cliente.trim();
+      }
+      dto.tasaInteres = 15;
+      if (onConfirm && typeof onConfirm === 'function') onConfirm(dto);
+    }
   };
 
   return (
@@ -74,7 +95,7 @@ const CreateLoanModal = ({ isVisible, onClose, onConfirm, loanToEdit = null }) =
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
+        <View style={[styles.modalContainer, { borderColor: isEditing ? '#f59e0b' : '#00f2fe' }]}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <MaterialIcons name="close" size={24} color="#9ca3af" />
           </TouchableOpacity>
@@ -91,51 +112,55 @@ const CreateLoanModal = ({ isVisible, onClose, onConfirm, loanToEdit = null }) =
 
           <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <View style={styles.formContainer}>
-              <View style={styles.fieldGroup}>
-                <Text style={styles.label}>Tipo de Préstamo</Text>
-                <View style={styles.typeButtons}>
-                  {['PERSONAL', 'HIPOTECARIO', 'VEHICULAR'].map((tipo) => (
-                    <TouchableOpacity
-                      key={tipo}
-                      style={[styles.typeButton, tipoPrestamo === tipo && styles.typeButtonActive]}
-                      onPress={() => setTipoPrestamo(tipo)}
-                    >
-                      <Text style={[styles.typeButtonText, tipoPrestamo === tipo && styles.typeButtonTextActive]}>
-                        {tipo.charAt(0) + tipo.slice(1).toLowerCase()}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
+              {!isEditing || isAdmin ? (
+                <>
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Tipo de Préstamo</Text>
+                    <View style={styles.typeButtons}>
+                      {['PERSONAL', 'HIPOTECARIO', 'VEHICULAR'].map((tipo) => (
+                        <TouchableOpacity
+                          key={tipo}
+                          style={[styles.typeButton, tipoPrestamo === tipo && styles.typeButtonActive]}
+                          onPress={() => setTipoPrestamo(tipo)}
+                        >
+                          <Text style={[styles.typeButtonText, tipoPrestamo === tipo && styles.typeButtonTextActive]}>
+                            {tipo.charAt(0) + tipo.slice(1).toLowerCase()}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
 
-              <View style={styles.fieldGroup}>
-                <Text style={styles.label}>Monto (GTQ)</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="0.00"
-                  value={monto}
-                  onChangeText={setMonto}
-                  keyboardType="decimal-pad"
-                  placeholderTextColor="#9ca3af"
-                />
-              </View>
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Monto (GTQ)</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="0.00"
+                      value={monto}
+                      onChangeText={setMonto}
+                      keyboardType="decimal-pad"
+                      placeholderTextColor="#9ca3af"
+                    />
+                  </View>
 
-              <View style={styles.fieldGroup}>
-                <Text style={styles.label}>Plazo</Text>
-                <View style={styles.typeButtons}>
-                  {['6', '12', '24', '36', '48', '60'].map((meses) => (
-                    <TouchableOpacity
-                      key={meses}
-                      style={[styles.typeButton, plazo === meses && styles.typeButtonActive]}
-                      onPress={() => setPlazo(meses)}
-                    >
-                      <Text style={[styles.typeButtonText, plazo === meses && styles.typeButtonTextActive]}>
-                        {meses} meses
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Plazo</Text>
+                    <View style={styles.typeButtons}>
+                      {['6', '12', '24', '36', '48', '60'].map((meses) => (
+                        <TouchableOpacity
+                          key={meses}
+                          style={[styles.typeButton, plazo === meses && styles.typeButtonActive]}
+                          onPress={() => setPlazo(meses)}
+                        >
+                          <Text style={[styles.typeButtonText, plazo === meses && styles.typeButtonTextActive]}>
+                            {meses} meses
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </>
+              ) : null}
 
               <View style={styles.fieldGroup}>
                 <Text style={styles.label}>Propósito del Préstamo</Text>
@@ -148,16 +173,18 @@ const CreateLoanModal = ({ isVisible, onClose, onConfirm, loanToEdit = null }) =
                 />
               </View>
 
-              <View style={styles.fieldGroup}>
-                <Text style={styles.label}>ID del Cliente</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="ID del usuario cliente"
-                  value={cliente}
-                  onChangeText={setCliente}
-                  placeholderTextColor="#9ca3af"
-                />
-              </View>
+              {!isEditing && isAdmin && (
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.label}>ID del Cliente</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="ID del usuario cliente"
+                    value={cliente}
+                    onChangeText={setCliente}
+                    placeholderTextColor="#9ca3af"
+                  />
+                </View>
+              )}
 
               {monto && parseFloat(monto) > 0 ? (
                 <View style={[styles.estimateContainer, isEditing && styles.estimateContainerEdit]}>
@@ -340,6 +367,7 @@ const styles = StyleSheet.create({
   },
   confirmButtonEdit: {
     backgroundColor: '#f59e0b',
+    borderColor: '#f59e0b',
   },
   confirmButtonText: {
     color: '#050c18',

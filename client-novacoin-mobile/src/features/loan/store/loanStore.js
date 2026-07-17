@@ -19,6 +19,17 @@ export const useLoanStore = create((set, get) => ({
     }
   },
 
+  fetchMyLoans: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await loanService.getMyLoans();
+      set({ loans: response.data || response, loading: false });
+    } catch (error) {
+      console.error('Error al obtener mis préstamos:', error);
+      set({ error: error.message, loading: false });
+    }
+  },
+
   requestLoan: async (dto) => {
     set({ loading: true, error: null });
     try {
@@ -27,6 +38,19 @@ export const useLoanStore = create((set, get) => ({
       return { success: true };
     } catch (error) {
       console.error('Error al solicitar préstamo:', error);
+      set({ error: error.message, loading: false });
+      return { success: false, error: error.message };
+    }
+  },
+
+  requestMyLoan: async (dto) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await loanService.createMyLoan(dto);
+      await get().fetchMyLoans();
+      return { success: true };
+    } catch (error) {
+      console.error('Error al solicitar mi préstamo:', error);
       set({ error: error.message, loading: false });
       return { success: false, error: error.message };
     }

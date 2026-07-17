@@ -129,8 +129,26 @@ export const employeeService = {
   },
   
   createEmployee: async (employeeData) => {
-    const response = await axiosBank.post(BASE, employeeData);
-    return response.data;
+    console.log('POST request to:', BASE);
+    console.log('Request data:', JSON.stringify(employeeData, null, 2));
+    console.log('Request data types:', Object.keys(employeeData).reduce((acc, key) => {
+      acc[key] = typeof employeeData[key];
+      return acc;
+    }, {}));
+    console.log('Request headers:', axiosBank.defaults.headers);
+    
+    try {
+      const response = await axiosBank.post(BASE, employeeData);
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error in createEmployee:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error config:', error.config);
+      throw error;
+    }
   },
   
   updateEmployee: async (employeeId, employeeData) => {

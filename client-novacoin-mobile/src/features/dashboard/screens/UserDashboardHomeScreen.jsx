@@ -8,6 +8,7 @@ import { useAuthStore } from '../../../shared/store/authStore';
 import { useAccountStore } from '../../account/store/accountStore';
 import { useTransactionsStore } from '../../transactions/store/transactionsStore';
 import { useLoanStore } from '../../loan/store/loanStore';
+import CustomHeader from '../../../shared/components/layout/CustomHeader';
 
 const aqua = '#00b4cc';
 
@@ -40,13 +41,13 @@ const StatCard = ({ icon, label, value, badge, accent, loading }) => (
 const statusStyle = (status) => {
   const s = status?.toUpperCase();
   const map = {
-    PENDIENTE: { bg: '#fff7ed', color: '#f97316' },
-    APROBADO: { bg: '#f0fdf4', color: '#22c55e' },
-    ACTIVO: { bg: '#f0fdf4', color: '#22c55e' },
-    PAGADO: { bg: '#eff6ff', color: '#3b82f6' },
-    RECHAZADO: { bg: '#fef2f2', color: '#ef4444' },
-    EN_MORA: { bg: '#fef2f2', color: '#ef4444' },
-    CANCELADO: { bg: '#f8fafc', color: '#94a3b8' },
+    PENDIENTE: { bg: 'rgba(249, 115, 22, 0.2)', color: '#f97316' },
+    APROBADO: { bg: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' },
+    ACTIVO: { bg: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' },
+    PAGADO: { bg: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6' },
+    RECHAZADO: { bg: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' },
+    EN_MORA: { bg: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' },
+    CANCELADO: { bg: 'rgba(148, 163, 184, 0.2)', color: '#94a3b8' },
   };
   const cfg = map[s] || map.PENDIENTE;
   return {
@@ -59,19 +60,37 @@ const TransactionItem = ({ tx }) => (
   <View style={styles.transactionItem}>
     <View style={styles.transactionInfo}>
       <Text style={styles.transactionTitle}>
-        {tx.descripcion || tx.tipo || tx.tipoTransaccion || 'Transacción'}
+        {tx.Descripcion || tx.descripcion || tx.TipoTransaccion || tx.tipoTransaccion || 'Transacción'}
       </Text>
       <Text style={styles.transactionSubtitle}>
-        {tx.cuentaOrigen || tx.numeroCuenta || '—'} •{' '}
+        {tx.cuentaOrigen || tx.CuentaOrigen || tx.numeroCuenta || '—'} •{' '}
         <Text style={styles.transactionAmount}>
-          {tx.monto ? `Q${Number(tx.monto).toLocaleString('es-GT')}` : '—'}
+          {tx.Monto || tx.monto ? `Q${Number(tx.Monto || tx.monto).toLocaleString('es-GT')}` : '—'}
         </Text>
       </Text>
-    </View>
-    <View style={[styles.statusBadge, statusStyle(tx.estado || tx.estadoTransaccion || 'PENDIENTE')]}>
-      <Text style={[styles.statusText, { color: statusStyle(tx.estado || tx.estadoTransaccion || 'PENDIENTE').color }]}>
-        {tx.estado || tx.estadoTransaccion || 'PENDIENTE'}
+      {(tx.CuentaDestino || tx.cuentaDestino) && (
+        <Text style={styles.transactionDetails}>
+          Destino: {tx.CuentaDestino || tx.cuentaDestino}
+        </Text>
+      )}
+      <Text style={styles.transactionDate}>
+        {tx.FechaTransaccion || tx.fechaCreacion || tx.createdAt 
+          ? new Date(tx.FechaTransaccion || tx.fechaCreacion || tx.createdAt).toLocaleDateString('es-GT', { 
+              day: '2-digit', 
+              month: 'short', 
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          : '—'}
       </Text>
+    </View>
+    <View style={styles.transactionRight}>
+      <View style={[styles.statusBadge, statusStyle(tx.EstadoTransaccion || tx.estadoTransaccion || tx.estado || 'PENDIENTE')]}>
+        <Text style={[styles.statusText, { color: statusStyle(tx.EstadoTransaccion || tx.estadoTransaccion || tx.estado || 'PENDIENTE').color }]}>
+          {tx.EstadoTransaccion || tx.estadoTransaccion || tx.estado || 'PENDIENTE'}
+        </Text>
+      </View>
     </View>
   </View>
 );
@@ -82,16 +101,25 @@ const UserDashboardHomeScreen = () => {
 
   const { cuentas, fetchMisCuentas, loading: loadCuentas } = useAccountStore();
   const { transactions, fetchTransactions, loading: loadTx } = useTransactionsStore();
-  const { loans, fetchLoans, loading: loadLoans } = useLoanStore();
+  const { loans, fetchMyLoans, loading: loadLoans } = useLoanStore();
 
   useEffect(() => {
+    console.log('UserDashboard: Loading data...');
     fetchMisCuentas();
     fetchTransactions();
-    fetchLoans();
+    fetchMyLoans();
   }, []);
 
   const saldoTotal = cuentas.reduce((s, c) => s + Number(c.saldo || c.balance || 0), 0);
   const totalPrestamos = loans.reduce((s, l) => s + Number(l.montoPrestamo || l.monto || 0), 0);
+
+  console.log('Dashboard data:', {
+    cuentas,
+    loans,
+    transactions,
+    saldoTotal,
+    totalPrestamos
+  });
 
   const recentTx = [...transactions]
     .sort((a, b) => new Date(b.fechaCreacion || b.createdAt || 0) - new Date(a.fechaCreacion || a.createdAt || 0))
@@ -102,7 +130,9 @@ const UserDashboardHomeScreen = () => {
   });
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View style={styles.container}>
+      <CustomHeader title="Inicio" showMenu={false} />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View>
@@ -133,7 +163,7 @@ const UserDashboardHomeScreen = () => {
         />
         <StatCard
           icon="trending-up"
-          label="Cartera de Préstamos"
+          label="Mis Préstamos"
           value={fmt(totalPrestamos)}
           badge={loans.length > 0 ? `${loans.length} préstamo${loans.length > 1 ? 's' : ''}` : undefined}
           accent="#6366f1"
@@ -196,14 +226,15 @@ const UserDashboardHomeScreen = () => {
           </Text>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#0f172a',
   },
   contentContainer: {
     padding: 16,
@@ -215,25 +246,25 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#111827',
+    color: '#ffffff',
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: '#64748b',
+    color: '#9ca3af',
     marginTop: 4,
   },
   accountNumber: {
-    color: '#374151',
+    color: '#e5e7eb',
     fontWeight: '600',
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#fff',
+    backgroundColor: '#1e293b',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#334155',
     borderRadius: 10,
     padding: 8,
     marginTop: 12,
@@ -247,7 +278,7 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: '#fff',
+    backgroundColor: '#1e293b',
     borderRadius: 16,
     padding: 16,
     borderTopWidth: 3,
@@ -279,18 +310,18 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#64748b',
+    color: '#9ca3af',
     fontWeight: '500',
     marginBottom: 4,
   },
   statValue: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#0f172a',
+    color: '#ffffff',
     letterSpacing: -0.5,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1e293b',
     borderRadius: 16,
     padding: 16,
     shadowColor: '#000',
@@ -308,7 +339,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0f172a',
+    color: '#ffffff',
   },
   cardSubtitle: {
     fontSize: 11,
@@ -317,12 +348,12 @@ const styles = StyleSheet.create({
   transactionItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 12,
     borderRadius: 12,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#0f172a',
     borderWidth: 1,
-    borderColor: '#f1f5f9',
+    borderColor: '#1e293b',
     marginBottom: 8,
   },
   transactionInfo: {
@@ -331,16 +362,32 @@ const styles = StyleSheet.create({
   transactionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#334155',
+    color: '#e5e7eb',
     marginBottom: 4,
   },
   transactionSubtitle: {
     fontSize: 12,
     color: '#94a3b8',
   },
+  transactionDetails: {
+    fontSize: 11,
+    color: '#64748b',
+    marginTop: 2,
+  },
+  transactionDate: {
+    fontSize: 10,
+    color: '#64748b',
+    marginTop: 4,
+  },
+  transactionRight: {
+    alignItems: 'flex-end',
+    marginLeft: 12,
+  },
   transactionAmount: {
-    color: '#475569',
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#e5e7eb',
+    marginBottom: 4,
   },
   statusBadge: {
     paddingHorizontal: 10,

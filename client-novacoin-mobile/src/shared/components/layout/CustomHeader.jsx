@@ -1,14 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, StatusBar } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../store/authStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 export const CustomHeader = ({ title, showBack = false, onBackPress, showMenu = true, onMenuPress }) => {
   const { user } = useAuthStore();
   const name = user?.fullName || user?.username || user?.email || 'Admin';
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+
+  const handleLogoPress = () => {
+    navigation.navigate('DashboardHome');
+  };
 
   return (
-    <View style={styles.header}>
+    <>
+      <StatusBar barStyle="light-content" backgroundColor="#010a1f" />
+      <LinearGradient
+        colors={['#010a1f', '#001233', '#010818']}
+        style={[styles.header, { paddingTop: insets.top }]}
+      >
       <View style={styles.headerContent}>
         {showBack ? (
           <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
@@ -20,7 +34,14 @@ export const CustomHeader = ({ title, showBack = false, onBackPress, showMenu = 
           </TouchableOpacity>
         ) : null}
 
-        <Text style={styles.headerTitle}>{title}</Text>
+        <TouchableOpacity style={styles.logoContainer} onPress={handleLogoPress}>
+          <View style={styles.headerLabelCard} />
+          <Image 
+            source={require('../../../../assets/img/Logo3.png')} 
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
 
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.notificationButton}>
@@ -35,15 +56,15 @@ export const CustomHeader = ({ title, showBack = false, onBackPress, showMenu = 
           </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#0a1a2f',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 6,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(0, 242, 254, 0.2)',
     shadowColor: '#00f2fe',
@@ -70,6 +91,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  logoContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  headerLabelCard: {
+    width: 60,
+    height: 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 1,
+    marginBottom: 2,
+  },
+  logoImage: {
+    width: 100,
+    height: 100,
+  },
   headerTitle: {
     color: '#ffffff',
     fontSize: 18,
@@ -87,13 +124,13 @@ const styles = StyleSheet.create({
   notificationButton: {
     position: 'relative',
     width: 40,
-    height: 40,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
   notificationBadge: {
     position: 'absolute',
-    top: 8,
+    top: 8, 
     right: 8,
     width: 9,
     height: 9,

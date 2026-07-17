@@ -170,6 +170,15 @@ export const TransactionsList = ({ transactions, isAdmin = false, onEdit, onDele
                             color: '#f59e0b',
                             cursor: 'pointer',
                             fontSize: '12px',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.backgroundColor = 'rgba(245,158,11,0.1)';
+                            e.target.style.color = '#fbbf24';
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.backgroundColor = 'transparent';
+                            e.target.style.color = '#f59e0b';
                           }}
                         >
                           Editar
@@ -184,6 +193,15 @@ export const TransactionsList = ({ transactions, isAdmin = false, onEdit, onDele
                             color: '#ef4444',
                             cursor: 'pointer',
                             fontSize: '12px',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.backgroundColor = 'rgba(239,68,68,0.1)';
+                            e.target.style.color = '#f87171';
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.backgroundColor = 'transparent';
+                            e.target.style.color = '#ef4444';
                           }}
                         >
                           Cancelar
@@ -193,11 +211,20 @@ export const TransactionsList = ({ transactions, isAdmin = false, onEdit, onDele
                           style={{
                             padding: '6px 14px',
                             backgroundColor: 'transparent',
-                            border: '1px solid #6b7280',
+                            border: '1px solid #dc2626',
                             borderRadius: '6px',
-                            color: '#6b7280',
+                            color: '#dc2626',
                             cursor: 'pointer',
                             fontSize: '12px',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.backgroundColor = 'rgba(220,38,38,0.1)';
+                            e.target.style.color = '#f87171';
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.backgroundColor = 'transparent';
+                            e.target.style.color = '#dc2626';
                           }}
                         >
                           Eliminar
