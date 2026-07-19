@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Base de Datos PostgreSQL (para authentication-service ASP.NET)
+  postgres:
+    image: postgres:13
+    container_name: sistema_bancario_postgres
+    environment:
+      POSTGRES_USER: NovaCoin
+      POSTGRES_PASSWORD: Admin2026
+      POSTGRES_DB: sistema_bancario
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - novacoin-network
+
+  # Base de Datos MongoDB (para auth-node)
+  mongo:
+    image: mongo:6
+    container_name: novacoin_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - novacoin-network
+
+  # Backend Node.js (auth-node)
+  auth-node:
+    build: ./auth-node
+    container_name: novacoin_auth_node
+    ports:
+      - "3020:3020"
+    environment:
+      - PORT=3020
+      - URI_MONGODB=mongodb://mongo:27017/novacoin
+      - JWT_SECRET=novacoin_secret_key_2026
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - novacoin-network
+
+  # Backend ASP.NET (authentication-service)
+  authentication-service:
+    build: ./authentication-service/auth-service
+    container_name: novacoin_auth_service
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=sistema_bancario;Username=NovaCoin;Password=Admin2026
+      - JWT__Secret=novacoin_secret_key_2026
+      - JWT__Issuer=NovaCoin
+      - JWT__Audience=NovaCoinUsers
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - novacoin-network
+
+  # Frontend React (client-novacoin)
+  client-novacoin:
+    build: ./client-novacoin
+    container_name: novacoin_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-node
+      - authentication-service
+    restart: unless-stopped
+    networks:
+      - novacoin-network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  novacoin-network:
+    driver: bridge
