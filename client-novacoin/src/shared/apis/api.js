@@ -21,7 +21,7 @@ const axiosBank = axios.create({
 
 // 3. Instancia para el Microservicio de Transacciones (Usuario)
 const axiosTrans = axios.create({
-    baseURL: import.meta.env.VITE_TRANS_URL || 'http://localhost:3020/NovaCoin/v1',
+    baseURL: import.meta.env.VITE_TRANS_URL || '/NovaCoin/v1',
     timeout: 15000,
     headers: {
         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const axiosTrans = axios.create({
 
 // 4. Instancia para el Microservicio de Transacciones (Admin - para crear transacciones)
 const axiosTransAdmin = axios.create({
-    baseURL: 'http://localhost:3020/NovaCoin/Admin/v1',
+    baseURL: '/NovaCoin/Admin/v1',
     timeout: 15000,
     headers: {
         'Content-Type': 'application/json',
