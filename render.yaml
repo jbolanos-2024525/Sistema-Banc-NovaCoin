@@ -1,0 +1,51 @@
+services:
+  # Servicio auth-node (Node.js backend)
+  - type: web
+    name: novacoin-auth-node
+    env: docker
+    plan: free
+    dockerContext: ./auth-node
+    dockerfilePath: ./auth-node/Dockerfile
+    envVars:
+      - key: PORT
+        value: 3020
+      - key: URI_MONGODB
+        value: mongodb+srv://josemilio2508_db_user:krgj2SbjBu6gznrg@novacoin-cluster.5g2l5xt.mongodb.net/?appName=novacoin-cluster
+      - key: JWT_SECRET
+        value: novacoin_secret_key_2026_secure_jwt_token_minimum_32_bytes
+      - key: NODE_ENV
+        value: production
+
+  # Servicio authentication-service (ASP.NET backend)
+  - type: web
+    name: novacoin-auth-service
+    env: docker
+    plan: free
+    dockerContext: ./authentication-service/auth-service
+    dockerfilePath: ./authentication-service/auth-service/Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        value: postgresql://novacoin:rU8cMwlclJD7bXysC7xwaUCjdAZNwJ3f@dpg-d9f916beo5us7381q44g-a.ohio-postgres.render.com/sistema_bancario_obdx
+      - key: JWT__Secret
+        value: novacoin_secret_key_2026_secure_jwt_token_minimum_32_bytes
+      - key: JWT__Issuer
+        value: NovaCoin
+      - key: JWT__Audience
+        value: NovaCoinUsers
+
+  # Servicio frontend (React)
+  - type: web
+    name: novacoin-frontend
+    env: docker
+    plan: free
+    dockerContext: ./client-novacoin
+    dockerfilePath: ./client-novacoin/Dockerfile
+    envVars:
+      - key: VITE_AUTH_URL
+        value: https://novacoin-auth-service.onrender.com
+      - key: VITE_BANK_URL
+        value: https://novacoin-auth-node.onrender.com
+      - key: VITE_TRANS_URL
+        value: https://novacoin-auth-node.onrender.com
