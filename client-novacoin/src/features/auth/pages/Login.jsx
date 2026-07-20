@@ -14,41 +14,23 @@ const Login = () => {
   const [loading, setLoading]                 = useState(false);
   const [error, setError]                     = useState("");
 
-  // ✅ Ahora también tomamos setUser
-  const { setTokens, setUser } = useAuthStore();
+  // ✅ Ahora también tomamos login
+  const { login } = useAuthStore();
 
   const handleLogin = async () => {
     setError("");
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5262/api/v1/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emailOrUsername, password }),
-      });
-
-      const data = await response.json();
-      console.log('USER DETAILS:', data.userDetails);
-
-
-      if (!response.ok || !data.success) {
-        setError(data.message || "Credenciales incorrectas");
+      const result = await login({ emailOrUsername, password });
+      
+      if (!result.success) {
+        setError(result.error || "Credenciales incorrectas");
         return;
       }
 
-      // Guardar en storage si marcó "Recordarme"
-      const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("accessToken",  data.accessToken);
-      storage.setItem("refreshToken", data.refreshToken);
-      storage.setItem("user",         JSON.stringify(data.userDetails));
-
-      // ✅ Guardar tokens Y user en el store
-      setTokens(data.accessToken, data.refreshToken);
-      setUser(data.userDetails);
-
       // ✅ Redirigir según rol
-      const user    = data.userDetails;
+      const user    = useAuthStore.getState().user;
       const isAdmin = user?.role === 'ADMIN-ROLE' || user?.roles?.includes('ADMIN-ROLE');
       navigate(isAdmin ? '/dashboard' : '/user', { replace: true });
 

@@ -69,7 +69,11 @@ services:
     build: ./client-novacoin
     container_name: novacoin_frontend
     ports:
-      - "80:80"
+      - "8080:80"
+    environment:
+      - VITE_AUTH_URL=
+      - VITE_BANK_URL=
+      - VITE_TRANS_URL=
     depends_on:
       - auth-node
       - authentication-service
