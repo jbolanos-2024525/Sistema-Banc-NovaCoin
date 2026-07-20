@@ -38,7 +38,7 @@ services:
     environment:
       - PORT=3020
       - URI_MONGODB=mongodb://mongo:27017/novacoin
-      - JWT_SECRET=novacoin_secret_key_2026
+      - JWT_SECRET=novacoin_secret_key_2026_secure_jwt_token_minimum_32_bytes
       - NODE_ENV=production
     depends_on:
       - mongo
@@ -55,7 +55,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=sistema_bancario;Username=NovaCoin;Password=Admin2026
-      - JWT__Secret=novacoin_secret_key_2026
+      - JWT__Secret=novacoin_secret_key_2026_secure_jwt_token_minimum_32_bytes
       - JWT__Issuer=NovaCoin
       - JWT__Audience=NovaCoinUsers
     depends_on:

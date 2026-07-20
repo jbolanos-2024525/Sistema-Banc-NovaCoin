@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import crypto from 'crypto';
 
 const transaccionSchema = new Schema({
     TipoTransaccion: {

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import crypto from 'crypto';
 
 const prestamoSchema = new mongoose.Schema({
     tipoPrestamo: {
