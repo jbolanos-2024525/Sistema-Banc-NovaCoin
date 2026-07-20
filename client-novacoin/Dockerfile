@@ -13,7 +13,7 @@ RUN pnpm install --frozen-lockfile
 # Copiar el resto del código
 COPY . .
 
-# Construir la aplicación
+# Construir la aplicación con VITE_AUTH_URL vacío para usar el valor por defecto
 RUN pnpm run build
 
 # Stage de producción con nginx

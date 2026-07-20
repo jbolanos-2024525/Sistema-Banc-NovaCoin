@@ -3,12 +3,14 @@ import { useAuthStore } from '../../features/auth/store/authStore.js';
 
 // 1. Instancia para Autenticación (Usuarios, Roles, Tokens)
 const axiosAuth = axios.create({
-    baseURL: import.meta.env.VITE_AUTH_URL || '/api',
+    baseURL: '/api/v1', // Forzar siempre valor por defecto para producción
     timeout: 15000,
     headers: {
         'Content-Type': 'application/json',
     },
 });
+
+console.log('axiosAuth baseURL:', axiosAuth.defaults.baseURL);
 
 // 2. Instancia para el core del Banco (Cuentas, Clientes, etc.)
 const axiosBank = axios.create({

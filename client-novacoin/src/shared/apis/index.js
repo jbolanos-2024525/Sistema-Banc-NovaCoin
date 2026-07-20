@@ -2,13 +2,13 @@ import axios from 'axios';
 import { useAuthStore } from '../../features/auth/store/authStore.js';
 
 const axiosAuth = axios.create({
-    baseURL: import.meta.env.VITE_AUTH_URL,
+    baseURL: '/api/v1', // Forzar siempre valor por defecto para producción
     timeout: 15000,
     headers: { 'Content-Type': 'application/json' },
 });
 
 const axiosBank = axios.create({
-    baseURL: import.meta.env.VITE_BANK_URL,
+    baseURL: '/api', // Forzar siempre valor por defecto para producción
     timeout: 15000,
     headers: { 'Content-Type': 'application/json' },
 });
