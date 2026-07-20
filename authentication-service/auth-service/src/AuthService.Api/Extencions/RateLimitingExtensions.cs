@@ -16,7 +16,7 @@ public static class RateLimitingExtensions
                     factory: partition => new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
-                        PermitLimit = 5, // 5 intentos
+                        PermitLimit = 1000, // Aumentado para desarrollo
                         Window = TimeSpan.FromMinutes(1) // por minuto
                     }));
 
@@ -26,11 +26,11 @@ public static class RateLimitingExtensions
                     partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                     factory: partition => new TokenBucketRateLimiterOptions
                     {
-                        TokenLimit = 100, // 100 tokens
+                        TokenLimit = 1000, // Aumentado para desarrollo
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 5,
+                        QueueLimit = 50,
                         ReplenishmentPeriod = TimeSpan.FromMinutes(1), // se repone cada minuto
-                        TokensPerPeriod = 20, // 20 tokens por minuto
+                        TokensPerPeriod = 100, // Aumentado para desarrollo
                         AutoReplenishment = true
                     }));
 

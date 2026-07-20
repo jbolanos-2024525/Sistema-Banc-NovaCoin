@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import Empleado from '../src/Empleado/empleado.model.js';
 
 export const validateJWT = async (req, res, next) => {
@@ -36,17 +37,17 @@ export const validateJWT = async (req, res, next) => {
             }
         }
 
+        // Soporte para tokens de ASP.NET que solo tienen sub y role
         req.cliente = {
             id:       userId,
-            email:    decoded.email    || decoded.Email,
-            username: decoded.username || decoded.Username,
-            role:     decoded.role     || decoded.Role,
+            email:    decoded.email    || decoded.Email || userId, // Fallback a userId si no hay email
+            username: decoded.username || decoded.Username || userId.split('_')[1] || 'admin', // Extraer nombre de userId si no hay username
+            role:     decoded.role     || decoded.Role || 'USER',
         };
 
         next();
 
     } catch (error) {
-
         return res.status(401).json({
             success: false,
             message: 'Token inválido'

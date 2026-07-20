@@ -2,10 +2,10 @@ import rateLimit from "express-rate-limit";
 
 export const requestLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 1000, // Aumentado para desarrollo
     handler: (req, res) => {
         console.log(`Peticiones excedidas desde IP: ${req.ip}, Endpoint: ${req.path}`);
-        res.status(429).jsaon({
+        res.status(429).json({
             success: false,
             message: 'Demasiadas peticiones desde esta IP, intenta de nuevo más tarde',
             error: 'RATE_LIMIT_EXCEEDED',

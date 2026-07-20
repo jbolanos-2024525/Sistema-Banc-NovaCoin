@@ -8,7 +8,7 @@ const axiosAuth = axios.create({
 });
 
 const axiosBank = axios.create({
-    baseURL: '/api', // Forzar siempre valor por defecto para producción
+    baseURL: '', // Usar rutas relativas completas para servicios NovaCoin
     timeout: 15000,
     headers: { 'Content-Type': 'application/json' },
 });
@@ -40,45 +40,48 @@ const createResponseInterceptor = (axiosInstance) => async (error) => {
     const isRefreshEndpoint = originalRequest.url?.includes('/auth/refresh');
 
     if (error.response?.status === 401 && !originalRequest._retry && !isRefreshEndpoint) {
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+        return Promise.reject(error);
+    }
 
-        if (isRefreshing) {
-            return new Promise((resolve, reject) => {
-                failedQueue.push({ resolve, reject });
+    if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+        })
+            .then((token) => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return axiosInstance(originalRequest);
             })
-                .then((token) => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                    return axiosInstance(originalRequest);
-                })
-                .catch((err) => Promise.reject(err));
-        }
+            .catch((err) => Promise.reject(err));
+    }
 
-        originalRequest._retry = true;
-        isRefreshing = true;
+    originalRequest._retry = true;
+    isRefreshing = true;
 
-        try {
-            const refreshToken = useAuthStore.getState().refreshToken;
+    try {
+        const refreshToken = useAuthStore.getState().refreshToken;
 
-            const response = await axiosAuth.post('/auth/refresh', {
-                refreshToken: refreshToken,
-            });
+        const response = await axiosAuth.post('/auth/refresh', {
+            refreshToken: refreshToken,
+        });
 
-            const { accessToken, refreshToken: newRefreshToken } = response.data;
+        const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-            useAuthStore.getState().setTokens(accessToken, newRefreshToken);
-            processQueue(null, accessToken);
+        useAuthStore.getState().setTokens(accessToken, newRefreshToken);
+        processQueue(null, accessToken);
 
-            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-            return axiosInstance(originalRequest);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return axiosInstance(originalRequest);
 
-        } catch (refreshError) {
-            processQueue(refreshError, null);
-            useAuthStore.getState().logout();
-            window.location.href = '/login';
-            return Promise.reject(refreshError);
+    } catch (refreshError) {
+        processQueue(refreshError, null);
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
 
-        } finally {
-            isRefreshing = false;
-        }
+    } finally {
+        isRefreshing = false;
     }
 
     return Promise.reject(error);
