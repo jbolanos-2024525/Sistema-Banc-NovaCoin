@@ -3,13 +3,13 @@ import { useAuthStore } from '../../features/auth/store/authStore.js';
 
 const axiosAuth = axios.create({
     baseURL: 'https://novacoin-auth-service.onrender.com/api/v1',
-    timeout: 60000,
+    timeout: 120000,
     headers: { 'Content-Type': 'application/json' },
 });
 
 const axiosBank = axios.create({
     baseURL: 'https://novacoin-auth-node.onrender.com',
-    timeout: 60000,
+    timeout: 120000,
     headers: { 'Content-Type': 'application/json' },
 });
 
