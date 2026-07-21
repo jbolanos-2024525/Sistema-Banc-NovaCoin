@@ -12,7 +12,7 @@ const axiosAuth = axios.create({
 
 // 2. Instancia para el core del Banco (Cuentas, Clientes, etc.)
 const axiosBank = axios.create({
-    baseURL: 'https://novacoin-auth-node.onrender.com',
+    baseURL: 'https://novacoin-auth-node.onrender.com/NovaCoin/v1',
     timeout: 120000,
     headers: {
         'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ const axiosBank = axios.create({
 
 // 3. Instancia para el Microservicio de Transacciones (Usuario)
 const axiosTrans = axios.create({
-    baseURL: 'https://novacoin-auth-node.onrender.com',
+    baseURL: 'https://novacoin-auth-node.onrender.com/NovaCoin/v1',
     timeout: 120000,
     headers: {
         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const axiosTrans = axios.create({
 
 // 4. Instancia para el Microservicio de Transacciones (Admin - para crear transacciones)
 const axiosTransAdmin = axios.create({
-    baseURL: 'https://novacoin-auth-node.onrender.com',
+    baseURL: 'https://novacoin-auth-node.onrender.com/NovaCoin/Admin/v1',
     timeout: 120000,
     headers: {
         'Content-Type': 'application/json',
