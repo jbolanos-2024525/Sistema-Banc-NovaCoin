@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { axiosBank } from '../../../shared/apis/index.js';
+import { axiosBankAdmin } from '../../../shared/apis/index.js';
 
 const BASE = '/empleados';
 

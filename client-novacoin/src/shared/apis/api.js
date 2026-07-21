@@ -37,6 +37,15 @@ const axiosTransAdmin = axios.create({
     },
 });
 
+// 5. Instancia para el Microservicio de Préstamos (Admin)
+const axiosLoanAdmin = axios.create({
+    baseURL: 'https://novacoin-auth-node.onrender.com/NovaCoin/Admin/v1',
+    timeout: 120000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
 // Interceptor de solicitudes: Adjunta automáticamente el Token JWT a las 3 instancias
 const requestInterceptor = (config) => {
     const token = useAuthStore.getState().accessToken;
@@ -52,6 +61,7 @@ axiosAuth.interceptors.request.use(requestInterceptor);
 axiosBank.interceptors.request.use(requestInterceptor);
 axiosTrans.interceptors.request.use(requestInterceptor);
 axiosTransAdmin.interceptors.request.use(requestInterceptor);
+axiosLoanAdmin.interceptors.request.use(requestInterceptor);
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -125,5 +135,6 @@ const handleResponseError = (axiosInstance) => async (error) => {
 axiosBank.interceptors.response.use((res) => res, handleResponseError(axiosBank));
 axiosTrans.interceptors.response.use((res) => res, handleResponseError(axiosTrans));
 axiosTransAdmin.interceptors.response.use((res) => res, handleResponseError(axiosTransAdmin));
+axiosLoanAdmin.interceptors.response.use((res) => res, handleResponseError(axiosLoanAdmin));
 
-export { axiosAuth, axiosBank, axiosTrans, axiosTransAdmin };
+export { axiosAuth, axiosBank, axiosTrans, axiosTransAdmin, axiosLoanAdmin };

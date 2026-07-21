@@ -8,7 +8,13 @@ const axiosAuth = axios.create({
 });
 
 const axiosBank = axios.create({
-    baseURL: 'https://novacoin-auth-node.onrender.com',
+    baseURL: 'https://novacoin-auth-node.onrender.com/NovaCoin/v1',
+    timeout: 120000,
+    headers: { 'Content-Type': 'application/json' },
+});
+
+const axiosBankAdmin = axios.create({
+    baseURL: 'https://novacoin-auth-node.onrender.com/NovaCoin/Admin/v1',
     timeout: 120000,
     headers: { 'Content-Type': 'application/json' },
 });
@@ -23,6 +29,7 @@ const requestInterceptor = (config) => {
 
 axiosAuth.interceptors.request.use(requestInterceptor);
 axiosBank.interceptors.request.use(requestInterceptor);
+axiosBankAdmin.interceptors.request.use(requestInterceptor);
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -89,7 +96,7 @@ const createResponseInterceptor = (axiosInstance) => async (error) => {
 
 axiosAuth.interceptors.response.use(
     (response) => response,
-    createResponseInterceptor(axiosAuth)   
+    createResponseInterceptor(axiosAuth)
 );
 
 axiosBank.interceptors.response.use(
@@ -97,4 +104,9 @@ axiosBank.interceptors.response.use(
     createResponseInterceptor(axiosBank)
 );
 
-export { axiosAuth, axiosBank };
+axiosBankAdmin.interceptors.response.use(
+    (response) => response,
+    createResponseInterceptor(axiosBankAdmin)
+);
+
+export { axiosAuth, axiosBank, axiosBankAdmin };
