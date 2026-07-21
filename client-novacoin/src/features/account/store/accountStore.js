@@ -11,7 +11,7 @@ export const useAccountStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             // Hacemos la petición al endpoint usando tu instancia en el puerto 3020
-            const response = await axiosBank.get('/NovaCoin/v1/cuenta/mis-cuentas');
+            const response = await axiosBank.get('/cuenta/mis-cuentas');
             
             console.log("Response recibida de /mis-cuentas:", response.data);
 
