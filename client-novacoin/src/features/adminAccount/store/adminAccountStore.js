@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { axiosBank } from '../../../shared/apis/index.js';
 
-const BASE = '/NovaCoin/Admin/v1/cuenta';
+const BASE = '/cuenta';
 
 export const useAdminAccountStore = create((set) => ({
 

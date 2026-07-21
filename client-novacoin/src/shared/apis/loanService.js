@@ -1,8 +1,8 @@
 import { axiosBank } from './api.js';
 import { useAuthStore } from '../../features/auth/store/authStore.js';
 
-const BASE_ADMIN = '/NovaCoin/Admin/v1/prestamo';
-const BASE_USER = '/NovaCoin/v1/prestamo';
+const BASE_ADMIN = '/prestamo';
+const BASE_USER = '/prestamo';
 
 export const getAllLoansRequest = async () => {
     const user = useAuthStore.getState().user;
